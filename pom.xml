@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>38</version>
+    </parent>
+
+    <groupId>org.jboss.resteasy.microprofile</groupId>
+    <artifactId>resteasy-microprofile-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <url>https://jboss.org/resteasy</url>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/resteasy/resteasy-microprofile.git</connection>
+        <developerConnection>scm:git:git@github.com:resteasy/resteasy-microprofile.git</developerConnection>
+        <url>https://github.com/resteasy/resteasy-microprofile/tree/main/</url>
+    </scm>
+
+    <properties>
+        <!-- Dependency versions, please keep in alphabetical order -->
+        <!-- TODO (jrp) this can be removed when RESTEASY-2972 is resolved -->
+        <version.commons-codec.commons-codec>1.15</version.commons-codec.commons-codec>
+
+        <version.jakarta.enterprise>2.0.2</version.jakarta.enterprise>
+        <version.jakarta.ws.rs>2.1.6</version.jakarta.ws.rs>
+
+        <version.io.smallrye.context-propagation>1.2.0</version.io.smallrye.context-propagation>
+        <version.io.smallrye.smallrye-config>2.3.0</version.io.smallrye.smallrye-config>
+
+        <version.org.eclipse.microprofile.rest.client>2.0</version.org.eclipse.microprofile.rest.client>
+        <version.org.eclipse.microprofile.config>2.0</version.org.eclipse.microprofile.config>
+        <version.org.eclipse.microprofile.context-propagation>1.2</version.org.eclipse.microprofile.context-propagation>
+
+        <version.org.jboss.logging.jboss-logging>3.4.2.Final</version.org.jboss.logging.jboss-logging>
+        <version.org.jboss.logging.jboss-logging-tools>2.2.1.Final</version.org.jboss.logging.jboss-logging-tools>
+        <version.org.jboss.resteasy>4.7.0.Final</version.org.jboss.resteasy>
+
+        <!-- TODO (jrp) this can be removed when RESTEASY-2973 is resolved -->
+        <version.org.wildfly.common>1.5.2.Final</version.org.wildfly.common>
+
+        <version.junit>4.13.2</version.junit>
+
+        <!-- Test only dependencies -->
+
+        <version.com.github.tomakehurst.wiremock>2.26.3</version.com.github.tomakehurst.wiremock>
+
+        <!-- Plugin Versions, please keep in alphabetical order -->
+        <version.org.jboss.resteasy.checkstyle>1.0.0.Final</version.org.jboss.resteasy.checkstyle>
+        <!-- print logs to file by default -->
+        <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+        <!-- maven-enforcer-plugin -->
+        <maven.min.version>3.6.0</maven.min.version>
+
+        <!-- Require at least Java 11 to compile, but compile down to Java 8 -->
+        <jdk.min.version>11</jdk.min.version>
+        <javadoc.additional.params>--release=8</javadoc.additional.params>
+        <!-- maven-surefire-plugin -->
+        <surefire.system.args>-Xms512m -Xmx512m</surefire.system.args>
+        <skip.java8.tests>false</skip.java8.tests>
+
+        <maven.test.skip>false</maven.test.skip>
+        <skipTests>${maven.test.skip}</skipTests>
+    </properties>
+
+    <modules>
+        <module>resteasy-microprofile-bom</module>
+        <module>resteasy-microprofile-test-bom</module>
+        <module>rest-client-base</module>
+        <module>rest-client</module>
+        <module>testsuite</module>
+    </modules>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>resteasy-checkstyle/checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <excludes>**/*$logger.java,**/*$bundle.java</excludes>
+                    <useFile/>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.resteasy.checkstyle</groupId>
+                        <artifactId>resteasy-checkstyle-config</artifactId>
+                        <version>${version.org.jboss.resteasy.checkstyle}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>check-style</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>ban-bad-dependencies</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <searchTransitive>true</searchTransitive>
+                                    <excludes>
+                                        <exclude>javax.activation:activation</exclude>
+                                        <exclude>javax.activation:javax.activation-api</exclude>
+                                        <exclude>javax.enterprise:cdi-api</exclude>
+                                        <exclude>javax.inject:javax.inject</exclude>
+                                        <exclude>javax.json:javax.json-api</exclude>
+                                        <exclude>javax.security.enterprise:javax.security.enterprise-api</exclude>
+                                        <exclude>javax.servlet:servlet-api</exclude>
+                                        <exclude>javax.transaction:jta</exclude>
+                                        <exclude>javax.validation:validation-api</exclude>
+                                        <exclude>javax.xml:jaxrpc-api</exclude>
+                                        <exclude>javax.xml.bind:jaxb-api</exclude>
+                                        <exclude>javax.xml.soap:saaj-api</exclude>
+                                        <exclude>javax.xml.stream:stax-api</exclude>
+                                        <exclude>log4j:log4j</exclude>
+                                    </excludes>
+                                </bannedDependencies>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <!--<execution>
+                        <id>dep-convergence</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <dependencyConvergence/>
+                            </rules>
+                        </configuration>
+                    </execution> -->
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build>
+
+</project>
