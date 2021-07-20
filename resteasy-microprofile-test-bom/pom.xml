@@ -26,6 +26,8 @@
         <version.org.jboss.weld>3.1.7.SP1</version.org.jboss.weld>
 
         <version.org.testng>6.14.2</version.org.testng>
+
+        <version.org.wildfly.arquillian>3.0.1.Final</version.org.wildfly.arquillian>
     </properties>
 
     <dependencyManagement>
@@ -153,6 +155,13 @@
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>${version.org.testng}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-container-managed</artifactId>
+                <version>${version.org.wildfly.arquillian}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

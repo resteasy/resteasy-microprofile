@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <name>RESTEasy MicroProfile: Test Suite</name>
     <modules>
+        <module>integration-tests</module>
         <module>microprofile-rest-client-tck</module>
     </modules>
 
