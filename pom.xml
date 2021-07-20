@@ -51,13 +51,17 @@
         <version.org.jboss.resteasy>4.7.0.Final</version.org.jboss.resteasy>
 
         <!-- TODO (jrp) this can be removed when RESTEASY-2973 is resolved -->
+        <version.org.wildfly>24.0.0.Final</version.org.wildfly>
         <version.org.wildfly.common>1.5.2.Final</version.org.wildfly.common>
 
         <version.junit>4.13.2</version.junit>
 
         <!-- Test only dependencies -->
-
         <version.com.github.tomakehurst.wiremock>2.26.3</version.com.github.tomakehurst.wiremock>
+
+        <!-- Plugin Versions -->
+        <version.org.jboss.galleon>4.2.8.Final</version.org.jboss.galleon>
+        <version.org.wildfly.galleon-plugins>5.2.0.Final</version.org.wildfly.galleon-plugins>
 
         <!-- Plugin Versions, please keep in alphabetical order -->
         <version.org.jboss.resteasy.checkstyle>1.0.0.Final</version.org.jboss.resteasy.checkstyle>
@@ -75,6 +79,11 @@
 
         <maven.test.skip>false</maven.test.skip>
         <skipTests>${maven.test.skip}</skipTests>
+
+        <!-- Galleon -->
+        <galleon.fork.embedded>true</galleon.fork.embedded>
+        <galleon.log.time>true</galleon.log.time>
+        <galleon.offline>false</galleon.offline>
     </properties>
 
     <modules>
@@ -82,10 +91,25 @@
         <module>resteasy-microprofile-test-bom</module>
         <module>rest-client-base</module>
         <module>rest-client</module>
+        <module>galleon-feature-pack</module>
         <module>testsuite</module>
     </modules>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jboss.galleon</groupId>
+                    <artifactId>galleon-maven-plugin</artifactId>
+                    <version>${version.org.jboss.galleon}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.galleon-plugins</groupId>
+                    <artifactId>wildfly-galleon-maven-plugin</artifactId>
+                    <version>${version.org.wildfly.galleon-plugins}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
         <plugins>
             <plugin>
