@@ -93,6 +93,7 @@
         <module>rest-client</module>
         <module>galleon-feature-pack</module>
         <module>testsuite</module>
+        <module>context-propagation</module>
     </modules>
 
     <build>
