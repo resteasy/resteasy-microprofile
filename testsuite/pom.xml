@@ -12,6 +12,9 @@
     <artifactId>testsuite</artifactId>
     <packaging>pom</packaging>
     <name>RESTEasy MicroProfile: Test Suite</name>
+    <properties>
+        <jvm.debug.args/>
+    </properties>
     <modules>
         <module>integration-tests</module>
         <module>microprofile-rest-client-tck</module>
@@ -33,7 +36,40 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>test-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>debug</id>
+            <activation>
+                <property>
+                    <name>debug</name>
+                </property>
+            </activation>
+            <properties>
+                <debug.port>8787</debug.port>
+                <jvm.debug.args>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:${debug.port}</jvm.debug.args>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>debug-java-8</id>
+            <activation>
+                <property>
+                    <name>debug.java.8</name>
+                </property>
+            </activation>
+            <properties>
+                <debug.port>8787</debug.port>
+                <jvm.debug.args>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${debug.port}</jvm.debug.args>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

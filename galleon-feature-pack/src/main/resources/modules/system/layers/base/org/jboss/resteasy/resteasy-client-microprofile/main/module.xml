@@ -37,12 +37,10 @@
         <module name="org.eclipse.microprofile.config.api"/>
         <module name="org.jboss.logging"/>
         <module name="org.jboss.resteasy.resteasy-cdi" services="import"/>
-        <module name="org.jboss.resteasy.resteasy-jaxrs"/>
-        <!-- TODO (jrp) this will need to change when the RESTEasy upgrade is merged -->
-        <!--<module name="org.jboss.resteasy.resteasy-client-api"/>
+        <module name="org.jboss.resteasy.resteasy-client-api"/>
         <module name="org.jboss.resteasy.resteasy-client" services="import"/>
         <module name="org.jboss.resteasy.resteasy-core" services="import"/>
-        <module name="org.jboss.resteasy.resteasy-core-spi"/> -->
+        <module name="org.jboss.resteasy.resteasy-core-spi"/>
         <module name="org.reactivestreams"/>
     </dependencies>
 </module>

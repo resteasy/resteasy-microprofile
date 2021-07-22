@@ -15,14 +15,22 @@
 
     <properties>
         <!-- Test only dependencies -->
-        <version.jakarta.json.json-api>1.1.6</version.jakarta.json.json-api>
-
         <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
+        <version.com.io7m.xom>1.2.10</version.com.io7m.xom>
+
+        <version.io.reactivex.rxjava2>2.2.21</version.io.reactivex.rxjava2>
+
+        <version.jakarta.enterprise.concurrent>1.1.2</version.jakarta.enterprise.concurrent>
+        <version.jakarta.json.json-api>1.1.6</version.jakarta.json.json-api>
+        <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
+
+        <version.org.eclipse.yasson>1.0.9</version.org.eclipse.yasson>
 
         <version.org.glassfish.jakarta.json>1.1.6</version.org.glassfish.jakarta.json>
 
         <version.org.jboss.arquillian>1.6.0.Final</version.org.jboss.arquillian>
         <version.org.jboss.arquillian.container.arquillian-weld-embedded>2.0.0.Final</version.org.jboss.arquillian.container.arquillian-weld-embedded>
+        <version.org.jboss.shrinkwrap.resolver>2.2.7</version.org.jboss.shrinkwrap.resolver>
         <version.org.jboss.weld>3.1.7.SP1</version.org.jboss.weld>
 
         <version.org.testng>6.14.2</version.org.testng>
@@ -53,6 +61,19 @@
                 <version>${version.org.jboss.arquillian}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-depchain</artifactId>
+                <version>${version.org.jboss.shrinkwrap.resolver}</version>
+                <type>pom</type>
+                <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.enterprise</groupId>
+                        <artifactId>cdi-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Required by the MicroProfile TCK and Wiremock -->
@@ -92,11 +113,42 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <!-- Needed by PermissionUtil -->
+            <dependency>
+                <groupId>com.io7m.xom</groupId>
+                <artifactId>xom</artifactId>
+                <version>${version.com.io7m.xom}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>xml-apis</groupId>
+                        <artifactId>xml-apis</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
+            <dependency>
+                <groupId>io.reactivex.rxjava2</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>${version.io.reactivex.rxjava2}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.enterprise.concurrent</groupId>
+                <artifactId>jakarta.enterprise.concurrent-api</artifactId>
+                <version>${version.jakarta.enterprise.concurrent}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>jakarta.json</groupId>
                 <artifactId>jakarta.json-api</artifactId>
                 <version>${version.jakarta.json.json-api}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${version.jakarta.servlet}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -111,6 +163,13 @@
                 <groupId>org.eclipse.microprofile.rest.client</groupId>
                 <artifactId>microprofile-rest-client-tck</artifactId>
                 <version>${version.org.eclipse.microprofile.rest.client}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>${version.org.eclipse.yasson}</version>
                 <scope>test</scope>
             </dependency>
 
