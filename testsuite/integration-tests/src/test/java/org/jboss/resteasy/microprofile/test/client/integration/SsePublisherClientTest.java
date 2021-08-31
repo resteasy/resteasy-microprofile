@@ -39,6 +39,9 @@ import org.jboss.resteasy.microprofile.test.client.integration.resource.MPSseCli
 import org.jboss.resteasy.microprofile.test.client.integration.resource.MPSseResource;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactivestreams.Publisher;
@@ -57,6 +60,16 @@ public class SsePublisherClientTest {
                 .addClasses(MPSseResource.class);
     }
 
+    @Before
+    public void setup() {
+        System.setProperty("resteasy.microprofile.sseclient.buffersize", "5");
+    }
+
+    @After
+    public void cleanup() {
+        System.clearProperty("resteasy.microprofile.sseclient.buffersize");
+    }
+
     @Test
     public void testSseClient() throws Exception {
         RestClientBuilder builder = RestClientBuilder.newBuilder();
@@ -71,13 +84,22 @@ public class SsePublisherClientTest {
         publisher.subscribe(subscriber);
         Thread.sleep(1000);
         subscriber.request(5);
+        //The resteasy.microprofile.sseclient.buffersize is set to 5. The head of the
+        //subscription queue element will be dropped when queue size exceeds 5.
+        //Subscriber requests 5 events when subscribe()
+        publisher.subscribe(subscriber);
+        //wait 1 sec for emitting the left 7 event message and this will drop msg5 and msg6 events from the queue head
+        //when the queue size reaches limit size
+        Thread.sleep(1000);
+        //This only get the last 5 events : msg7~msg11
+        subscriber.request(5);
         assertTrue(resultsLatch.await(10, TimeUnit.SECONDS));
         //sent 12 items, expects these 10 values [msg4, msg3, msg2, msg1, msg8, msg11, msg7, msg10, msg9, msg0]
-        assertTrue(eventStrings.size() == 10);
+        //sent 12 items, expects these 10 values : msg0~msg4 and msg7~msg11
+        assertEquals(10, eventStrings.size());
         //msg5 and msg6 are dropped
-        // TODO (jrp) determine the validity of this
-        // assertFalse("Expected [msg4, msg3, msg2, msg1, msg8, msg11, msg7, msg10, msg9, msg0], found "+  eventStrings,
-        //         eventStrings.contains("msg5") || eventStrings.contains("msg6"));
+        Assert.assertFalse("Expected [msg4, msg3, msg2, msg1, msg8, msg11, msg7, msg10, msg9, msg0], found "+  eventStrings,
+                eventStrings.contains("msg5") || eventStrings.contains("msg6"));
         assertNull(subscriber.throwable);
     }
 

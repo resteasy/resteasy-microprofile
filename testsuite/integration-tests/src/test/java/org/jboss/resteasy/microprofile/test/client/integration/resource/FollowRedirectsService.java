@@ -91,7 +91,7 @@ public class FollowRedirectsService {
     @Path("redirect/ping")
     public Response redirectPing() {
         return Response.temporaryRedirect(
-                URI.create(uriInfo.getBaseUri()  + uriInfo.getPathSegments().get(0).getPath() + "/ping"))
+                URI.create(uriInfo.getBaseUri() + uriInfo.getPathSegments().get(0).getPath() + "/ping"))
                 .build();
     }
 

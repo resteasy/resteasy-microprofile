@@ -26,7 +26,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import io.reactivex.Single;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -51,7 +50,7 @@ public interface HelloClient {
 
     @GET
     @Path("some/{id}")
-    Single<String> single(@PathParam("id") String id);
+    CompletionStage<String> some(@PathParam("id") String id);
 
     @GET
     @Path("cs/{id}")

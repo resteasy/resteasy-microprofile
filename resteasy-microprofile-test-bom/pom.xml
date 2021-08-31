@@ -18,8 +18,6 @@
         <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
         <version.com.io7m.xom>1.2.10</version.com.io7m.xom>
 
-        <version.io.reactivex.rxjava2>2.2.21</version.io.reactivex.rxjava2>
-
         <version.jakarta.enterprise.concurrent>1.1.2</version.jakarta.enterprise.concurrent>
         <version.jakarta.json.json-api>1.1.6</version.jakarta.json.json-api>
         <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
@@ -28,14 +26,15 @@
 
         <version.org.glassfish.jakarta.json>1.1.6</version.org.glassfish.jakarta.json>
 
-        <version.org.jboss.arquillian>1.6.0.Final</version.org.jboss.arquillian>
+        <version.org.jboss.arquillian>1.7.0.Alpha10</version.org.jboss.arquillian>
         <version.org.jboss.arquillian.container.arquillian-weld-embedded>2.0.0.Final</version.org.jboss.arquillian.container.arquillian-weld-embedded>
+        <version.org.jboss.dmr>1.6.1.Final</version.org.jboss.dmr>
         <version.org.jboss.shrinkwrap.resolver>2.2.7</version.org.jboss.shrinkwrap.resolver>
         <version.org.jboss.weld>3.1.7.SP1</version.org.jboss.weld>
 
         <version.org.testng>6.14.2</version.org.testng>
 
-        <version.org.wildfly.arquillian>3.0.1.Final</version.org.wildfly.arquillian>
+        <version.org.wildfly.arquillian>4.0.0.Alpha3</version.org.wildfly.arquillian>
     </properties>
 
     <dependencyManagement>
@@ -104,6 +103,10 @@
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
+                        <groupId>commons-fileupload</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>org.apache.httpcomponents</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
@@ -124,13 +127,6 @@
                         <artifactId>xml-apis</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>io.reactivex.rxjava2</groupId>
-                <artifactId>rxjava</artifactId>
-                <version>${version.io.reactivex.rxjava2}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -181,6 +177,13 @@
             </dependency>
 
             <dependency>
+                <groupId>org.jboss</groupId>
+                <artifactId>jboss-dmr</artifactId>
+                <version>${version.org.jboss.dmr}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-weld-embedded</artifactId>
                 <version>${version.org.jboss.arquillian.container.arquillian-weld-embedded}</version>
@@ -189,6 +192,12 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-undertow</artifactId>
+                <version>${version.org.jboss.resteasy}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-netty4</artifactId>
                 <version>${version.org.jboss.resteasy}</version>
                 <scope>test</scope>
             </dependency>
