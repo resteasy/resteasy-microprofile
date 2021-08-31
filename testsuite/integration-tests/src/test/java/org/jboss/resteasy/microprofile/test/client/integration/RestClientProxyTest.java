@@ -19,30 +19,6 @@
 
 package org.jboss.resteasy.microprofile.test.client.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Objects;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
-import javax.ws.rs.ext.Provider;
-
-import io.reactivex.Single;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -55,10 +31,33 @@ import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloRes
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ParamConverter;
+import javax.ws.rs.ext.ParamConverterProvider;
+import javax.ws.rs.ext.Provider;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -78,8 +77,7 @@ public class RestClientProxyTest {
                         TestParamConverter.class,
                         TestParamConverterProvider.class
                 )
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsManifestResource(new StringAsset("Dependencies: org.jboss.resteasy.resteasy-rxjava2 services\n"), "MANIFEST.MF");
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     private URI generateUri() throws URISyntaxException {
@@ -106,10 +104,11 @@ public class RestClientProxyTest {
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<String> value = new AtomicReference<>();
         value.set(null);
-        Single<String> single = client.single("foo");
-        single.subscribe((String s) -> {
+        CompletionStage<String> cs = client.some("foo");
+        cs.thenApply((s) -> {
             value.set(s);
             latch.countDown();
+            return s;
         });
         boolean waitResult = latch.await(30, TimeUnit.SECONDS);
         Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
@@ -119,21 +118,11 @@ public class RestClientProxyTest {
     //RESTEASY-2633
     @Test
     public void testEncodingMultiByteCharacters() throws Exception {
-        RestClientBuilder builder = RestClientBuilder.newBuilder();
-        HelloClient client = builder.baseUri(generateUri()).build(HelloClient.class);
-
-        assertNotNull(client);
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<String> value = new AtomicReference<>();
-        value.set(null);
-        Single<String> single = client.single(EMOJIS);
-        single.subscribe((String s) -> {
-            value.set(s);
-            latch.countDown();
-        });
-        boolean waitResult = latch.await(30, TimeUnit.SECONDS);
-        Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
-        assertEquals(EMOJIS, value.get());
+        final RestClientBuilder builder = RestClientBuilder.newBuilder();
+        final HelloClient client = builder.baseUri(generateUri()).build(HelloClient.class);
+        final CompletionStage<String> cs = client.some(EMOJIS);
+        final CompletableFuture<String> future = cs.toCompletableFuture();
+        assertEquals(EMOJIS, future.get(30, TimeUnit.SECONDS));
     }
 
     @Test
@@ -142,17 +131,9 @@ public class RestClientProxyTest {
         HelloClient client = builder.baseUri(generateUri()).build(HelloClient.class);
 
         assertNotNull(client);
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<String> value = new AtomicReference<>();
-        value.set(null);
-        CompletionStage<String> cs = client.cs("foo");
-        cs.whenComplete((String s, Throwable t) -> {
-            value.set(s);
-            latch.countDown();
-        });
-        boolean waitResult = latch.await(30, TimeUnit.SECONDS);
-        Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
-        assertEquals("foo", value.get());
+        final CompletionStage<String> cs = client.some("foo");
+        final CompletableFuture<String> future = cs.toCompletableFuture();
+        assertEquals("foo", future.get(30, TimeUnit.SECONDS));
     }
 
     @Test
@@ -174,7 +155,7 @@ public class RestClientProxyTest {
 
         assertNotNull(client);
         CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<Throwable> value = new AtomicReference<Throwable>();
+        AtomicReference<Throwable> value = new AtomicReference<>();
         value.set(null);
         CompletionStage<String> cs = client.asyncClient404();
         cs.whenComplete((String s, Throwable t) -> {
@@ -273,7 +254,7 @@ public class RestClientProxyTest {
 
         @Override
         public String toString(final String value) {
-            return value.toString();
+            return value;
         }
     }
 
@@ -283,7 +264,8 @@ public class RestClientProxyTest {
 
         @Override
         @SuppressWarnings("unchecked")
-        public <T> ParamConverter<T> getConverter(final Class<T> rawType, final Type genericType, final Annotation[] annotations) {
+        public <T> ParamConverter<T> getConverter(final Class<T> rawType, final Type genericType,
+                                                  final Annotation[] annotations) {
             if (Objects.equals(rawType, CharSequence.class)) {
                 return (ParamConverter<T>) converter;
             }

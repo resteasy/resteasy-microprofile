@@ -117,8 +117,8 @@ public class ConfigSourceDefaultOrdinalServletContextListenerTest {
     }
 
     private void checkBuiltInConfigSourcesOrdinal(Map<String, Integer> builtInConfigSourcesOrdinal) {
-        Integer servletConfigSourceDefaultOrdinal = (Integer) ServletConfigSource.BUILT_IN_DEFAULT_ORDINAL;
-        Integer servletContextConfigSourceDefaultOrdinal = (Integer) ServletContextConfigSource.BUILT_IN_DEFAULT_ORDINAL;
+        Integer servletConfigSourceDefaultOrdinal = 60;
+        Integer servletContextConfigSourceDefaultOrdinal = 40;
 
         Assert.assertEquals(servletConfigSourceDefaultOrdinal, builtInConfigSourcesOrdinal.get(ServletConfigSource.class
                 .getName()));

@@ -29,7 +29,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import io.reactivex.Single;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.Assert;
 
@@ -62,8 +61,8 @@ public class HelloResource {
 
     @GET
     @Path("/some/{id}")
-    public Single<String> single(@PathParam("id") String id) {
-        return Single.just(id);
+    public CompletionStage<String> single(@PathParam("id") String id) {
+        return CompletableFuture.completedFuture(id);
     }
 
     @GET

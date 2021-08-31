@@ -117,8 +117,8 @@ public class ConfigSourceDefaultOrdinalFilterTest {
     }
 
     private void checkBuiltInConfigSourcesOrdinal(Map<String, Integer> builtInConfigSourcesOrdinal) {
-        Integer filterConfigSourceDefaultOrdinal = (Integer) FilterConfigSource.BUILT_IN_DEFAULT_ORDINAL;
-        Integer servletContextConfigSourceDefaultOrdinal = (Integer) ServletContextConfigSource.BUILT_IN_DEFAULT_ORDINAL;
+        Integer filterConfigSourceDefaultOrdinal = 50;
+        Integer servletContextConfigSourceDefaultOrdinal = 40;
 
         Assert.assertEquals(filterConfigSourceDefaultOrdinal, builtInConfigSourcesOrdinal.get(FilterConfigSource.class.getName()));
         Assert.assertEquals(servletContextConfigSourceDefaultOrdinal, builtInConfigSourcesOrdinal.get(ServletContextConfigSource.class

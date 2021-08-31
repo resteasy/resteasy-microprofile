@@ -19,11 +19,11 @@ public class ProxyParameterAnotationsResource {
     @Path("AllParams/{pathParam}")
     @POST
     public String executeAllParams(@QueryParam String queryParam,
-                               @HeaderParam String headerParam,
-                               @CookieParam String cookieParam,
-                               @PathParam("pathParam") String pathParam,
-                               @FormParam String formParam,
-                               @MatrixParam String matrixParam) {
+                                   @HeaderParam String headerParam,
+                                   @CookieParam String cookieParam,
+                                   @PathParam("pathParam") String pathParam,
+                                   @FormParam String formParam,
+                                   @MatrixParam String matrixParam) {
         return queryParam + " " + headerParam + " " + cookieParam + " " + pathParam + " " + formParam + " " + matrixParam;
     }
 }

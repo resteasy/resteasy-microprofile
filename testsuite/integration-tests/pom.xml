@@ -21,15 +21,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>test-utils</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-            <scope>test</scope>
+            <groupId>com.io7m.xom</groupId>
+            <artifactId>xom</artifactId>
         </dependency>
 
         <dependency>
@@ -84,6 +77,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-dmr</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
@@ -99,15 +98,15 @@
             <artifactId>resteasy-json-p-provider</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-rxjava2</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.jboss.resteasy.microprofile</groupId>
             <artifactId>microprofile-rest-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy.microprofile</groupId>
+            <artifactId>microprofile-config</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -143,32 +142,38 @@
                 <configuration>
                     <install-dir>${jboss.home}</install-dir>
                     <skip>${skipTests}</skip>
+                    <!-- TODO (jrp) we should probably set this to false -->
                     <record-state>true</record-state>
                     <log-time>${galleon.log.time}</log-time>
                     <offline>${galleon.offline}</offline>
                     <plugin-options>
-                        <!-- TODO (jrp) uncomment this -->
+                        <!-- TODO (jrp) re-enable this -->
                         <!-- <jboss-maven-dist/> -->
                         <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
                         <optional-packages>passive+</optional-packages>`
                     </plugin-options>
-                    <!-- TODO (jrp) trim this down -->
                     <feature-packs>
                         <feature-pack>
-                            <groupId>org.wildfly</groupId>
-                            <artifactId>wildfly-galleon-pack</artifactId>
-                            <version>${version.org.wildfly}</version>
+                            <groupId>org.jboss.resteasy.microprofile</groupId>
+                            <artifactId>galleon-feature-pack</artifactId>
+                            <version>${project.version}</version>
                             <excluded-packages>
                                 <name>product.conf</name>
                                 <name>docs.schema</name>
                             </excluded-packages>
                         </feature-pack>
-                        <feature-pack>
-                            <groupId>org.jboss.resteasy.microprofile</groupId>
-                            <artifactId>galleon-feature-pack</artifactId>
-                            <version>${project.version}</version>
-                        </feature-pack>
                     </feature-packs>
+                    <configurations>
+                        <config>
+                            <model>standalone</model>
+                            <name>standalone.xml</name>
+                            <layers>
+                                <layer>cdi</layer>
+                                <layer>jaxrs-server</layer>
+                                <layer>microprofile-config</layer>
+                            </layers>
+                        </config>
+                    </configurations>
                 </configuration>
                 <executions>
                     <execution>
