@@ -1,3 +1,22 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.resteasy.microprofile.client.publisher;
 
 import java.util.AbstractQueue;
@@ -48,6 +67,7 @@ public final class SpscLinkedArrayQueue<E> extends AbstractQueue<E> implements Q
      * this value will be returned.
      *
      * @param value from which next positive power of two will be found.
+     *
      * @return the next positive power of 2 or this value if it is a power of 2.
      */
     public static int roundToPowerOfTwo(final int value) {
@@ -88,14 +108,14 @@ public final class SpscLinkedArrayQueue<E> extends AbstractQueue<E> implements Q
     }
 
     private boolean writeToQueue(final AtomicReferenceArray<Object> buffer, final E e, final long index,
-            final int offset) {
+                                 final int offset) {
         soElement(buffer, offset, e); // StoreStore
         soProducerIndex(index + 1); // this ensures atomic write of long on 32bit platforms
         return true;
     }
 
     private void resize(final AtomicReferenceArray<Object> oldBuffer, final long currIndex, final int offset, final E e,
-            final long mask) {
+                        final long mask) {
         final int capacity = oldBuffer.length();
         final AtomicReferenceArray<Object> newBuffer = new AtomicReferenceArray<>(capacity);
         producerBuffer = newBuffer;
@@ -264,6 +284,7 @@ public final class SpscLinkedArrayQueue<E> extends AbstractQueue<E> implements Q
      *
      * @param first  the first value, not null
      * @param second the second value, not null
+     *
      * @return true if the queue accepted the two new values
      */
     public boolean offer(E first, E second) {

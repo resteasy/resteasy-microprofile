@@ -1,8 +1,27 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.resteasy.microprofile.client.impl;
 
 import java.net.URI;
-
 import javax.ws.rs.core.UriBuilder;
+
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
 import org.jboss.resteasy.specimpl.ResteasyUriBuilderImpl;
@@ -15,14 +34,15 @@ public class MpUriBuilder extends ResteasyUriBuilderImpl {
     public MpUriBuilder() {
         super();
     }
+
     /*
      * Constructor enables this class to be cloned and parent values
      * set properly.
      */
     public MpUriBuilder(final String host, final String scheme, final int port,
                         final String userInfo, final String path, final String query,
-                        final String fragment, final String ssp, final String authority){
-        super(host, scheme, port, userInfo, path, query,fragment, ssp, authority);
+                        final String fragment, final String ssp, final String authority) {
+        super(host, scheme, port, userInfo, path, query, fragment, ssp, authority);
     }
 
     public void setQueryParamStyle(QueryParamStyle queryParamStyle) {
@@ -32,18 +52,17 @@ public class MpUriBuilder extends ResteasyUriBuilderImpl {
     @Override
     public UriBuilder clone() {
         MpUriBuilder builder = new MpUriBuilder(getHost(), getScheme(), getPort(),
-                getUserInfo(), getPath(), getQuery(), getFragment(),getSsp(),
+                getUserInfo(), getPath(), getQuery(), getFragment(), getSsp(),
                 getAuthority());
         builder.setQueryParamStyle(queryParamStyle);
         return builder;
     }
 
     @Override
-    public UriBuilder clientQueryParam(String name, Object... values) throws IllegalArgumentException
-    {
+    public UriBuilder clientQueryParam(String name, Object... values) throws IllegalArgumentException {
         UriBuilder uriBuilder = null;
 
-        switch(queryParamStyle){
+        switch (queryParamStyle) {
             case COMMA_SEPARATED:
                 clientQueryParamCommaSeparated(name, values);
                 break;
@@ -59,9 +78,12 @@ public class MpUriBuilder extends ResteasyUriBuilderImpl {
 
     /**
      * key=value1,value2,value3.
+     *
      * @param name
      * @param values
+     *
      * @return
+     *
      * @throws IllegalArgumentException
      */
     private UriBuilder clientQueryParamCommaSeparated(String name, Object... values) throws IllegalArgumentException {
@@ -102,9 +124,12 @@ public class MpUriBuilder extends ResteasyUriBuilderImpl {
 
     /**
      * key[]=value1&key[]=value2&key[]=value3.
+     *
      * @param name
      * @param values
+     *
      * @return
+     *
      * @throws IllegalArgumentException
      */
     private UriBuilder clientQueryParamArrayPairs(String name, Object... values) throws IllegalArgumentException {
@@ -139,11 +164,11 @@ public class MpUriBuilder extends ResteasyUriBuilderImpl {
         return this;
     }
 
-    public UriBuilder uri(String uriTemplate, QueryParamStyle queryParamStyle) throws IllegalArgumentException
-    {
+    public UriBuilder uri(String uriTemplate, QueryParamStyle queryParamStyle) throws IllegalArgumentException {
         this.queryParamStyle = queryParamStyle;
         return uriTemplate(uriTemplate);
     }
+
     public UriBuilder uri(URI uri, QueryParamStyle queryParamStyle) throws IllegalArgumentException {
         this.queryParamStyle = queryParamStyle;
         return uri(uri);

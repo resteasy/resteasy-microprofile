@@ -1,3 +1,22 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.resteasy.microprofile.client;
 
 
@@ -17,7 +36,6 @@ import java.util.Set;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
@@ -27,6 +45,7 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
+
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.microprofile.client.header.ClientHeaderFillingException;
@@ -49,9 +68,9 @@ public class ProxyInvocationHandler implements InvocationHandler {
     private final AtomicBoolean closed;
 
     public ProxyInvocationHandler(final Class<?> restClientInterface,
-                           final Object target,
-                           final Set<Object> providerInstances,
-                           final ResteasyClient client, final BeanManager beanManager) {
+                                  final Object target,
+                                  final Set<Object> providerInstances,
+                                  final ResteasyClient client, final BeanManager beanManager) {
         this.target = target;
         this.providerInstances = providerInstances;
         this.client = client;
@@ -150,7 +169,7 @@ public class ProxyInvocationHandler implements InvocationHandler {
                     cause = cause.getCause();
                 }
                 if (cause instanceof ExceptionMapping.HandlerException) {
-                    ((ExceptionMapping.HandlerException)cause).mapException(method);
+                    ((ExceptionMapping.HandlerException) cause).mapException(method);
                     // no applicable exception mapper found or applicable mapper returned null
                     return null;
                 }
@@ -229,7 +248,8 @@ public class ProxyInvocationHandler implements InvocationHandler {
         }
     }
 
-    private static Map<Method, List<InvocationContextImpl.InterceptorInvocation>> initInterceptorChains(BeanManager beanManager, CreationalContext<?> creationalContext, Class<?> restClientInterface) {
+    private static Map<Method, List<InvocationContextImpl.InterceptorInvocation>> initInterceptorChains(
+            BeanManager beanManager, CreationalContext<?> creationalContext, Class<?> restClientInterface) {
 
         Map<Method, List<InvocationContextImpl.InterceptorInvocation>> chains = new HashMap<>();
         // Interceptor as a key in a map is not entirely correct (custom interceptors) but should work in most cases
@@ -262,14 +282,16 @@ public class ProxyInvocationHandler implements InvocationHandler {
     }
 
     private static Annotation[] merge(List<Annotation> methodLevelBindings, List<Annotation> classLevelBindings) {
-        Set<Class<? extends Annotation>> types = methodLevelBindings.stream().map(a -> a.annotationType()).collect(Collectors.toSet());
+        Set<Class<? extends Annotation>> types = methodLevelBindings.stream()
+                .map(a -> a.annotationType())
+                .collect(Collectors.toSet());
         List<Annotation> merged = new ArrayList<>(methodLevelBindings);
         for (Annotation annotation : classLevelBindings) {
             if (!types.contains(annotation.annotationType())) {
                 merged.add(annotation);
             }
         }
-        return merged.toArray(new Annotation[]{});
+        return merged.toArray(new Annotation[] {});
     }
 
 }

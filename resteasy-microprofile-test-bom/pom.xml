@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~
+  ~ Copyright 2021 Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -15,17 +34,27 @@
 
     <properties>
         <!-- Test only dependencies -->
-        <version.jakarta.json.json-api>1.1.6</version.jakarta.json.json-api>
-
         <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
+        <version.com.io7m.xom>1.2.10</version.com.io7m.xom>
+
+        <version.jakarta.enterprise.concurrent>1.1.2</version.jakarta.enterprise.concurrent>
+        <version.jakarta.json.json-api>1.1.6</version.jakarta.json.json-api>
+        <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
+
+        <version.org.eclipse.yasson>1.0.9</version.org.eclipse.yasson>
 
         <version.org.glassfish.jakarta.json>1.1.6</version.org.glassfish.jakarta.json>
 
-        <version.org.jboss.arquillian>1.6.0.Final</version.org.jboss.arquillian>
-        <version.org.jboss.arquillian.container.arquillian-weld-embedded>2.0.0.Final</version.org.jboss.arquillian.container.arquillian-weld-embedded>
+        <version.org.jboss.arquillian>1.7.0.Alpha10</version.org.jboss.arquillian>
+        <version.org.jboss.arquillian.container.arquillian-weld-embedded>2.0.0.Final
+        </version.org.jboss.arquillian.container.arquillian-weld-embedded>
+        <version.org.jboss.dmr>1.6.1.Final</version.org.jboss.dmr>
+        <version.org.jboss.shrinkwrap.resolver>2.2.7</version.org.jboss.shrinkwrap.resolver>
         <version.org.jboss.weld>3.1.7.SP1</version.org.jboss.weld>
 
         <version.org.testng>6.14.2</version.org.testng>
+
+        <version.org.wildfly.arquillian>4.0.0.Alpha3</version.org.wildfly.arquillian>
     </properties>
 
     <dependencyManagement>
@@ -51,6 +80,19 @@
                 <version>${version.org.jboss.arquillian}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-depchain</artifactId>
+                <version>${version.org.jboss.shrinkwrap.resolver}</version>
+                <type>pom</type>
+                <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.enterprise</groupId>
+                        <artifactId>cdi-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Required by the MicroProfile TCK and Wiremock -->
@@ -81,6 +123,10 @@
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
+                        <groupId>commons-fileupload</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>org.apache.httpcomponents</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
@@ -90,11 +136,35 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <!-- Needed by PermissionUtil -->
+            <dependency>
+                <groupId>com.io7m.xom</groupId>
+                <artifactId>xom</artifactId>
+                <version>${version.com.io7m.xom}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>xml-apis</groupId>
+                        <artifactId>xml-apis</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
+            <dependency>
+                <groupId>jakarta.enterprise.concurrent</groupId>
+                <artifactId>jakarta.enterprise.concurrent-api</artifactId>
+                <version>${version.jakarta.enterprise.concurrent}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>jakarta.json</groupId>
                 <artifactId>jakarta.json-api</artifactId>
                 <version>${version.jakarta.json.json-api}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${version.jakarta.servlet}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -113,9 +183,23 @@
             </dependency>
 
             <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>${version.org.eclipse.yasson}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>jakarta.json</artifactId>
                 <version>${version.org.glassfish.jakarta.json}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss</groupId>
+                <artifactId>jboss-dmr</artifactId>
+                <version>${version.org.jboss.dmr}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -128,6 +212,12 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-undertow</artifactId>
+                <version>${version.org.jboss.resteasy}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-netty4</artifactId>
                 <version>${version.org.jboss.resteasy}</version>
                 <scope>test</scope>
             </dependency>
@@ -153,6 +243,13 @@
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>${version.org.testng}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-container-managed</artifactId>
+                <version>${version.org.wildfly.arquillian}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
