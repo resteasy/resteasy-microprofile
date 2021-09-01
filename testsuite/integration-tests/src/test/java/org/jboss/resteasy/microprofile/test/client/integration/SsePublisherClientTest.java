@@ -98,7 +98,7 @@ public class SsePublisherClientTest {
         //sent 12 items, expects these 10 values : msg0~msg4 and msg7~msg11
         assertEquals(10, eventStrings.size());
         //msg5 and msg6 are dropped
-        Assert.assertFalse("Expected [msg4, msg3, msg2, msg1, msg8, msg11, msg7, msg10, msg9, msg0], found "+  eventStrings,
+        Assert.assertFalse("Expected [msg4, msg3, msg2, msg1, msg8, msg11, msg7, msg10, msg9, msg0], found " + eventStrings,
                 eventStrings.contains("msg5") || eventStrings.contains("msg6"));
         assertNull(subscriber.throwable);
     }

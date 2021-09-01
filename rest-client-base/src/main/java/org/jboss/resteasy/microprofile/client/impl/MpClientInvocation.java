@@ -1,3 +1,22 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.resteasy.microprofile.client.impl;
 
 import java.net.URI;
@@ -5,9 +24,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
+
 import org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptor;
 import org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptorFactory;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -36,39 +55,41 @@ public class MpClientInvocation extends ClientInvocation {
         captureContext(asyncInterceptorFactories);
     }
 
-   protected MpClientInvocation(final ResteasyClient client, final URI uri, final ClientRequestHeaders headers, final ClientConfiguration parent,
+    protected MpClientInvocation(final ResteasyClient client, final URI uri, final ClientRequestHeaders headers,
+                                 final ClientConfiguration parent,
                                  final List<AsyncInvocationInterceptorFactory> asyncInterceptorFactories) {
         super(client, uri, headers, parent);
         captureContainerHeaders();
         captureContext(asyncInterceptorFactories);
-   }
+    }
 
-   private void captureContext(List<AsyncInvocationInterceptorFactory> asyncInterceptorFactories)
-   {
-      if(asyncInterceptorFactories != null) {
-         asyncInvocationInterceptors = asyncInterceptorFactories.stream().map(AsyncInvocationInterceptorFactory::newInterceptor).collect(Collectors.toList());
-         asyncInvocationInterceptors.forEach(AsyncInvocationInterceptor::prepareContext);
-         invocationExecutor = new ExecutorServiceWrapper(client.asyncInvocationExecutor(), new Decorator(asyncInvocationInterceptors));
-      } else {
-         invocationExecutor = client.asyncInvocationExecutor();
-      }
-   }
+    private void captureContext(List<AsyncInvocationInterceptorFactory> asyncInterceptorFactories) {
+        if (asyncInterceptorFactories != null) {
+            asyncInvocationInterceptors = asyncInterceptorFactories.stream()
+                    .map(AsyncInvocationInterceptorFactory::newInterceptor)
+                    .collect(Collectors.toList());
+            asyncInvocationInterceptors.forEach(AsyncInvocationInterceptor::prepareContext);
+            invocationExecutor = new ExecutorServiceWrapper(client.asyncInvocationExecutor(), new Decorator(asyncInvocationInterceptors));
+        } else {
+            invocationExecutor = client.asyncInvocationExecutor();
+        }
+    }
 
-   @Override
-   public ExecutorService asyncInvocationExecutor() {
-      return invocationExecutor;
-   }
+    @Override
+    public ExecutorService asyncInvocationExecutor() {
+        return invocationExecutor;
+    }
 
     private void captureContainerHeaders() {
         HttpHeaders containerHeaders = ResteasyContext.getContextData(HttpHeaders.class);
-        if(containerHeaders != null) {
+        if (containerHeaders != null) {
             this.containerHeaders = containerHeaders.getRequestHeaders();
         }
     }
 
     @Override
     protected ClientResponse filterRequest(ClientRequestContextImpl requestContext) {
-        if(containerHeaders != null) {
+        if (containerHeaders != null) {
             requestContext.setProperty(CONTAINER_HEADERS, containerHeaders);
         }
         return super.filterRequest(requestContext);
@@ -76,11 +97,11 @@ public class MpClientInvocation extends ClientInvocation {
 
     public static class Decorator implements ExecutorServiceWrapper.Decorator {
 
-       private List<AsyncInvocationInterceptor> asyncInvocationInterceptors;
+        private List<AsyncInvocationInterceptor> asyncInvocationInterceptors;
 
-       public Decorator(final List<AsyncInvocationInterceptor> asyncInvocationInterceptors) {
-           this.asyncInvocationInterceptors = asyncInvocationInterceptors;
-       }
+        public Decorator(final List<AsyncInvocationInterceptor> asyncInvocationInterceptors) {
+            this.asyncInvocationInterceptors = asyncInvocationInterceptors;
+        }
 
         @Override
         public Runnable decorate(Runnable runnable) {
@@ -89,11 +110,11 @@ public class MpClientInvocation extends ClientInvocation {
                     asyncInvocationInterceptors.forEach(AsyncInvocationInterceptor::applyContext);
                 }
                 try {
-                   runnable.run();
+                    runnable.run();
                 } finally {
-                   if (asyncInvocationInterceptors != null) {
-                      asyncInvocationInterceptors.forEach(AsyncInvocationInterceptor::removeContext);
-                   }
+                    if (asyncInvocationInterceptors != null) {
+                        asyncInvocationInterceptors.forEach(AsyncInvocationInterceptor::removeContext);
+                    }
                 }
             };
         }
@@ -105,11 +126,11 @@ public class MpClientInvocation extends ClientInvocation {
                     asyncInvocationInterceptors.forEach(AsyncInvocationInterceptor::applyContext);
                 }
                 try {
-                   return callable.call();
+                    return callable.call();
                 } finally {
-                   if (asyncInvocationInterceptors != null) {
-                      asyncInvocationInterceptors.forEach(AsyncInvocationInterceptor::removeContext);
-                   }
+                    if (asyncInvocationInterceptors != null) {
+                        asyncInvocationInterceptors.forEach(AsyncInvocationInterceptor::removeContext);
+                    }
                 }
             };
         }

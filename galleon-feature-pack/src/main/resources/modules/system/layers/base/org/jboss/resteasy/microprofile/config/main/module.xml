@@ -24,7 +24,7 @@
         <property name="jboss.api" value="private"/>
     </properties>
     <resources>
-        <artifact name="${org.jboss.resteasy.microprofile:microprofile-config}" />
+        <artifact name="${org.jboss.resteasy.microprofile:microprofile-config}"/>
     </resources>
 
     <dependencies>

@@ -1,3 +1,22 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.resteasy.microprofile.client;
 
 import static org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder.PROPERTY_PROXY_HOST;
@@ -32,11 +51,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
@@ -45,6 +63,7 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ParamConverterProvider;
+
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
@@ -119,6 +138,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         this.followRedirect = followRedirect;
         return this;
     }
+
     public boolean isFollowRedirects() {
         return this.followRedirect;
     }
@@ -130,11 +150,11 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     }
 
     @Override
-    public RestClientBuilder proxyAddress(String host, int port){
+    public RestClientBuilder proxyAddress(String host, int port) {
         if (host == null) {
             throw new IllegalArgumentException("proxyHost must not be null");
         }
-        if (port <=0 || port > 65535) {
+        if (port <= 0 || port > 65535) {
             throw new IllegalArgumentException("Invalid port number");
         }
         this.proxyHost = host;
@@ -237,7 +257,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         ClassLoader classLoader = aClass.getClassLoader();
 
 
-
         T actualClient;
         ResteasyClient client;
 
@@ -304,7 +323,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         resteasyClientBuilder.hostnameVerifier(hostnameVerifier);
         resteasyClientBuilder.setIsTrustSelfSignedCertificates(false);
         checkQueryParamStyleProperty(aClass);
-        checkFollowRedirectProperty (aClass);
+        checkFollowRedirectProperty(aClass);
         resteasyClientBuilder.setFollowRedirects(followRedirect);
 
         if (readTimeout != null) {
@@ -315,14 +334,15 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         }
 
         if (useURLConnection()) {
-            resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder).build());
+            resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder)
+                    .build());
             resteasyClientBuilder.sslContext(null);
             resteasyClientBuilder.trustStore(null);
             resteasyClientBuilder.keyStore(null, "");
         }
         client = resteasyClientBuilder
                 .build();
-        ((MpClient)client).setQueryParamStyle(queryParamStyle);
+        ((MpClient) client).setQueryParamStyle(queryParamStyle);
         client.register(AsyncInterceptorRxInvokerProvider.class);
         actualClient = client.target(baseURI)
                 .proxyBuilder(aClass)
@@ -370,15 +390,15 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             if (config != null) {
                 // property using fully-qualified class name takes precedence
                 Optional<String> prop = config.getOptionalValue(
-                        aClass.getName()+"/mp-rest/queryParamStyle", String.class);
+                        aClass.getName() + "/mp-rest/queryParamStyle", String.class);
                 if (prop.isPresent()) {
                     queryParamStyle(QueryParamStyle.valueOf(
                             prop.get().trim().toUpperCase()));
 
                 } else {
                     RegisterRestClient registerRestClient =
-                            (RegisterRestClient)aClass.getAnnotation(RegisterRestClient.class);
-                    if (registerRestClient !=null &&
+                            (RegisterRestClient) aClass.getAnnotation(RegisterRestClient.class);
+                    if (registerRestClient != null &&
                             registerRestClient.configKey() != null &&
                             !registerRestClient.configKey().isEmpty()) {
 
@@ -398,14 +418,14 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         }
     }
 
-    private void checkFollowRedirectProperty (Class<?> aClass) {
+    private void checkFollowRedirectProperty(Class<?> aClass) {
         // User's programmatic setting takes precedence over
         // microprofile-config.properties.
         if (!followRedirect) {
             if (config != null) {
                 // property using fully-qualified class name takes precedence
                 Optional<Boolean> prop = config.getOptionalValue(
-                        aClass.getName()+"/mp-rest/followRedirects", Boolean.class);
+                        aClass.getName() + "/mp-rest/followRedirects", Boolean.class);
                 if (prop.isPresent()) {
                     if (prop.get() != followRedirect) {
                         followRedirects(prop.get());
@@ -413,7 +433,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 } else {
                     RegisterRestClient registerRestClient =
                             aClass.getAnnotation(RegisterRestClient.class);
-                    if (registerRestClient !=null &&
+                    if (registerRestClient != null &&
                             registerRestClient.configKey() != null &&
                             !registerRestClient.configKey().isEmpty()) {
 
@@ -458,11 +478,11 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     private String getReflectName(AnnotatedElement element) {
         if (element instanceof Parameter) {
-            return ((Parameter)element).getName();
+            return ((Parameter) element).getName();
         } else if (element instanceof Field) {
-            return ((Field)element).getName();
+            return ((Field) element).getName();
         } else if (element instanceof Method) {
-            Method m = (Method)element;
+            Method m = (Method) element;
             if (!m.getName().startsWith("get")) return null;
             return Character.toLowerCase(m.getName().charAt(3)) + m.getName().substring(4);
         }
@@ -543,9 +563,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 PathParam pathParam = p.getAnnotation(PathParam.class);
                 if (pathParam != null) {
                     paramMap.put(pathParam.value(), "foobar");
-                } else if (p.isAnnotationPresent(org.jboss.resteasy.annotations.jaxrs.PathParam.class)){
+                } else if (p.isAnnotationPresent(org.jboss.resteasy.annotations.jaxrs.PathParam.class)) {
                     org.jboss.resteasy.annotations.jaxrs.PathParam rePathParam = p.getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
-                    String name = rePathParam.value() == null || rePathParam.value().length() == 0 ? p.getName() : rePathParam.value();
+                    String name = rePathParam.value() == null || rePathParam.value()
+                            .length() == 0 ? p.getName() : rePathParam.value();
                     paramMap.put(name, "foobar");
                 } else if (p.isAnnotationPresent(BeanParam.class)) {
                     verifyBeanPathParam(p.getType(), paramMap);
@@ -590,7 +611,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                     throw new IllegalArgumentException("Value must be an instance of List<> for ResteasyClientBuilder setter method: " + builderMethodName);
                 }
             } else {
-                arguments = new Object[] { value };
+                arguments = new Object[] {value};
             }
             try {
                 builderMethod.invoke(builderDelegate, arguments);
@@ -736,6 +757,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     ResteasyClientBuilder getBuilderDelegate() {
         return builderDelegate;
     }
+
     private static BeanManager getBeanManager() {
         try {
             CDI<Object> current = CDI.current();
@@ -745,6 +767,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             return null;
         }
     }
+
     private String getSystemProperty(String key, String def) {
         if (System.getSecurityManager() == null) {
             return System.getProperty(key, def);

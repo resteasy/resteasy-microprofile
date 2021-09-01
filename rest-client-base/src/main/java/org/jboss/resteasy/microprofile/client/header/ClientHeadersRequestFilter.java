@@ -1,3 +1,22 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.resteasy.microprofile.client.header;
 
 import static org.jboss.resteasy.microprofile.client.utils.ListCastUtils.castToListOfStrings;
@@ -6,12 +25,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.Priority;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 import org.eclipse.microprofile.rest.client.ext.DefaultClientHeadersFactoryImpl;
 import org.jboss.resteasy.microprofile.client.impl.MpClientInvocation;
@@ -46,11 +65,11 @@ public class ClientHeadersRequestFilter implements ClientRequestFilter {
         );
 
         @SuppressWarnings("unchecked")
-        MultivaluedMap<String,String> containerHeaders = (MultivaluedMap<String, String>) requestContext.getProperty(MpClientInvocation.CONTAINER_HEADERS);
-        if(containerHeaders == null)
+        MultivaluedMap<String, String> containerHeaders = (MultivaluedMap<String, String>) requestContext.getProperty(MpClientInvocation.CONTAINER_HEADERS);
+        if (containerHeaders == null)
             containerHeaders = EMPTY_MAP;
         // stupid final rules
-        MultivaluedMap<String,String> incomingHeaders = containerHeaders;
+        MultivaluedMap<String, String> incomingHeaders = containerHeaders;
 
         if (!factory.isPresent() || factory.get() instanceof DefaultClientHeadersFactoryImpl) {
             // When using the default factory, pass the proposed outgoing headers onto the request context.

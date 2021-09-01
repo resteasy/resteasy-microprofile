@@ -1,9 +1,27 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.resteasy.microprofile.client;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
@@ -29,100 +47,103 @@ import org.junit.Test;
 
 public class ClientHeadersFactoryCDITest {
 
-   private static UndertowJaxrsServer server;
-   private static WeldContainer container;
+    private static UndertowJaxrsServer server;
+    private static WeldContainer container;
 
-   static class Worker {
+    static class Worker {
 
-      @Inject
-      @RestClient
-      private SubClassResourceIntf service;
+        @Inject
+        @RestClient
+        private SubClassResourceIntf service;
 
-      public String work() {
-         return service.hello("Stefano");
-      }
-   }
+        public String work() {
+            return service.hello("Stefano");
+        }
+    }
 
-   @Path("/")
-   public interface TestResourceIntf {
+    @Path("/")
+    public interface TestResourceIntf {
 
-      @Path("hello/{h}")
-      @GET
-      String hello(@PathParam("h") String h);
-   }
+        @Path("hello/{h}")
+        @GET
+        String hello(@PathParam("h") String h);
+    }
 
-   @RegisterRestClient(baseUri="http://localhost:8081")
-   @RegisterClientHeaders(TestClientHeadersFactory.class)
-   @ClientHeaderParam(name="IntfHeader", value="intfValue")
-   public interface SubClassResourceIntf extends TestResourceIntf {};
+    @RegisterRestClient(baseUri = "http://localhost:8081")
+    @RegisterClientHeaders(TestClientHeadersFactory.class)
+    @ClientHeaderParam(name = "IntfHeader", value = "intfValue")
+    public interface SubClassResourceIntf extends TestResourceIntf {
+    }
 
-   @Path("/")
-   public static class TestResource {
+    ;
 
-      @Path("hello/{h}")
-      @GET
-      public String hello(@PathParam("h") String h) {
-         return "hello " + h;
-      }
-   }
+    @Path("/")
+    public static class TestResource {
 
-   @ApplicationScoped
-   public static class TestClientHeadersFactory implements ClientHeadersFactory {
+        @Path("hello/{h}")
+        @GET
+        public String hello(@PathParam("h") String h) {
+            return "hello " + h;
+        }
+    }
 
-      @Inject
-      private Counter counter;
+    @ApplicationScoped
+    public static class TestClientHeadersFactory implements ClientHeadersFactory {
 
-      public MultivaluedMap<String, String> update(MultivaluedMap<String, String> incomingHeaders,
-            MultivaluedMap<String, String> clientOutgoingHeaders) {
-         counter.count();
-         return new MultivaluedHashMap<>();
-      }
-   }
+        @Inject
+        private Counter counter;
 
-   @ApplicationScoped
-   public static class Counter {
+        public MultivaluedMap<String, String> update(MultivaluedMap<String, String> incomingHeaders,
+                                                     MultivaluedMap<String, String> clientOutgoingHeaders) {
+            counter.count();
+            return new MultivaluedHashMap<>();
+        }
+    }
 
-       public static final AtomicInteger COUNT = new AtomicInteger(0);
+    @ApplicationScoped
+    public static class Counter {
 
-       public int count() {
-           return COUNT.incrementAndGet();
-       }
-   }
+        public static final AtomicInteger COUNT = new AtomicInteger(0);
 
-   @ApplicationPath("")
-   public static class MyApp extends Application {
+        public int count() {
+            return COUNT.incrementAndGet();
+        }
+    }
 
-      @Override
-      public Set<Class<?>> getClasses() {
-         HashSet<Class<?>> classes = new HashSet<>();
-         classes.add(TestResource.class);
-         return classes;
-      }
-   }
+    @ApplicationPath("")
+    public static class MyApp extends Application {
 
-   @BeforeClass
-   public static void init() {
-      Weld weld = new Weld();
-      weld.addBeanClass(Worker.class);
-      weld.addBeanClass(SubClassResourceIntf.class);
-      weld.addBeanClass(TestClientHeadersFactory.class);
-      weld.addBeanClass(Counter.class);
-      container = weld.initialize();
-      server = new UndertowJaxrsServer().start();
-      server.deploy(MyApp.class);
-   }
+        @Override
+        public Set<Class<?>> getClasses() {
+            HashSet<Class<?>> classes = new HashSet<>();
+            classes.add(TestResource.class);
+            return classes;
+        }
+    }
 
-   @AfterClass
-   public static void stop() {
-      server.stop();
-      container.shutdown();
-   }
+    @BeforeClass
+    public static void init() {
+        Weld weld = new Weld();
+        weld.addBeanClass(Worker.class);
+        weld.addBeanClass(SubClassResourceIntf.class);
+        weld.addBeanClass(TestClientHeadersFactory.class);
+        weld.addBeanClass(Counter.class);
+        container = weld.initialize();
+        server = new UndertowJaxrsServer().start();
+        server.deploy(MyApp.class);
+    }
 
-   @Test
-   public void test() {
-      Assert.assertTrue(container.isRunning());
-      String result = container.select(Worker.class).get().work();
-      Assert.assertEquals("hello Stefano", result);
-      Assert.assertEquals(1, Counter.COUNT.get());
-   }
+    @AfterClass
+    public static void stop() {
+        server.stop();
+        container.shutdown();
+    }
+
+    @Test
+    public void test() {
+        Assert.assertTrue(container.isRunning());
+        String result = container.select(Worker.class).get().work();
+        Assert.assertEquals("hello Stefano", result);
+        Assert.assertEquals(1, Counter.COUNT.get());
+    }
 }

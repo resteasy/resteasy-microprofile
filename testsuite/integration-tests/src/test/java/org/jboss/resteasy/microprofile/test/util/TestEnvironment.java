@@ -55,22 +55,26 @@ public class TestEnvironment {
         return createWarWithConfigUrl(test, resource, null);
     }
 
-    public static WebArchive createWarWithConfigUrl(final Class<?> test, final Class<?> resource, final String path) throws IOException {
+    public static WebArchive createWarWithConfigUrl(final Class<?> test, final Class<?> resource, final String path)
+            throws IOException {
         final String url = getHttpUrl() + test.getSimpleName() + (path == null ? "" : (path.charAt(0) == '/' ? path : "/" + path));
         return addConfigProperties(createWar(test), Collections.singletonMap(resource.getCanonicalName() + "/mp-rest/url", url));
     }
 
-    public static WebArchive createWarWithConfigUrl(final String deploymentName, final Class<?> resource, final String path) throws IOException {
+    public static WebArchive createWarWithConfigUrl(final String deploymentName, final Class<?> resource,
+                                                    final String path) throws IOException {
         final String url = getHttpUrl() + deploymentName + (path == null ? "" : (path.charAt(0) == '/' ? path : "/" + path));
         return addConfigProperties(createWar(deploymentName), Collections.singletonMap(resource.getCanonicalName() + "/mp-rest/url", url));
     }
 
-    public static WebArchive createWarWithConfigUrl(final Class<?> test, final String deploymentNameSuffix, final Class<?> resource, final String path) throws IOException {
+    public static WebArchive createWarWithConfigUrl(final Class<?> test, final String deploymentNameSuffix,
+                                                    final Class<?> resource, final String path) throws IOException {
         final String url = getHttpUrl() + test.getSimpleName() + (path == null ? "" : (path.charAt(0) == '/' ? path : "/" + path));
         return addConfigProperties(createWar(test, deploymentNameSuffix), Collections.singletonMap(resource.getCanonicalName() + "/mp-rest/url", url));
     }
 
-    public static <T extends Archive<T>> T addConfigProperties(final T archive, final Map<String, String> props) throws IOException {
+    public static <T extends Archive<T>> T addConfigProperties(final T archive, final Map<String, String> props)
+            throws IOException {
         try (StringWriter writer = new StringWriter()) {
             for (Map.Entry<String, String> entry : props.entrySet()) {
                 writer.write(entry.getKey());
