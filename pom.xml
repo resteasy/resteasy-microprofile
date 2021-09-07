@@ -95,7 +95,6 @@
         <javadoc.additional.params>--release=8</javadoc.additional.params>
         <!-- maven-surefire-plugin -->
         <surefire.system.args>-Xms512m -Xmx512m</surefire.system.args>
-        <skip.java8.tests>false</skip.java8.tests>
 
         <maven.test.skip>false</maven.test.skip>
         <skipTests>${maven.test.skip}</skipTests>
@@ -211,6 +210,39 @@
         </plugins>
 
     </build>
+
+    <profiles>
+        <profile>
+            <id>jdk.test</id>
+            <activation>
+                <property>
+                    <name>test.java.home</name>
+                </property>
+                <file>
+                    <exists>${test.java.home}</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-test</id>
+                                <configuration>
+                                    <jvm>${test.java.home}/bin/java</jvm>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${test.java.home}</JAVA_HOME>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <repositories>
         <!-- Required for provisioning WildFly. Not all dependencies currently exist on Maven Central. This is also
