@@ -1,0 +1,19 @@
+name: "Close stale issues"
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+# see: https://github.com/actions/stale
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'resteasy'
+    steps:
+      - uses: actions/stale@v4
+        with:
+          stale-pr-message: 'There has been no activity on this PR for 45 days. It will be auto-closed after 90 days.'
+          close-pr-message: 'There has been no activity on this PR for 90 days and it has been closed automatically.'
+          days-before-stale: 45
+          days-before-close: 45
+          days-before-issue-stale: -1
+          days-before-issue-close: -1
