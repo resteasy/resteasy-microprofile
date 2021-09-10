@@ -75,6 +75,7 @@ import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;
+import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.URLConnectionClientEngineBuilder;
@@ -227,10 +228,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
-
+    public <T> T build(Class<T> aClass, ClientHttpEngine httpEngine) throws IllegalStateException, RestClientDefinitionException {
         RestClientListeners.get().forEach(listener -> listener.onNewClient(aClass, this));
 
         // Interface validity
@@ -333,13 +331,19 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             resteasyClientBuilder.connectTimeout(connectTimeout, connectTimeoutUnit);
         }
 
-        if (useURLConnection()) {
+
+        if (httpEngine != null) {
+
+            resteasyClientBuilder.httpEngine(httpEngine);
+
+        } else if (useURLConnection()) {
             resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder)
                     .build());
             resteasyClientBuilder.sslContext(null);
             resteasyClientBuilder.trustStore(null);
             resteasyClientBuilder.keyStore(null, "");
         }
+
         client = resteasyClientBuilder
                 .build();
         ((MpClient) client).setQueryParamStyle(queryParamStyle);
@@ -360,6 +364,13 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 new ProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager));
         ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
         return proxy;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
+
+       return build(aClass, null);
     }
 
     /**

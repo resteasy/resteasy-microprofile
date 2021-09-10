@@ -43,15 +43,21 @@ import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.Provider;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.http.HttpVersion;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.resteasy.client.jaxrs.engines.vertx.VertxClientHttpEngine;
 import org.jboss.resteasy.microprofile.client.BuilderResolver;
+import org.jboss.resteasy.microprofile.client.RestClientBuilderImpl;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HeaderPropagator;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloClient;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloResource;
+import org.jboss.resteasy.microprofile.test.client.integration.resource.NgHTTP2;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -75,13 +81,29 @@ public class RestClientProxyTest {
                         HelloResource.class,
                         HeaderPropagator.class,
                         TestParamConverter.class,
-                        TestParamConverterProvider.class
+                        TestParamConverterProvider.class,
+                        NgHTTP2.class
                 )
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     private URI generateUri() throws URISyntaxException {
         return TestEnvironment.generateUri(url, "test-app");
+    }
+
+    @Test
+    public void testHTTP2() {
+        RestClientBuilderImpl builder = (RestClientBuilderImpl) RestClientBuilder.newBuilder().baseUri(URI.create("https://nghttp2.org:443/"));
+        Vertx vertx = Vertx.vertx();
+
+        HttpClientOptions options = new HttpClientOptions();
+        options.setSsl(true);
+        options.setProtocolVersion(HttpVersion.HTTP_2);
+        options.setUseAlpn(true);
+
+        NgHTTP2 client = builder.build(NgHTTP2.class, new VertxClientHttpEngine(vertx, options));
+        final String resp = client.get();
+        assertTrue(resp.contains("nghttp2.org"));
     }
 
     @Test
