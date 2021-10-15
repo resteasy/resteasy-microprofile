@@ -25,7 +25,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -35,6 +34,8 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.Providers;
 
+import org.jboss.resteasy.concurrent.ContextualExecutorService;
+import org.jboss.resteasy.concurrent.ContextualExecutors;
 import org.jboss.resteasy.plugins.providers.sse.SseConstants;
 import org.jboss.resteasy.plugins.providers.sse.SseEventInputImpl;
 import org.reactivestreams.Publisher;
@@ -44,14 +45,14 @@ import org.reactivestreams.Publisher;
 public class MpPublisherMessageBodyReader implements MessageBodyReader<Publisher<?>> {
     @Context
     protected Providers providers;
-    private final ExecutorService executor;
+    private final ContextualExecutorService executor;
 
     public MpPublisherMessageBodyReader(final ExecutorService ex) {
-        executor = ex;
+        executor = ContextualExecutors.wrap(ex);
     }
 
     public MpPublisherMessageBodyReader() {
-        executor = Executors.newCachedThreadPool();
+        executor = ContextualExecutors.threadPool();
     }
 
     @Override
