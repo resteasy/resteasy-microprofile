@@ -261,11 +261,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         ResteasyClient client;
 
         ResteasyClientBuilder resteasyClientBuilder;
-        List<String> noProxyHosts = Arrays.asList(
-                getSystemProperty("http.nonProxyHosts", "localhost|127.*|[::1]").split("\\|"));
         if (this.proxyHost != null) {
             resteasyClientBuilder = builderDelegate.defaultProxy(proxyHost, this.proxyPort);
         } else {
+            List<String> noProxyHosts = getProxyHostsAsRegex();
             String envProxyHost = getSystemProperty("http.proxyHost", null);
             boolean isUriMatched = false;
             if (envProxyHost != null && !noProxyHosts.isEmpty()) {
@@ -360,6 +359,21 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 new ProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager));
         ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
         return proxy;
+    }
+
+    /**
+     * Get the users list of proxy hosts. Translate list to regex format
+     * @return list of proxy hosts
+     */
+    private List<String> getProxyHostsAsRegex(){
+        String noProxyHostsSysProps = getSystemProperty("http.nonProxyHosts", null);
+        if (noProxyHostsSysProps == null) {
+            noProxyHostsSysProps = "localhost|127.*|[::1]";
+        } else {
+            String src2 = noProxyHostsSysProps.replace(".", "\\.");
+            noProxyHostsSysProps = src2.replace("*", "[A-Za-z0-9-]*");
+        }
+        return Arrays.asList(noProxyHostsSysProps.split("\\|"));
     }
 
     /**
