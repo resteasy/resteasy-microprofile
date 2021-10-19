@@ -72,6 +72,7 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client-vertx</artifactId>
             <version>${version.org.jboss.resteasy}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
