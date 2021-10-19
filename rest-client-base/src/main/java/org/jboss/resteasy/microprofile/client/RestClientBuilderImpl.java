@@ -39,7 +39,9 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +49,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,7 +81,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.URLConnectionClientEngineBuilder;
 import org.jboss.resteasy.client.jaxrs.internal.LocalResteasyProviderFactory;
+import org.jboss.resteasy.concurrent.ContextualExecutorService;
+import org.jboss.resteasy.concurrent.ContextualExecutors;
 import org.jboss.resteasy.microprofile.client.async.AsyncInterceptorRxInvokerProvider;
+import org.jboss.resteasy.microprofile.client.async.AsyncInvocationInterceptorThreadContext;
 import org.jboss.resteasy.microprofile.client.header.ClientHeaderProviders;
 import org.jboss.resteasy.microprofile.client.header.ClientHeadersRequestFilter;
 import org.jboss.resteasy.microprofile.client.impl.MpClient;
@@ -224,7 +228,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         if (executor == null) {
             throw new IllegalArgumentException("ExecutorService must not be null");
         }
-        executorService = executor;
+        executorService = ContextualExecutors.wrap(executor);
         return this;
     }
 
@@ -260,11 +264,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         ResteasyClient client;
 
         ResteasyClientBuilder resteasyClientBuilder;
-        List<String> noProxyHosts = Arrays.asList(
-                getSystemProperty("http.nonProxyHosts", "localhost|127.*|[::1]").split("\\|"));
         if (this.proxyHost != null) {
             resteasyClientBuilder = builderDelegate.defaultProxy(proxyHost, this.proxyPort);
         } else {
+            List<String> noProxyHosts = getProxyHostsAsRegex();
             String envProxyHost = getSystemProperty("http.proxyHost", null);
             boolean isUriMatched = false;
             if (envProxyHost != null && !noProxyHosts.isEmpty()) {
@@ -308,8 +311,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         if (this.executorService != null) {
             resteasyClientBuilder.executorService(this.executorService);
         } else {
-            this.executorService = Executors.newCachedThreadPool();
-            resteasyClientBuilder.executorService(executorService, true);
+            this.executorService = ContextualExecutors.threadPool();
+            resteasyClientBuilder.executorService(executorService, !executorService.isManaged());
         }
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
@@ -349,6 +352,9 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 resteasyClientBuilder.keyStore(null, "");
             }
         }
+        if (!invocationInterceptorFactories.isEmpty()) {
+            resteasyClientBuilder.register(new AsyncInvocationInterceptorThreadContext(invocationInterceptorFactories));
+        }
 
         client = resteasyClientBuilder
                 .build();
@@ -376,6 +382,21 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     @Override
     public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
        return build(aClass, null);
+    }
+
+    /**
+     * Get the users list of proxy hosts. Translate list to regex format
+     * @return list of proxy hosts
+     */
+    private List<String> getProxyHostsAsRegex(){
+        String noProxyHostsSysProps = getSystemProperty("http.nonProxyHosts", null);
+        if (noProxyHostsSysProps == null) {
+            noProxyHostsSysProps = "localhost|127.*|[::1]";
+        } else {
+            String src2 = noProxyHostsSysProps.replace(".", "\\.");
+            noProxyHostsSysProps = src2.replace("*", "[A-Za-z0-9-]*");
+        }
+        return Arrays.asList(noProxyHostsSysProps.split("\\|"));
     }
 
     /**
@@ -679,7 +700,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         } else if (o instanceof ParamConverterProvider) {
             register(o, Priorities.USER);
         } else if (o instanceof AsyncInvocationInterceptorFactory) {
-            builderDelegate.asyncInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
+            invocationInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
         } else {
             builderDelegate.register(o);
         }
@@ -711,7 +732,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             builderDelegate.register(converter, i);
 
         } else if (o instanceof AsyncInvocationInterceptorFactory) {
-            builderDelegate.asyncInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
+            invocationInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
         } else {
             builderDelegate.register(o, i);
         }
@@ -797,7 +818,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     private Config config;
 
-    private ExecutorService executorService;
+    private ContextualExecutorService executorService;
 
     private URI baseURI;
 
@@ -820,4 +841,5 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     private QueryParamStyle queryParamStyle = null;
 
     private final Set<Object> localProviderInstances = new HashSet<>();
+    private final Collection<AsyncInvocationInterceptorFactory> invocationInterceptorFactories = new ArrayList<>();
 }

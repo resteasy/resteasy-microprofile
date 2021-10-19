@@ -20,10 +20,8 @@
 package org.jboss.resteasy.microprofile.client.impl;
 
 import java.net.URI;
-import java.util.List;
 import javax.ws.rs.client.CompletionStageRxInvoker;
 
-import org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptorFactory;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.internal.ClientConfiguration;
 import org.jboss.resteasy.client.jaxrs.internal.ClientInvocation;
@@ -34,13 +32,9 @@ import org.jboss.resteasy.microprofile.client.async.AsyncInterceptorRxInvoker;
 
 public class MpClientInvocationBuilder extends ClientInvocationBuilder {
 
-    private final List<AsyncInvocationInterceptorFactory> asyncInterceptorFactories;
-
     public MpClientInvocationBuilder(final ResteasyClient client, final URI uri,
-                                     final ClientConfiguration configuration,
-                                     final List<AsyncInvocationInterceptorFactory> asyncInterceptorFactories) {
+                                     final ClientConfiguration configuration) {
         super(client, uri, configuration);
-        this.asyncInterceptorFactories = asyncInterceptorFactories;
     }
 
     @Override
@@ -50,12 +44,12 @@ public class MpClientInvocationBuilder extends ClientInvocationBuilder {
 
     @Override
     protected ClientInvocation createClientInvocation(ClientInvocation invocation) {
-        return new MpClientInvocation(invocation, asyncInterceptorFactories);
+        return new MpClientInvocation(invocation);
     }
 
     @Override
     protected ClientInvocation createClientInvocation(ResteasyClient client, URI uri, ClientRequestHeaders headers,
                                                       ClientConfiguration parent) {
-        return new MpClientInvocation(client, uri, headers, parent, asyncInterceptorFactories);
+        return new MpClientInvocation(client, uri, headers, parent);
     }
 }

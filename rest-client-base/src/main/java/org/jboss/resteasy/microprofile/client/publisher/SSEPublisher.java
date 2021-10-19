@@ -21,7 +21,6 @@ package org.jboss.resteasy.microprofile.client.publisher;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
@@ -32,7 +31,8 @@ import javax.ws.rs.ext.Providers;
 import javax.ws.rs.sse.InboundSseEvent;
 
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.core.ResteasyContext;
+import org.jboss.resteasy.concurrent.ContextualExecutorService;
+import org.jboss.resteasy.concurrent.ContextualExecutors;
 import org.jboss.resteasy.plugins.providers.sse.SseEventInputImpl;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -53,7 +53,7 @@ public class SSEPublisher<T> implements Publisher<T> {
     private final SseEventInputImpl input;
     private final Type genericType;
     private final Providers providers;
-    private final ExecutorService executor;
+    private final ContextualExecutorService executor;
 
     private static final Logger LOGGER = Logger.getLogger(SSEPublisher.class);
 
@@ -62,7 +62,7 @@ public class SSEPublisher<T> implements Publisher<T> {
         this.genericType = genericType;
         this.input = input;
         this.providers = providers;
-        this.executor = es;
+        this.executor = ContextualExecutors.wrap(es);
     }
 
     @Override
@@ -82,11 +82,9 @@ public class SSEPublisher<T> implements Publisher<T> {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void pump(final SSEProcessor processor, final SseEventInputImpl input) {
-        Map<Class<?>, Object> contextDataMap = ResteasyContext.getContextDataMap();
         Runnable readEventTask = new Runnable() {
             @Override
             public void run() {
-                ResteasyContext.pushContextDataMap(contextDataMap);
                 Type typeArgument;
                 InboundSseEvent event;
                 if (genericType instanceof ParameterizedType) {
