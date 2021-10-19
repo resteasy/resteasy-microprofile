@@ -53,7 +53,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.engines.vertx.VertxClientHttpEngine;
 import org.jboss.resteasy.microprofile.client.BuilderResolver;
-import org.jboss.resteasy.microprofile.client.RestClientBuilderImpl;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HeaderPropagator;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloClient;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloResource;
@@ -93,7 +92,8 @@ public class RestClientProxyTest {
 
     @Test
     public void testHTTP2() {
-        RestClientBuilderImpl builder = (RestClientBuilderImpl) RestClientBuilder.newBuilder().baseUri(URI.create("https://nghttp2.org:443/"));
+        RestClientBuilder builder = RestClientBuilder.newBuilder().baseUri(URI.create("https://nghttp2.org:443/"));
+
         Vertx vertx = Vertx.vertx();
 
         HttpClientOptions options = new HttpClientOptions();
@@ -101,7 +101,10 @@ public class RestClientProxyTest {
         options.setProtocolVersion(HttpVersion.HTTP_2);
         options.setUseAlpn(true);
 
-        NgHTTP2 client = builder.build(NgHTTP2.class, new VertxClientHttpEngine(vertx, options));
+        builder.property("org.jboss.resteasy.http.client.engine", new VertxClientHttpEngine(vertx, options));
+
+        NgHTTP2 client = builder.build(NgHTTP2.class);
+
         final String resp = client.get();
         assertTrue(resp.contains("nghttp2.org"));
     }

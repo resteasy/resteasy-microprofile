@@ -229,6 +229,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     }
 
     public <T> T build(Class<T> aClass, ClientHttpEngine httpEngine) throws IllegalStateException, RestClientDefinitionException {
+
         RestClientListeners.get().forEach(listener -> listener.onNewClient(aClass, this));
 
         // Interface validity
@@ -333,15 +334,20 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
 
         if (httpEngine != null) {
-
             resteasyClientBuilder.httpEngine(httpEngine);
+        } else {
+            Object propEngine = getConfiguration().getProperty("org.jboss.resteasy.http.client.engine");
 
-        } else if (useURLConnection()) {
-            resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder)
-                    .build());
-            resteasyClientBuilder.sslContext(null);
-            resteasyClientBuilder.trustStore(null);
-            resteasyClientBuilder.keyStore(null, "");
+            if (propEngine != null) {
+                resteasyClientBuilder.httpEngine((ClientHttpEngine) propEngine);
+            }
+            else if (useURLConnection()) {
+                resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder)
+                        .build());
+                resteasyClientBuilder.sslContext(null);
+                resteasyClientBuilder.trustStore(null);
+                resteasyClientBuilder.keyStore(null, "");
+            }
         }
 
         client = resteasyClientBuilder
@@ -369,7 +375,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
-
        return build(aClass, null);
     }
 
