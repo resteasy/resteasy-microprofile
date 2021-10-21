@@ -46,6 +46,10 @@ import javax.ws.rs.ext.Provider;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpVersion;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -91,7 +95,7 @@ public class RestClientProxyTest {
     }
 
     @Test
-    public void testHTTP2() {
+    public void testHTTP2ByProps() {
         RestClientBuilder builder = RestClientBuilder.newBuilder().baseUri(URI.create("https://nghttp2.org/"));
 
         Vertx vertx = Vertx.vertx();
@@ -102,6 +106,16 @@ public class RestClientProxyTest {
         options.setUseAlpn(true);
 
         builder.property("org.jboss.resteasy.http.client.engine", new VertxClientHttpEngine(vertx, options));
+
+        NgHTTP2 client = builder.build(NgHTTP2.class);
+
+        final String resp = client.get();
+        assertTrue(resp.contains("nghttp2.org"));
+    }
+
+    @Test
+    public void testHTTP2ByMPConfig() throws Exception {
+        RestClientBuilder builder = RestClientBuilder.newBuilder().baseUri(URI.create("https://nghttp2.org/"));
 
         NgHTTP2 client = builder.build(NgHTTP2.class);
 

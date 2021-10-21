@@ -56,6 +56,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.swing.text.html.Option;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
@@ -67,6 +68,8 @@ import javax.ws.rs.ext.ParamConverterProvider;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.config.spi.Converter;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.RestClientDefinitionException;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
@@ -343,14 +346,48 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
             if (propEngine instanceof ClientHttpEngine) {
                 resteasyClientBuilder.httpEngine((ClientHttpEngine) propEngine);
+            } else {
+                Class httpEngineClazz = null;
+                try {
+                    httpEngineClazz = ClassLoader.getSystemClassLoader().loadClass("org.jboss.resteasy.microprofile.test.client.integration.MPClientHttpEngineConverter");
+                } catch (ClassNotFoundException e) {
+                    // ok
+                }
+
+                Optional<ClientHttpEngine> optConfigEngine = Optional.empty();
+
+                if (httpEngineClazz == null) {
+                    optConfigEngine = ConfigProviderResolver.instance()
+                            .getBuilder()
+                            .addDefaultSources()
+                            .addDiscoveredConverters()
+                            .build()
+                            .getOptionalValue("org.jboss.resteasy.http.client.engine", ClientHttpEngine.class);
+                } else {
+                    try {
+                        optConfigEngine = ConfigProviderResolver.instance()
+                                .getBuilder()
+                                .addDefaultSources()
+                                .addDiscoveredConverters()
+                                .withConverter(ClientHttpEngine.class, 100, (Converter<ClientHttpEngine>) httpEngineClazz.getDeclaredConstructor().newInstance())
+                                .build()
+                                .getOptionalValue("org.jboss.resteasy.http.client.engine", ClientHttpEngine.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+               if (optConfigEngine.isPresent()) {
+                   resteasyClientBuilder.httpEngine(optConfigEngine.get());
+               } else if (useURLConnection()) {
+                    resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder)
+                            .build());
+                    resteasyClientBuilder.sslContext(null);
+                    resteasyClientBuilder.trustStore(null);
+                    resteasyClientBuilder.keyStore(null, "");
+                }
             }
-            else if (useURLConnection()) {
-                resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder)
-                        .build());
-                resteasyClientBuilder.sslContext(null);
-                resteasyClientBuilder.trustStore(null);
-                resteasyClientBuilder.keyStore(null, "");
-            }
+
+
         }
         if (!invocationInterceptorFactories.isEmpty()) {
             resteasyClientBuilder.register(new AsyncInvocationInterceptorThreadContext(invocationInterceptorFactories));
