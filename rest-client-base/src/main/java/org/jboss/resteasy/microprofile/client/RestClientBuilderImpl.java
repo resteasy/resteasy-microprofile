@@ -356,12 +356,16 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 Optional<ClientHttpEngine> optConfigEngine = Optional.empty();
 
                 if (httpEngineClazz == null) {
-                    optConfigEngine = ConfigProviderResolver.instance()
-                            .getBuilder()
-                            .addDefaultSources()
-                            .addDiscoveredConverters()
-                            .build()
-                            .getOptionalValue("org.jboss.resteasy.http.client.engine", ClientHttpEngine.class);
+                    try {
+                        optConfigEngine = ConfigProviderResolver.instance()
+                                .getBuilder()
+                                .addDefaultSources()
+                                .addDiscoveredConverters()
+                                .build()
+                                .getOptionalValue("org.jboss.resteasy.http.client.engine", ClientHttpEngine.class);
+                    } catch (Exception e) {
+                        // nothing to do
+                        }
                 } else {
                     try {
                         optConfigEngine = ConfigProviderResolver.instance()
@@ -372,7 +376,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                                 .build()
                                 .getOptionalValue("org.jboss.resteasy.http.client.engine", ClientHttpEngine.class);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        // nothing to do
                     }
                 }
                if (optConfigEngine.isPresent()) {
