@@ -1,4 +1,4 @@
-package org.jboss.resteasy.microprofile.test.client.integration;
+package org.jboss.resteasy.microprofile.client.http.engine;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
@@ -24,8 +24,7 @@ public class MPClientHttpEngineConverter implements Converter<ClientHttpEngine> 
             return new VertxClientHttpEngine(vertx, options);
         }
 
-        // todo: support other engine options.
-        return null;
+        throw new IllegalArgumentException("Unsupported HTTP Engine!");
     }
 
 }
