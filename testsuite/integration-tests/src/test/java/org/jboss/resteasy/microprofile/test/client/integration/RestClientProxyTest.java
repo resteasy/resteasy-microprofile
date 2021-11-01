@@ -91,25 +91,6 @@ public class RestClientProxyTest {
     }
 
     @Test
-    public void testHTTP2() {
-        RestClientBuilder builder = RestClientBuilder.newBuilder().baseUri(URI.create("https://nghttp2.org/"));
-
-        Vertx vertx = Vertx.vertx();
-
-        HttpClientOptions options = new HttpClientOptions();
-        options.setSsl(true);
-        options.setProtocolVersion(HttpVersion.HTTP_2);
-        options.setUseAlpn(true);
-
-        builder.property("org.jboss.resteasy.http.client.engine", new VertxClientHttpEngine(vertx, options));
-
-        NgHTTP2 client = builder.build(NgHTTP2.class);
-
-        final String resp = client.get();
-        assertTrue(resp.contains("nghttp2.org"));
-    }
-
-    @Test
     public void testHTTP2ByRegistration() {
         RestClientBuilder builder = RestClientBuilder.newBuilder().baseUri(URI.create("https://nghttp2.org/"));
 
