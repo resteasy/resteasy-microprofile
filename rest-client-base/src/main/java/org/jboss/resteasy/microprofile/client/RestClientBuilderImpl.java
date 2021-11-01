@@ -339,12 +339,14 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         if (httpEngine != null) {
             resteasyClientBuilder.httpEngine(httpEngine);
         } else {
-            Object propEngine = getConfiguration().getProperty("org.jboss.resteasy.http.client.engine");
-
-            if (propEngine instanceof ClientHttpEngine) {
-                resteasyClientBuilder.httpEngine((ClientHttpEngine) propEngine);
+            boolean registerEngine = false;
+            for (Object p : getBuilderDelegate().getProviderFactory().getProviderInstances()) {
+                if (p instanceof ClientHttpEngine) {
+                    resteasyClientBuilder.httpEngine((ClientHttpEngine) p);
+                    registerEngine = true;
+                }
             }
-            else if (useURLConnection()) {
+            if (!registerEngine && useURLConnection()) {
                 resteasyClientBuilder.httpEngine(new URLConnectionClientEngineBuilder().resteasyClientBuilder(resteasyClientBuilder)
                         .build());
                 resteasyClientBuilder.sslContext(null);
