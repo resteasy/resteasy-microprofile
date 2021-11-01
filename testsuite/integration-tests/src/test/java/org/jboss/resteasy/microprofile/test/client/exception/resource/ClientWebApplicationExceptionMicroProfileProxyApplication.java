@@ -21,6 +21,7 @@ package org.jboss.resteasy.microprofile.test.client.exception.resource;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 

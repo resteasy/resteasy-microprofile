@@ -19,7 +19,6 @@
 
 package org.jboss.resteasy.microprofile.client;
 
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -36,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
@@ -68,9 +68,9 @@ public class ProxyInvocationHandler implements InvocationHandler {
     private final AtomicBoolean closed;
 
     public ProxyInvocationHandler(final Class<?> restClientInterface,
-                                  final Object target,
-                                  final Set<Object> providerInstances,
-                                  final ResteasyClient client, final BeanManager beanManager) {
+            final Object target,
+            final Set<Object> providerInstances,
+            final ResteasyClient client, final BeanManager beanManager) {
         this.target = target;
         this.providerInstances = providerInstances;
         this.client = client;
@@ -114,7 +114,8 @@ public class ProxyInvocationHandler implements InvocationHandler {
                     }
 
                     if (parameterAnnotations[index].length > 0) { // does a parameter converter apply?
-                        ParamConverter<?> converter = ((ParamConverterProvider) p).getConverter(arg.getClass(), null, parameterAnnotations[index]);
+                        ParamConverter<?> converter = ((ParamConverterProvider) p).getConverter(arg.getClass(), null,
+                                parameterAnnotations[index]);
                         if (converter != null) {
                             Type[] genericTypes = getGenericTypes(converter.getClass());
                             if (genericTypes.length == 1) {
@@ -243,7 +244,8 @@ public class ProxyInvocationHandler implements InvocationHandler {
             CDI<Object> current = CDI.current();
             return current != null ? current.getBeanManager() : null;
         } catch (IllegalStateException e) {
-            LOGGER.warnf("CDI container is not available - interceptor bindings declared on %s will be ignored", restClientInterface.getSimpleName());
+            LOGGER.warnf("CDI container is not available - interceptor bindings declared on %s will be ignored",
+                    restClientInterface.getSimpleName());
             return null;
         }
     }
@@ -267,12 +269,14 @@ public class ProxyInvocationHandler implements InvocationHandler {
 
                 Annotation[] interceptorBindings = merge(methodLevelBindings, classLevelBindings);
 
-                List<Interceptor<?>> interceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, interceptorBindings);
+                List<Interceptor<?>> interceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE,
+                        interceptorBindings);
                 if (!interceptors.isEmpty()) {
                     List<InvocationContextImpl.InterceptorInvocation> chain = new ArrayList<>();
                     for (Interceptor<?> interceptor : interceptors) {
                         chain.add(new InvocationContextImpl.InterceptorInvocation(interceptor,
-                                interceptorInstances.computeIfAbsent(interceptor, i -> beanManager.getReference(i, i.getBeanClass(), creationalContext))));
+                                interceptorInstances.computeIfAbsent(interceptor,
+                                        i -> beanManager.getReference(i, i.getBeanClass(), creationalContext))));
                     }
                     chains.put(method, chain);
                 }

@@ -22,6 +22,7 @@ package org.jboss.resteasy.microprofile.test.client.integration;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
@@ -102,8 +103,8 @@ public class FollowRedirectMPConfigPropertyTest {
     }
 
     private void testRedirected(final FollowRedirectsServiceIntf followRedirectsServiceIntf,
-                                final Response.Status expectedStatus,
-                                final String expectedText) {
+            final Response.Status expectedStatus,
+            final String expectedText) {
         try (Response response = followRedirectsServiceIntf.redirectPing()) {
             Assert.assertEquals(expectedStatus.getStatusCode(), response.getStatus());
             Assert.assertEquals(expectedText, response.readEntity(String.class));

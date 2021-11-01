@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
+
 import javax.annotation.Priority;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -60,20 +61,18 @@ public class RestClientProviderPriorityTest {
 
     @Test
     public void helloNaruto() throws Exception {
-        HelloClient helloClient =
-                RestClientBuilder.newBuilder()
-                        .baseUri(TestEnvironment.generateUri(url, "test-app"))
-                        .build(HelloClient.class);
+        HelloClient helloClient = RestClientBuilder.newBuilder()
+                .baseUri(TestEnvironment.generateUri(url, "test-app"))
+                .build(HelloClient.class);
 
         assertEquals("Hello Naruto", helloClient.hello("Naruto"));
     }
 
     @Test
     public void helloBar() throws Exception {
-        HelloClient helloClient =
-                RestClientBuilder.newBuilder()
-                        .baseUri(TestEnvironment.generateUri(url, "test-app"))
-                        .build(HelloClient.class);
+        HelloClient helloClient = RestClientBuilder.newBuilder()
+                .baseUri(TestEnvironment.generateUri(url, "test-app"))
+                .build(HelloClient.class);
 
         assertEquals("Hello Bar", helloClient.hello(null));
     }
@@ -81,7 +80,8 @@ public class RestClientProviderPriorityTest {
     @Path("/")
     @Produces("text/plain")
     // Bar should execute first due to lower priority 1 vs Integer.MAX
-    @RegisterProviders({@RegisterProvider(HelloFooProvider.class), @RegisterProvider(value = HelloBarProvider.class, priority = 1)})
+    @RegisterProviders({ @RegisterProvider(HelloFooProvider.class),
+            @RegisterProvider(value = HelloBarProvider.class, priority = 1) })
     public interface HelloClient {
         @GET
         @Path("/hello")

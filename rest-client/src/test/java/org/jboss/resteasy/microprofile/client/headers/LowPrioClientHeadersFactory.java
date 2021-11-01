@@ -19,7 +19,6 @@
 
 package org.jboss.resteasy.microprofile.client.headers;
 
-
 import java.util.Arrays;
 
 import org.jboss.resteasy.microprofile.client.header.HeaderFiller;
@@ -33,7 +32,7 @@ public class LowPrioClientHeadersFactory implements HeaderFillerFactory {
 
     @Override
     public HeaderFiller createFiller(String value, String headerName, boolean required, Class<?> interfaceClass,
-                                     Object clientProxy) {
+            Object clientProxy) {
         return () -> Arrays.asList("low", "prio");
     }
 }

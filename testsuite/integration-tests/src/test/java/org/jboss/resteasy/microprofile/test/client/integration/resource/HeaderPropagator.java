@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.client.integration.resource;
 
 import java.util.List;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -30,7 +31,7 @@ import org.junit.Assert;
 public class HeaderPropagator implements ClientHeadersFactory {
     @Override
     public MultivaluedMap<String, String> update(MultivaluedMap<String, String> containerRequestHeaders,
-                                                 MultivaluedMap<String, String> clientRequestHeaders) {
+            MultivaluedMap<String, String> clientRequestHeaders) {
         Assert.assertNull(ResteasyContext.getContextData(HttpHeaders.class));
         List<String> prop = containerRequestHeaders.get("X-Propagated");
         if (prop != null)

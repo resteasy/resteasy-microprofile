@@ -37,15 +37,13 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.Provider;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.http.HttpVersion;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -64,6 +62,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.http.HttpVersion;
+
 @RunWith(Arquillian.class)
 @RunAsClient
 public class RestClientProxyTest {
@@ -81,8 +83,7 @@ public class RestClientProxyTest {
                         HeaderPropagator.class,
                         TestParamConverter.class,
                         TestParamConverterProvider.class,
-                        NgHTTP2.class
-                )
+                        NgHTTP2.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
@@ -290,7 +291,7 @@ public class RestClientProxyTest {
         @Override
         @SuppressWarnings("unchecked")
         public <T> ParamConverter<T> getConverter(final Class<T> rawType, final Type genericType,
-                                                  final Annotation[] annotations) {
+                final Annotation[] annotations) {
             if (Objects.equals(rawType, CharSequence.class)) {
                 return (ParamConverter<T>) converter;
             }

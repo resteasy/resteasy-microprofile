@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.core.EntityTag;
@@ -72,7 +73,6 @@ public class PartialResponse extends Response implements Serializable {
         return ex;
     }
 
-
     @SuppressWarnings("unchecked")
     @Override
     public synchronized <T> T readEntity(Class<T> entityType) {
@@ -93,7 +93,6 @@ public class PartialResponse extends Response implements Serializable {
             throw new WebApplicationException("Failed to read entity", e);
         }
     }
-
 
     @Override
     public <T> T readEntity(GenericType<T> entityType) {
@@ -206,7 +205,7 @@ public class PartialResponse extends Response implements Serializable {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public MultivaluedMap<String, Object> getMetadata() {
         return (MultivaluedMap) responseContext.getHeaders();
     }

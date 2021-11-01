@@ -21,6 +21,7 @@ package org.jboss.resteasy.microprofile.test.config.resource;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

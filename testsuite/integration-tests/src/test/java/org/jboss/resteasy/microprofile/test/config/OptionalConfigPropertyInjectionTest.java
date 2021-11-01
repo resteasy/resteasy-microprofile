@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.config;
 
 import java.net.URL;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
@@ -72,21 +73,23 @@ public class OptionalConfigPropertyInjectionTest {
 
     /**
      * @tpTestDetails This test checks injection of optional config properties when:
-     * - optional property does not exist
-     * - optional property exists
+     *                - optional property does not exist
+     *                - optional property exists
      * @tpSince RESTEasy 4.6.0
      */
     @Test
     public void testOptionalPropertiesInjection() throws Exception {
 
         String missingOptionalPropertyValue = client.target(
-                        TestEnvironment.generateUri(url, "test-app", OptionalConfigPropertyInjectionResource.MISSING_OPTIONAL_PROPERTY_PATH))
+                TestEnvironment.generateUri(url, "test-app",
+                        OptionalConfigPropertyInjectionResource.MISSING_OPTIONAL_PROPERTY_PATH))
                 .request(MediaType.TEXT_PLAIN_TYPE)
                 .get(String.class);
         Assert.assertNull(missingOptionalPropertyValue);
 
         String presentOptionalPropertyValue = client.target(
-                        TestEnvironment.generateUri(url, "test-app", OptionalConfigPropertyInjectionResource.PRESENT_OPTIONAL_PROPERTY_PATH))
+                TestEnvironment.generateUri(url, "test-app",
+                        OptionalConfigPropertyInjectionResource.PRESENT_OPTIONAL_PROPERTY_PATH))
                 .request(MediaType.TEXT_PLAIN_TYPE)
                 .get(String.class);
         Assert.assertEquals(OptionalConfigPropertyInjectionResource.OPTIONAL_PROPERTY_VALUE, presentOptionalPropertyValue);

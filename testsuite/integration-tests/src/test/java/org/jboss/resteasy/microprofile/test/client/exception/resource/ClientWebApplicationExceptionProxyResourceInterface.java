@@ -64,7 +64,8 @@ public interface ClientWebApplicationExceptionProxyResourceInterface {
 
     /**
      * Uses a Client or proxy to call oldException() to get an HTTP response derived from a WebApplicationException.
-     * Based on that response, the Client or proxy will throw either a WebApplicationException or ResteasyWebApplicationException,
+     * Based on that response, the Client or proxy will throw either a WebApplicationException or
+     * ResteasyWebApplicationException,
      * depending on the value of ResteasyContextParameters.RESTEASY_ORIGINAL_WEBAPPLICATIONEXCEPTION_BEHAVIOR.
      *
      * @param i determines element of oldExceptions to be thrown by oldException()
@@ -77,7 +78,8 @@ public interface ClientWebApplicationExceptionProxyResourceInterface {
 
     /**
      * Uses a Client or proxy to call newException() to get an HTTP response derived from a ResteasyWebApplicationException.
-     * Based on that response, the Client or proxy will throw either a WebApplicationException or ResteasyWebApplicationException,
+     * Based on that response, the Client or proxy will throw either a WebApplicationException or
+     * ResteasyWebApplicationException,
      * depending on the value of ResteasyContextParameters.RESTEASY_ORIGINAL_WEBAPPLICATIONEXCEPTION_BEHAVIOR.
      *
      * @param i determines element of newExceptions to be thrown by newException()

@@ -34,7 +34,6 @@ public class FollowRedirectsResource {
         return Response.ok("OK").build();
     }
 
-
     @GET
     @Path("redirectedDirectResponse")
     public String redirectedDirectResponse() {

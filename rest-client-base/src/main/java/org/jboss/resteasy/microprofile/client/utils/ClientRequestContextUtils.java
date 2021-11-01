@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.client.utils;
 
 import java.lang.reflect.Method;
+
 import javax.ws.rs.client.ClientRequestContext;
 
 import org.jboss.resteasy.client.jaxrs.internal.ClientInvocation;
@@ -39,7 +40,8 @@ public class ClientRequestContextUtils {
      */
     public static Method getMethod(ClientRequestContext requestContext) {
         if (requestContext instanceof ClientRequestContextImpl == false) {
-            throw new RuntimeException("Failed to get ClientInvocation from request context. Is RestEasy client used underneath?");
+            throw new RuntimeException(
+                    "Failed to get ClientInvocation from request context. Is RestEasy client used underneath?");
         }
         ClientInvocation invocation = ((ClientRequestContextImpl) requestContext).getInvocation();
         return invocation.getClientInvoker().getMethod();
@@ -54,7 +56,8 @@ public class ClientRequestContextUtils {
      */
     public static Class<?> getDeclaringClass(ClientRequestContext requestContext) {
         if (requestContext instanceof ClientRequestContextImpl == false) {
-            throw new RuntimeException("Failed to get ClientInvocation from request context. Is RestEasy client used underneath?");
+            throw new RuntimeException(
+                    "Failed to get ClientInvocation from request context. Is RestEasy client used underneath?");
         }
         ClientInvocation invocation = ((ClientRequestContextImpl) requestContext).getInvocation();
         return invocation.getClientInvoker().getDeclaring();

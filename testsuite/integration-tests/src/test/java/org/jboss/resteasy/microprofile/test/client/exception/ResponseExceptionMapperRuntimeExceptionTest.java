@@ -22,6 +22,7 @@ package org.jboss.resteasy.microprofile.test.client.exception;
 import static org.junit.Assert.fail;
 
 import java.net.URL;
+
 import javax.ws.rs.WebApplicationException;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
@@ -99,6 +100,5 @@ public class ResponseExceptionMapperRuntimeExceptionTest {
             Assert.assertEquals("Test error occurred", str);
         }
     }
-
 
 }

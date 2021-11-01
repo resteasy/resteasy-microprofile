@@ -26,17 +26,18 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.Permission;
 
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Serializer;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
- * Taken from:
- * https://github.com/wildfly/wildfly-core/blob/master/testsuite/shared/src/main/java/org/jboss/as/test/shared/PermissionUtils.java
+ *         Taken from:
+ *         https://github.com/wildfly/wildfly-core/blob/master/testsuite/shared/src/main/java/org/jboss/as/test/shared/PermissionUtils.java
  */
 public final class PermissionUtil {
     public static Asset createPermissionsXmlAsset(Permission... permissions) {

@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.client.integration.resource;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
