@@ -26,6 +26,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -71,7 +72,8 @@ public class ClientHeaderProviders {
     /**
      * Register, in a static map, {@link ClientHeaderProvider}`s for the given class and all of its methods
      *
-     * @param clientClass a class to scan for {@link org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam} and {@link RegisterClientHeaders}
+     * @param clientClass a class to scan for {@link org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam} and
+     *                    {@link RegisterClientHeaders}
      * @param clientProxy proxy of the clientClass, used to handle the default methods
      *
      * @deprecated use {@link #registerForClass(Class, Object, BeanManager)}
@@ -84,7 +86,8 @@ public class ClientHeaderProviders {
     /**
      * Register, in a static map, {@link ClientHeaderProvider}`s for the given class and all of its methods
      *
-     * @param clientClass a class to scan for {@link org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam} and {@link RegisterClientHeaders}
+     * @param clientClass a class to scan for {@link org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam} and
+     *                    {@link RegisterClientHeaders}
      * @param clientProxy proxy of the clientClass, used to handle the default methods
      * @param beanManager the bean manager used to construct CDI beans
      */
@@ -104,26 +107,25 @@ public class ClientHeaderProviders {
     }
 
     private static Optional<ClientHeadersFactory> getCustomHeadersFactory(RegisterClientHeaders annotation,
-                                                                          Class<?> source, BeanManager beanManager) {
+            Class<?> source, BeanManager beanManager) {
         Class<? extends ClientHeadersFactory> factoryClass = annotation.value();
         try {
             return Optional.of(construct(factoryClass, beanManager));
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RestClientDefinitionException(
-                    "Failed to instantiate " + factoryClass.getCanonicalName() + ", the client header factory for " + source.getCanonicalName(),
-                    e
-            );
+                    "Failed to instantiate " + factoryClass.getCanonicalName() + ", the client header factory for "
+                            + source.getCanonicalName(),
+                    e);
         }
     }
 
     private static void registerForMethod(Method method, Object clientProxy) {
         ClientHeaderProvider.forMethod(method, clientProxy, fillerFactory).ifPresent(
-                provider -> providersForMethod.put(method, provider)
-        );
+                provider -> providersForMethod.put(method, provider));
     }
 
     private static ClientHeadersFactory construct(final Class<? extends ClientHeadersFactory> factory,
-                                                  final BeanManager manager)
+            final BeanManager manager)
             throws IllegalAccessException, InstantiationException {
         if (manager != null) {
             Set<Bean<?>> beans = manager.getBeans(factory);

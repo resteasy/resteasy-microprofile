@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.client.impl;
 
 import java.net.URI;
+
 import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
@@ -40,8 +41,8 @@ public class MpUriBuilder extends ResteasyUriBuilderImpl {
      * set properly.
      */
     public MpUriBuilder(final String host, final String scheme, final int port,
-                        final String userInfo, final String path, final String query,
-                        final String fragment, final String ssp, final String authority) {
+            final String userInfo, final String path, final String query,
+            final String fragment, final String ssp, final String authority) {
         super(host, scheme, port, userInfo, path, query, fragment, ssp, authority);
     }
 

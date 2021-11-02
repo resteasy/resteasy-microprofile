@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.client.integration;
 
 import java.net.URL;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;

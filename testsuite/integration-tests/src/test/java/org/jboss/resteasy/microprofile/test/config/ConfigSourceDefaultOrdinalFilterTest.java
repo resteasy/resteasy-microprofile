@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.PropertyPermission;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
@@ -69,8 +70,7 @@ public class ConfigSourceDefaultOrdinalFilterTest {
                 .setWebXML(ConfigSourceDefaultOrdinalFilterTest.class.getPackage(), "web_default_ordinal_filter.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsManifestResource(PermissionUtil.createPermissionsXmlAsset(
-                        new PropertyPermission("system", "write")
-                ), "permissions.xml");
+                        new PropertyPermission("system", "write")), "permissions.xml");
     }
 
     @BeforeClass
@@ -120,9 +120,11 @@ public class ConfigSourceDefaultOrdinalFilterTest {
         Integer filterConfigSourceDefaultOrdinal = 50;
         Integer servletContextConfigSourceDefaultOrdinal = 40;
 
-        Assert.assertEquals(filterConfigSourceDefaultOrdinal, builtInConfigSourcesOrdinal.get(FilterConfigSource.class.getName()));
-        Assert.assertEquals(servletContextConfigSourceDefaultOrdinal, builtInConfigSourcesOrdinal.get(ServletContextConfigSource.class
-                .getName()));
+        Assert.assertEquals(filterConfigSourceDefaultOrdinal,
+                builtInConfigSourcesOrdinal.get(FilterConfigSource.class.getName()));
+        Assert.assertEquals(servletContextConfigSourceDefaultOrdinal,
+                builtInConfigSourcesOrdinal.get(ServletContextConfigSource.class
+                        .getName()));
     }
 
 }

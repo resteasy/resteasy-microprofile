@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.PropertyPermission;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
@@ -66,11 +67,11 @@ public class ConfigSourceOverrideOrdinalServletContextListenerTest {
     public static Archive<?> deploy() {
         return TestEnvironment.createWar(ConfigSourceOverrideOrdinalServletContextListenerTest.class)
                 .addClasses(TestConfigApplication.class, MicroProfileConfigFilter.class, MicroProfileConfigResource.class)
-                .setWebXML(ConfigSourceOverrideOrdinalServletContextListenerTest.class.getPackage(), "web_override_ordinal_servlet_context_listener.xml")
+                .setWebXML(ConfigSourceOverrideOrdinalServletContextListenerTest.class.getPackage(),
+                        "web_override_ordinal_servlet_context_listener.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsManifestResource(PermissionUtil.createPermissionsXmlAsset(
-                        new PropertyPermission("system", "write")
-                ), "permissions.xml");
+                        new PropertyPermission("system", "write")), "permissions.xml");
     }
 
     @BeforeClass
@@ -122,8 +123,9 @@ public class ConfigSourceOverrideOrdinalServletContextListenerTest {
 
         Assert.assertEquals(servletConfigSourceDefaultOrdinal, builtInConfigSourcesOrdinal.get(ServletConfigSource.class
                 .getName()));
-        Assert.assertEquals(servletContextConfigSourceDefaultOrdinal, builtInConfigSourcesOrdinal.get(ServletContextConfigSource.class
-                .getName()));
+        Assert.assertEquals(servletContextConfigSourceDefaultOrdinal,
+                builtInConfigSourcesOrdinal.get(ServletContextConfigSource.class
+                        .getName()));
     }
 
 }

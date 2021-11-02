@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.eclipse.microprofile.rest.client.RestClientDefinitionException;
@@ -36,7 +37,7 @@ import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 public class ClientHeaderProvider {
 
     static Optional<ClientHeaderProvider> forMethod(final Method method, final Object clientProxy,
-                                                    HeaderFillerFactory fillerFactory) {
+            HeaderFillerFactory fillerFactory) {
         Class<?> declaringClass = method.getDeclaringClass();
 
         ClientHeaderParam[] methodAnnotations = method.getAnnotationsByType(ClientHeaderParam.class);
@@ -49,14 +50,16 @@ public class ClientHeaderProvider {
                 throw new RestClientDefinitionException("Duplicate " + ClientHeaderParam.class.getSimpleName() +
                         " annotation definitions found on " + method);
             }
-            generators.put(annotation.name(), new ClientHeaderGenerator(annotation, declaringClass, clientProxy, fillerFactory));
+            generators.put(annotation.name(),
+                    new ClientHeaderGenerator(annotation, declaringClass, clientProxy, fillerFactory));
         }
 
         checkForDuplicateClassLevelAnnotations(classAnnotations, declaringClass);
 
         Stream.of(classAnnotations)
                 .filter(a -> !generators.containsKey(a.name()))
-                .forEach(a -> generators.put(a.name(), new ClientHeaderGenerator(a, declaringClass, clientProxy, fillerFactory)));
+                .forEach(a -> generators.put(a.name(),
+                        new ClientHeaderGenerator(a, declaringClass, clientProxy, fillerFactory)));
 
         return generators.isEmpty()
                 ? Optional.empty()
@@ -64,7 +67,7 @@ public class ClientHeaderProvider {
     }
 
     private static void checkForDuplicateClassLevelAnnotations(final ClientHeaderParam[] classAnnotations,
-                                                               final Class<?> declaringClass) {
+            final Class<?> declaringClass) {
         Set<String> headerNames = new HashSet<>();
         Arrays.stream(classAnnotations)
                 .map(ClientHeaderParam::name)
@@ -75,8 +78,7 @@ public class ClientHeaderProvider {
                                         "Duplicate ClientHeaderParam definition for header name " + name + " on class "
                                                 + declaringClass.getCanonicalName());
                             }
-                        }
-                );
+                        });
     }
 
     private final Collection<ClientHeaderGenerator> generators;

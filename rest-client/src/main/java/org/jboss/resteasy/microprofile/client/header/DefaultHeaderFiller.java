@@ -32,7 +32,8 @@ import java.util.List;
 import org.jboss.logging.Logger;
 
 /**
- * Generates a value for dynamically computed headers (using {someMethod} as value in {@link org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam})
+ * Generates a value for dynamically computed headers (using {someMethod} as value in
+ * {@link org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam})
  */
 class DefaultHeaderFiller implements HeaderFiller {
 
@@ -45,21 +46,19 @@ class DefaultHeaderFiller implements HeaderFiller {
     private final boolean withParam;
 
     DefaultHeaderFiller(final String methodSpecifierString,
-                        final String headerName,
-                        final boolean required,
-                        final Class<?> interfaceClass,
-                        final Object clientProxy) {
+            final String headerName,
+            final boolean required,
+            final Class<?> interfaceClass,
+            final Object clientProxy) {
         this.required = required;
         this.headerName = headerName;
 
-        String methodSpecifier =
-                methodSpecifierString.substring(1, methodSpecifierString.length() - 1);
+        String methodSpecifier = methodSpecifierString.substring(1, methodSpecifierString.length() - 1);
         method = resolveMethod(methodSpecifier, interfaceClass, headerName);
 
         methodHandle = method.isDefault() ? createMethodHandle(method, clientProxy) : null;
         withParam = method.getParameterCount() == 1;
     }
-
 
     public List<String> generateValues() {
         try {

@@ -60,11 +60,11 @@ public class JsonpMPService {
     @Consumes("application/json")
     public JsonObject object(JsonObject obj) {
         Assert.assertTrue("The field 'name' didn't propagated correctly from the request", obj.containsKey("name"));
-        Assert.assertEquals("The value of field 'name' didn't propagated correctly from the request"
-                , obj.getJsonString("name").getString(), "Bill");
+        Assert.assertEquals("The value of field 'name' didn't propagated correctly from the request",
+                obj.getJsonString("name").getString(), "Bill");
         if (obj.containsKey("id")) {
-            Assert.assertEquals("The value of field 'id' didn't propagated correctly from the request"
-                    , obj.getJsonNumber("id").longValue(), 10001);
+            Assert.assertEquals("The value of field 'id' didn't propagated correctly from the request",
+                    obj.getJsonNumber("id").longValue(), 10001);
         }
         return obj;
     }
@@ -80,7 +80,6 @@ public class JsonpMPService {
                 obj.getJsonString("name").getString(), "Bill");
         return obj;
     }
-
 
     @Path("number")
     @POST

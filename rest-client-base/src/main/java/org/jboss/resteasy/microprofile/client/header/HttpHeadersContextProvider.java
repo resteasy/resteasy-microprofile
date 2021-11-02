@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
@@ -60,9 +61,7 @@ public class HttpHeadersContextProvider implements HttpHeaders {
         MultivaluedMap<String, Object> headers = context.getHeaders();
         MultivaluedMap<String, String> result = new MultivaluedHashMap<>();
         headers.forEach(
-                (key, values) ->
-                        result.put(key, castToListOfStrings(values))
-        );
+                (key, values) -> result.put(key, castToListOfStrings(values)));
         return result;
     }
 

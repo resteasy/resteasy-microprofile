@@ -37,7 +37,8 @@ class JdkSpecific {
         try {
             final Class<?> proxyType = method.getDeclaringClass();
             return MethodHandles.lookup()
-                    .findSpecial(proxyType, method.getName(), MethodType.methodType(method.getReturnType(), method.getParameterTypes()), proxyType)
+                    .findSpecial(proxyType, method.getName(),
+                            MethodType.methodType(method.getReturnType(), method.getParameterTypes()), proxyType)
                     .bindTo(clientProxy);
         } catch (IllegalAccessException | NoSuchMethodException e) {
             throw new RestClientDefinitionException("Failed to generate method handle for " + method, e);

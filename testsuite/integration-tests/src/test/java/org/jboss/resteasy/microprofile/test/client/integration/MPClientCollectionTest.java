@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
@@ -50,7 +51,7 @@ import org.junit.runner.RunWith;
  * @tpSubChapter MicroProfile Config
  * @tpChapter Integration tests
  * @tpTestCaseDetails Show how to use injection to get access to the service.
- * Show configuration required for a GenericType return type.
+ *                    Show configuration required for a GenericType return type.
  * @tpSince RESTEasy 4.6.0
  */
 @RunWith(Arquillian.class)
@@ -69,11 +70,10 @@ public class MPClientCollectionTest {
     @Deployment(name = WAR_CLIENT)
     public static Archive<?> clientDeploy() throws IOException {
         return TestEnvironment.addConfigProperties(TestEnvironment.createWar(WAR_CLIENT)
-                        .addClasses(MPCollectionActivator.class, MPCollectionResource.class,
-                                MPCollectionServiceIntf.class),
+                .addClasses(MPCollectionActivator.class, MPCollectionResource.class,
+                        MPCollectionServiceIntf.class),
                 Collections.singletonMap(MPCollectionServiceIntf.class.getCanonicalName() + "/mp-rest/url", TestEnvironment
-                        .getHttpUrl() + WAR_SERVICE)
-        );
+                        .getHttpUrl() + WAR_SERVICE));
     }
 
     static Client client;

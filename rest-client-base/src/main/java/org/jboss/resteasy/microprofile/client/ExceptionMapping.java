@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
@@ -38,7 +39,7 @@ import org.jboss.resteasy.client.jaxrs.internal.ClientResponseContextImpl;
  * This implementation is a bit of a hack and dependent on Resteasy internals.
  * We throw a ResponseProcessingExceptoin that hides the Response object
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ExceptionMapping implements ClientResponseFilter {
     public static class HandlerException extends ResponseProcessingException {
         private static final Logger LOGGER = Logger.getLogger(HandlerException.class);
@@ -57,8 +58,10 @@ public class ExceptionMapping implements ClientResponseFilter {
             handled.bufferEntity();
             for (ResponseExceptionMapper mapper : candidates) {
                 Throwable exception = mapper.toThrowable(handled);
-                if (exception instanceof RuntimeException) throw (RuntimeException) exception;
-                if (exception instanceof Error) throw (Error) exception;
+                if (exception instanceof RuntimeException)
+                    throw (RuntimeException) exception;
+                if (exception instanceof Error)
+                    throw (Error) exception;
                 for (Class exc : method.getExceptionTypes()) {
                     if (exception != null && exc.isAssignableFrom(exception.getClass())) {
                         throw (Exception) exception;
@@ -91,11 +94,11 @@ public class ExceptionMapping implements ClientResponseFilter {
                 }
             }
         }
-        if (candidates.isEmpty()) return;
+        if (candidates.isEmpty())
+            return;
 
         candidates.sort(
-                (m1, m2) -> Integer.compare(m1.getPriority(), m2.getPriority())
-        );
+                (m1, m2) -> Integer.compare(m1.getPriority(), m2.getPriority()));
         throw new HandlerException(responseContext, candidates);
     }
 

@@ -28,7 +28,7 @@ import org.eclipse.microprofile.rest.client.RestClientDefinitionException;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * 2020-07-10
+ *         2020-07-10
  */
 public class HeaderUtils {
     private HeaderUtils() {
@@ -56,8 +56,8 @@ public class HeaderUtils {
      * @return method to be called
      */
     public static Method resolveMethod(String methodSpecifier,
-                                       Class<?> interfaceClass,
-                                       String headerName) {
+            Class<?> interfaceClass,
+            String headerName) {
         int lastDot = methodSpecifier.lastIndexOf('.');
         if (lastDot == methodSpecifier.length()) {
             throw new RestClientDefinitionException("Invalid string to specify method: " + methodSpecifier +

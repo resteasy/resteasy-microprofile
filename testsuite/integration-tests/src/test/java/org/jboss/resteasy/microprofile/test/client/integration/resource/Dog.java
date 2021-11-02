@@ -24,7 +24,7 @@ import javax.json.bind.annotation.JsonbPropertyOrder;
 /**
  * Created by tterem.
  */
-@JsonbPropertyOrder({"name", "sort"})
+@JsonbPropertyOrder({ "name", "sort" })
 public class Dog {
 
     private String name;

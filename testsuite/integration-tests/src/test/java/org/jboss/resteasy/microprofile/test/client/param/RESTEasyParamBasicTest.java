@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  * @tpSubChapter Parameters
  * @tpChapter Integration tests
  * @tpTestCaseDetails Test for RESTEasy param annotations (https://issues.jboss.org/browse/RESTEASY-1880)
- * Test logic is in the end-point in deployment.
+ *                    Test logic is in the end-point in deployment.
  * @tpSince RESTEasy 3.6
  */
 @RunWith(Arquillian.class)
@@ -51,21 +51,21 @@ public class RESTEasyParamBasicTest {
     @ArquillianResource
     private URL url;
 
-
     @Deployment
     public static Archive<?> deploySimpleResource() {
         return TestEnvironment.createWar(RESTEasyParamBasicTest.class)
                 .addClasses(
                         ProxyBeanParamResource.class,
                         Params.class,
-                        ProxyParameterAnotationsResource.class
-                );
+                        ProxyParameterAnotationsResource.class);
     }
 
     /**
-     * @tpTestDetails Basic check of new query parameters, matrix parameters, header parameters, cookie parameters and form parameters in proxy clients
-     * Test checks that RESTEasy can inject correct values to method attributes in proxy clients
-     * This test uses new annotations without any annotation value in the proxy, however the annotation values are used in the server side resource.
+     * @tpTestDetails Basic check of new query parameters, matrix parameters, header parameters, cookie parameters and form
+     *                parameters in proxy clients
+     *                Test checks that RESTEasy can inject correct values to method attributes in proxy clients
+     *                This test uses new annotations without any annotation value in the proxy, however the annotation values
+     *                are used in the server side resource.
      * @tpSince RESTEasy 4.0
      */
     @Test
@@ -86,8 +86,8 @@ public class RESTEasyParamBasicTest {
 
     /**
      * @tpTestDetails Basic check of the Resteasy Microprofile client with BeanParam.
-     * Test checks that Resteasy Microprofile client can inject correct values when BeanParam is used.
-     * This test uses new annotation only without any annotation value.
+     *                Test checks that Resteasy Microprofile client can inject correct values when BeanParam is used.
+     *                This test uses new annotation only without any annotation value.
      * @tpSince RESTEasy 3.7
      */
     @Test

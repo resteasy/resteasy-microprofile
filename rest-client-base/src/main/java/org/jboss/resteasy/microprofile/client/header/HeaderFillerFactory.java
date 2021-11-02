@@ -21,7 +21,7 @@ package org.jboss.resteasy.microprofile.client.header;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * 2020-07-10
+ *         2020-07-10
  */
 public interface HeaderFillerFactory {
     /**
@@ -30,7 +30,6 @@ public interface HeaderFillerFactory {
      * @return the priority
      */
     int getPriority();
-
 
     /**
      * Creates {@link HeaderFiller}, will be called once for each method with
@@ -45,8 +44,8 @@ public interface HeaderFillerFactory {
      * @return an object that can generate the header value
      */
     HeaderFiller createFiller(String value,
-                              String headerName,
-                              boolean required,
-                              Class<?> interfaceClass,
-                              Object clientProxy);
+            String headerName,
+            boolean required,
+            Class<?> interfaceClass,
+            Object clientProxy);
 }

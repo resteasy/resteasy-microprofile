@@ -27,6 +27,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.ws.rs.ext.Providers;
 import javax.ws.rs.sse.InboundSseEvent;
 
@@ -58,7 +59,7 @@ public class SSEPublisher<T> implements Publisher<T> {
     private static final Logger LOGGER = Logger.getLogger(SSEPublisher.class);
 
     public SSEPublisher(final Type genericType, final Providers providers, final SseEventInputImpl input,
-                        final ExecutorService es) {
+            final ExecutorService es) {
         this.genericType = genericType;
         this.input = input;
         this.providers = providers;
@@ -80,7 +81,7 @@ public class SSEPublisher<T> implements Publisher<T> {
      * @param processor the stream
      * @param input     the SSE input
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private void pump(final SSEProcessor processor, final SseEventInputImpl input) {
         Runnable readEventTask = new Runnable() {
             @Override

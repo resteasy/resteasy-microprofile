@@ -22,6 +22,7 @@ package org.jboss.resteasy.microprofile.client;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
@@ -94,7 +95,7 @@ public class ClientHeadersFactoryCDITest {
         private Counter counter;
 
         public MultivaluedMap<String, String> update(MultivaluedMap<String, String> incomingHeaders,
-                                                     MultivaluedMap<String, String> clientOutgoingHeaders) {
+                MultivaluedMap<String, String> clientOutgoingHeaders) {
             counter.count();
             return new MultivaluedHashMap<>();
         }

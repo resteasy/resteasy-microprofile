@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.client.integration.resource;
 
 import java.io.IOException;
+
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
@@ -33,6 +34,7 @@ public class TestAsyncFilter implements ClientResponseFilter {
     @Override
     public void filter(final ClientRequestContext requestContext, final ClientResponseContext responseContext)
             throws IOException {
-        responseContext.getHeaders().putSingle("test1-state", TestAsyncInvocationInterceptorFactory.localState.get().toString());
+        responseContext.getHeaders().putSingle("test1-state",
+                TestAsyncInvocationInterceptorFactory.localState.get().toString());
     }
 }

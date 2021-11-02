@@ -21,6 +21,7 @@ package org.jboss.resteasy.microprofile.test.client.integration;
 
 import java.io.IOException;
 import java.net.URL;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;

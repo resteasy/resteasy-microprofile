@@ -21,6 +21,7 @@ package org.jboss.resteasy.microprofile.test.client.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ForbiddenException;

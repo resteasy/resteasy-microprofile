@@ -22,6 +22,7 @@ package org.jboss.resteasy.microprofile.client.header;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.eclipse.microprofile.rest.client.RestClientDefinitionException;
@@ -40,7 +41,7 @@ class ClientHeaderGenerator {
     private final List<String> staticValues;
 
     ClientHeaderGenerator(final ClientHeaderParam anno, final Class<?> interfaceClass, final Object clientProxy,
-                          final HeaderFillerFactory fillerFactory) {
+            final HeaderFillerFactory fillerFactory) {
         headerName = anno.name();
         required = anno.required();
         String[] values = anno.value();
@@ -58,7 +59,7 @@ class ClientHeaderGenerator {
     }
 
     private void checkForMethodCallsInHeaderValues(final String[] values, final Class<?> location,
-                                                   final String headerName) {
+            final String headerName) {
         if (Stream.of(values).anyMatch(this::isMethodCall)) {
             throw new RestClientDefinitionException("A method call defined as one multiple values for header on "
                     + location.getSimpleName() + " for header '" + headerName + "'");
@@ -72,10 +73,9 @@ class ClientHeaderGenerator {
     }
 
     public void fillHeaders(final MultivaluedMap<String, String> headers) {
-        List<String> headerValues =
-                filler != null
-                        ? filler.generateValues()
-                        : staticValues;
+        List<String> headerValues = filler != null
+                ? filler.generateValues()
+                : staticValues;
 
         if (!headerValues.isEmpty() && headers.get(headerName) == null) {
             headers.put(headerName, headerValues);

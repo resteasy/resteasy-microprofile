@@ -33,7 +33,7 @@ public class Subscriptions {
      * @return the original value before the add
      */
     public static long add(AtomicLong requested, long requests) {
-        for (; ; ) {
+        for (;;) {
             long r = requested.get();
             if (r == Long.MAX_VALUE) {
                 return Long.MAX_VALUE;
@@ -60,7 +60,6 @@ public class Subscriptions {
         }
         return u;
     }
-
 
     /**
      * Concurrent subtraction bound to 0, mostly used to decrement a request tracker by
@@ -100,6 +99,5 @@ public class Subscriptions {
         }
         return res;
     }
-
 
 }

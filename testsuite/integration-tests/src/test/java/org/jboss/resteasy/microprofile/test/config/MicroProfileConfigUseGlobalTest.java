@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.config;
 
 import java.net.URL;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;

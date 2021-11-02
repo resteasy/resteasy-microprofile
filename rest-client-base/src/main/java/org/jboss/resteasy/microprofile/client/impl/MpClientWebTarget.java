@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.client.impl;
 
 import java.net.URI;
+
 import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
@@ -33,40 +34,40 @@ public class MpClientWebTarget extends ClientWebTarget {
     private final QueryParamStyle queryParamStyle;
 
     protected MpClientWebTarget(final ResteasyClient client, final ClientConfiguration configuration,
-                                final QueryParamStyle queryParamStyle) {
+            final QueryParamStyle queryParamStyle) {
         super(client, configuration);
         this.queryParamStyle = queryParamStyle;
     }
 
     public MpClientWebTarget(final ResteasyClient client, final String uri, final ClientConfiguration configuration,
-                             final QueryParamStyle queryParamStyle)
+            final QueryParamStyle queryParamStyle)
             throws IllegalArgumentException, NullPointerException {
         super(client, new MpUriBuilder().uri(uri, queryParamStyle), configuration);
         this.queryParamStyle = queryParamStyle;
     }
 
     public MpClientWebTarget(final ResteasyClient client, final URI uri, final ClientConfiguration configuration,
-                             final QueryParamStyle queryParamStyle) throws NullPointerException {
+            final QueryParamStyle queryParamStyle) throws NullPointerException {
         super(client, new MpUriBuilder().uri(uri, queryParamStyle), configuration);
         this.queryParamStyle = queryParamStyle;
     }
 
     public MpClientWebTarget(final ResteasyClient client, final UriBuilder uriBuilder,
-                             final ClientConfiguration configuration,
-                             final QueryParamStyle queryParamStyle) throws NullPointerException {
+            final ClientConfiguration configuration,
+            final QueryParamStyle queryParamStyle) throws NullPointerException {
         super(client, uriBuilder, configuration);
         this.queryParamStyle = queryParamStyle;
     }
 
     @Override
     protected ClientWebTarget newInstance(ResteasyClient client, UriBuilder uriBuilder,
-                                          ClientConfiguration configuration) {
+            ClientConfiguration configuration) {
         return new MpClientWebTarget(client, uriBuilder, configuration, queryParamStyle);
     }
 
     @Override
     protected ClientInvocationBuilder createClientInvocationBuilder(ResteasyClient client, URI uri,
-                                                                    ClientConfiguration configuration) {
+            ClientConfiguration configuration) {
         return new MpClientInvocationBuilder(client, uri, configuration);
     }
 

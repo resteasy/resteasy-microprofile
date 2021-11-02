@@ -21,6 +21,7 @@ package org.jboss.resteasy.microprofile.client.impl;
 
 import java.net.URI;
 import java.util.List;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -32,7 +33,6 @@ import org.jboss.resteasy.client.jaxrs.internal.ClientRequestContextImpl;
 import org.jboss.resteasy.client.jaxrs.internal.ClientRequestHeaders;
 import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.jboss.resteasy.core.ResteasyContext;
-
 
 public class MpClientInvocation extends ClientInvocation {
 
@@ -47,7 +47,7 @@ public class MpClientInvocation extends ClientInvocation {
     }
 
     protected MpClientInvocation(final ResteasyClient client, final URI uri, final ClientRequestHeaders headers,
-                                 final ClientConfiguration parent) {
+            final ClientConfiguration parent) {
         super(client, uri, headers, parent);
         captureContainerHeaders();
     }

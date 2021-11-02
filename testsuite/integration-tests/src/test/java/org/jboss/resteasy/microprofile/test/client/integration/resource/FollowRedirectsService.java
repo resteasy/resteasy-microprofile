@@ -22,6 +22,7 @@ package org.jboss.resteasy.microprofile.test.client.integration.resource;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -48,9 +49,9 @@ public class FollowRedirectsService {
     @GET
     @Path("tmpRedirect/{p}/{testname}")
     public Response tmpRedirect(@PathParam("p") String p,
-                                @PathParam("testname") String testname) {
+            @PathParam("testname") String testname) {
         return Response.temporaryRedirect(
-                        createUri("/" + p + "/redirected", testname))
+                createUri("/" + p + "/redirected", testname))
                 .build();
     }
 
@@ -58,26 +59,25 @@ public class FollowRedirectsService {
     @POST
     public Response postRedirect(String testname) {
         return Response.seeOther(
-                        createUri(prefix + "/redirected", testname))
+                createUri(prefix + "/redirected", testname))
                 .build();
     }
 
     @GET
     @Path("movedPermanently/{p}/{testname}")
     public Response movedPermanently(@PathParam("p") String p,
-                                     @PathParam("testname") String testname) {
+            @PathParam("testname") String testname) {
         return Response.status(301).header("location",
-                        createUri("/" + p + "/redirectedDirectResponse", testname))
+                createUri("/" + p + "/redirectedDirectResponse", testname))
                 .build();
     }
-
 
     @GET
     @Path("found/{p}/{testname}")
     public Response found(@PathParam("p") String p,
-                          @PathParam("testname") String testname) {
+            @PathParam("testname") String testname) {
         return Response.status(302).header("location",
-                        createUri("/" + p + "/redirectedDirectResponse", testname))
+                createUri("/" + p + "/redirectedDirectResponse", testname))
                 .build();
     }
 
@@ -91,7 +91,7 @@ public class FollowRedirectsService {
     @Path("redirect/ping")
     public Response redirectPing() {
         return Response.temporaryRedirect(
-                        URI.create(uriInfo.getBaseUri() + uriInfo.getPathSegments().get(0).getPath() + "/ping"))
+                URI.create(uriInfo.getBaseUri() + uriInfo.getPathSegments().get(0).getPath() + "/ping"))
                 .build();
     }
 
