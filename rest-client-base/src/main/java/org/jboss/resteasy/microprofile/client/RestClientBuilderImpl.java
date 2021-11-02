@@ -344,6 +344,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 if (p instanceof ClientHttpEngine) {
                     resteasyClientBuilder.httpEngine((ClientHttpEngine) p);
                     registerEngine = true;
+                    break;
                 }
             }
             if (!registerEngine && useURLConnection()) {
