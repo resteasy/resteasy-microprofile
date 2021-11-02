@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.config.resource;
 
 import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;

@@ -38,13 +38,15 @@ public class DefaultResponseExceptionMapper implements ResponseExceptionMapper {
             response.bufferEntity();
         } catch (Exception ignored) {
         }
-        return WebApplicationExceptionWrapper.wrap(new WebApplicationException("Unknown error, status code " + response.getStatus(), response));
+        return WebApplicationExceptionWrapper
+                .wrap(new WebApplicationException("Unknown error, status code " + response.getStatus(), response));
     }
 
     @Override
     public boolean handles(int status, MultivaluedMap headers) {
         final Config config = ConfigProvider.getConfig();
-        final boolean originalBehavior = config.getOptionalValue(ResteasyContextParameters.RESTEASY_ORIGINAL_WEBAPPLICATIONEXCEPTION_BEHAVIOR, boolean.class)
+        final boolean originalBehavior = config
+                .getOptionalValue(ResteasyContextParameters.RESTEASY_ORIGINAL_WEBAPPLICATIONEXCEPTION_BEHAVIOR, boolean.class)
                 .orElse(false);
         final boolean serverSide = ResteasyDeployment.onServer();
         return status >= (originalBehavior || !serverSide ? 400 : 300);

@@ -40,9 +40,9 @@ public interface ProxyParameterAnnotations {
     @Path("AllParams/{pathParam}")
     @POST
     String executeAllParams(@QueryParam String queryParam,
-                            @HeaderParam String headerParam,
-                            @CookieParam String cookieParam,
-                            @PathParam("pathParam") String pathParam,
-                            @FormParam String formParam,
-                            @MatrixParam String matrixParam);
+            @HeaderParam String headerParam,
+            @CookieParam String cookieParam,
+            @PathParam("pathParam") String pathParam,
+            @FormParam String formParam,
+            @MatrixParam String matrixParam);
 }

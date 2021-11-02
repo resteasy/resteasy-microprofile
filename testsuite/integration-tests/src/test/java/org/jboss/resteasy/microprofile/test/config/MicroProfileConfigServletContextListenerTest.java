@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.PropertyPermission;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
@@ -66,8 +67,7 @@ public class MicroProfileConfigServletContextListenerTest {
                 .setWebXML(MicroProfileConfigServletContextListenerTest.class.getPackage(), "web_servlet_context_listener.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsManifestResource(PermissionUtil.createPermissionsXmlAsset(
-                        new PropertyPermission("system", "write")
-                ), "permissions.xml");
+                        new PropertyPermission("system", "write")), "permissions.xml");
     }
 
     @BeforeClass
@@ -107,7 +107,8 @@ public class MicroProfileConfigServletContextListenerTest {
     }
 
     /**
-     * @tpTestDetails Verify web.xml servlet init params are accessible and have higher priority than filter params and context params; get Config programmatically.
+     * @tpTestDetails Verify web.xml servlet init params are accessible and have higher priority than filter params and context
+     *                params; get Config programmatically.
      * @tpSince RESTEasy 4.0.0
      */
     @Test
@@ -118,7 +119,8 @@ public class MicroProfileConfigServletContextListenerTest {
     }
 
     /**
-     * @tpTestDetails Verify web.xml servlet init params are accessible and have higher priority than filter params and context params; get Config by injection.
+     * @tpTestDetails Verify web.xml servlet init params are accessible and have higher priority than filter params and context
+     *                params; get Config by injection.
      * @tpSince RESTEasy 4.0.0
      */
     @Test

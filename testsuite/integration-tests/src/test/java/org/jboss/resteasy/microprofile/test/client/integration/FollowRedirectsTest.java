@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.client.integration;
 
 import java.net.URL;
+
 import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;

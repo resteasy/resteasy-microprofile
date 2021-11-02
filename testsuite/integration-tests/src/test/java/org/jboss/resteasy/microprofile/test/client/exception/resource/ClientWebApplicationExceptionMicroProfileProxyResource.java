@@ -178,7 +178,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyResource {
      * It is assumed that ResteasyContextParameters.RESTEASY_ORIGINAL_WEBAPPLICATIONEXCEPTION_BEHAVIOR holds
      * "false" when this method is invoked.
      *
-     * Uses a Client to call oldException().  Since the new behavior is configured, the proxy will throw a
+     * Uses a Client to call oldException(). Since the new behavior is configured, the proxy will throw a
      * WebApplicationExceptionWrapper, which is caught and examined. getResponse() should return a sanitized
      * Response, but the unwrapped Response should match the WebApplicationException
      * thrown by oldException(). That WebApplicationExceptionWrapper is then rethrown.

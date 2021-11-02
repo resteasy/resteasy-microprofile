@@ -38,9 +38,6 @@
                 <groupId>jakarta.enterprise</groupId>
                 <artifactId>jakarta.enterprise.cdi-api</artifactId>
                 <version>${version.jakarta.enterprise}</version>
-                <!-- The container should include this, if not then it should be explicitly set to another scope by the
-                     user. -->
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>jakarta.interceptor</groupId>
@@ -56,17 +53,11 @@
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>${version.jakarta.servlet}</version>
-                <!-- The container should include this, if not then it should be explicitly set to another scope by the
-                     user. -->
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>jakarta.ws.rs</groupId>
                 <artifactId>jakarta.ws.rs-api</artifactId>
                 <version>${version.jakarta.ws.rs}</version>
-                <!-- The container should include this, if not then it should be explicitly set to another scope by the
-                     user. -->
-                <scope>provided</scope>
             </dependency>
 
             <!-- Project Dependencies -->

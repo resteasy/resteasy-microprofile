@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -44,8 +45,7 @@ public class RestClientExtension implements Extension {
 
     private final Set<Throwable> errors = new LinkedHashSet<>();
 
-    public void registerRestClient(@Observes
-                                   @WithAnnotations(RegisterRestClient.class) ProcessAnnotatedType<?> type) {
+    public void registerRestClient(@Observes @WithAnnotations(RegisterRestClient.class) ProcessAnnotatedType<?> type) {
         Class<?> javaClass = type.getAnnotatedType().getJavaClass();
         if (javaClass.isInterface()) {
             RegisterRestClient annotation = type.getAnnotatedType().getAnnotation(RegisterRestClient.class);
@@ -71,7 +71,8 @@ public class RestClientExtension implements Extension {
 
     public void createProxy(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         for (RestClientData clientData : proxyTypes) {
-            afterBeanDiscovery.addBean(new RestClientDelegateBean(clientData.javaClass, beanManager, clientData.baseUri, clientData.configKey));
+            afterBeanDiscovery.addBean(
+                    new RestClientDelegateBean(clientData.javaClass, beanManager, clientData.baseUri, clientData.configKey));
         }
     }
 
@@ -112,7 +113,7 @@ public class RestClientExtension implements Extension {
         private final Optional<String> configKey;
 
         private RestClientData(final Class<?> javaClass, final Optional<String> baseUri,
-                               final Optional<String> configKey) {
+                final Optional<String> configKey) {
             this.javaClass = javaClass;
             this.baseUri = baseUri;
             this.configKey = configKey;
@@ -120,8 +121,10 @@ public class RestClientExtension implements Extension {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             RestClientData that = (RestClientData) o;
             return javaClass.equals(that.javaClass);
         }
@@ -156,7 +159,7 @@ public class RestClientExtension implements Extension {
                 modifiableBeans.addAll(beans);
                 // Ambiguous dependency may occur if a resource has subclasses
                 // Therefore we remove those beans
-                for (Iterator<Bean<?>> iterator = modifiableBeans.iterator(); iterator.hasNext(); ) {
+                for (Iterator<Bean<?>> iterator = modifiableBeans.iterator(); iterator.hasNext();) {
                     Bean<?> bean = iterator.next();
                     if (!bean.getBeanClass().equals(clazz) && !bean.isAlternative()) {
                         // remove Beans that have clazz in their type closure but not as a base class

@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.client.integration.resource;
 
 import java.util.List;
+
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -40,7 +41,7 @@ public interface FollowRedirectsServiceIntf {
     @GET
     @Path("tmpRedirect/{p}/{testname}")
     Response tmpRedirect(@PathParam("p") String p,
-                         @PathParam("testname") String testname);
+            @PathParam("testname") String testname);
 
     @Path("post-redirect")
     @POST
@@ -49,12 +50,12 @@ public interface FollowRedirectsServiceIntf {
     @GET
     @Path("movedPermanently/{p}/{testname}")
     Response movedPermanently(@PathParam("p") String p,
-                              @PathParam("testname") String testname);
+            @PathParam("testname") String testname);
 
     @GET
     @Path("found/{p}/{testname}")
     Response found(@PathParam("p") String p,
-                   @PathParam("testname") String testname);
+            @PathParam("testname") String testname);
 
     @GET
     @Path("ping")

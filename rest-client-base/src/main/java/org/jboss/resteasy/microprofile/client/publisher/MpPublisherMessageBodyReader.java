@@ -19,12 +19,12 @@
 
 package org.jboss.resteasy.microprofile.client.publisher;
 
-
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -62,8 +62,8 @@ public class MpPublisherMessageBodyReader implements MessageBodyReader<Publisher
 
     @Override
     public Publisher<?> readFrom(Class<Publisher<?>> type, Type genericType, Annotation[] annotations,
-                                 MediaType mediaType,
-                                 MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+            MediaType mediaType,
+            MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
             throws WebApplicationException {
         MediaType streamType = mediaType;
         if (mediaType.getParameters() != null) {

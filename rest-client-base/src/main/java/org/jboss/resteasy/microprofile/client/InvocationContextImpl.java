@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionException;
+
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -46,12 +47,12 @@ public class InvocationContextImpl implements InvocationContext {
     private final List<InterceptorInvocation> chain;
 
     public InvocationContextImpl(final Object target, final Method method, final Object[] args,
-                                 final List<InterceptorInvocation> chain) {
+            final List<InterceptorInvocation> chain) {
         this(target, method, args, chain, 0);
     }
 
     private InvocationContextImpl(final Object target, final Method method, final Object[] args,
-                                  final List<InterceptorInvocation> chain, final int position) {
+            final List<InterceptorInvocation> chain, final int position) {
         this.target = target;
         this.method = method;
         this.args = args;

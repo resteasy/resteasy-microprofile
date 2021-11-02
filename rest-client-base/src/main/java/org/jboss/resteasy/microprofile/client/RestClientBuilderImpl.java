@@ -52,6 +52,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.net.ssl.HostnameVerifier;
@@ -197,7 +198,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         return this;
     }
 
-
     @Override
     public RestClientBuilder sslContext(SSLContext sslContext) {
         this.sslContext = sslContext;
@@ -232,7 +232,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         return this;
     }
 
-    public <T> T build(Class<T> aClass, ClientHttpEngine httpEngine) throws IllegalStateException, RestClientDefinitionException {
+    public <T> T build(Class<T> aClass, ClientHttpEngine httpEngine)
+            throws IllegalStateException, RestClientDefinitionException {
 
         RestClientListeners.get().forEach(listener -> listener.onNewClient(aClass, this));
 
@@ -258,7 +259,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         builderDelegate.register(new ExceptionMapping(localProviderInstances), 1);
 
         ClassLoader classLoader = aClass.getClassLoader();
-
 
         T actualClient;
         ResteasyClient client;
@@ -335,7 +335,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             resteasyClientBuilder.connectTimeout(connectTimeout, connectTimeoutUnit);
         }
 
-
         if (httpEngine != null) {
             resteasyClientBuilder.httpEngine(httpEngine);
         } else {
@@ -384,14 +383,15 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
-       return build(aClass, null);
+        return build(aClass, null);
     }
 
     /**
      * Get the users list of proxy hosts. Translate list to regex format
+     *
      * @return list of proxy hosts
      */
-    private List<String> getProxyHostsAsRegex(){
+    private List<String> getProxyHostsAsRegex() {
         String noProxyHostsSysProps = getSystemProperty("http.nonProxyHosts", null);
         if (noProxyHostsSysProps == null) {
             noProxyHostsSysProps = "localhost|127.*|[::1]";
@@ -409,7 +409,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
      */
     private boolean useURLConnection() {
         if (useURLConnection == null) {
-            String defaultToURLConnection = getSystemProperty("org.jboss.resteasy.microprofile.defaultToURLConnectionHttpClient", "false");
+            String defaultToURLConnection = getSystemProperty(
+                    "org.jboss.resteasy.microprofile.defaultToURLConnectionHttpClient", "false");
             useURLConnection = defaultToURLConnection.equalsIgnoreCase("true");
         }
         return useURLConnection;
@@ -436,8 +437,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                             prop.get().trim().toUpperCase()));
 
                 } else {
-                    RegisterRestClient registerRestClient =
-                            (RegisterRestClient) aClass.getAnnotation(RegisterRestClient.class);
+                    RegisterRestClient registerRestClient = (RegisterRestClient) aClass.getAnnotation(RegisterRestClient.class);
                     if (registerRestClient != null &&
                             registerRestClient.configKey() != null &&
                             !registerRestClient.configKey().isEmpty()) {
@@ -471,8 +471,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                         followRedirects(prop.get());
                     }
                 } else {
-                    RegisterRestClient registerRestClient =
-                            aClass.getAnnotation(RegisterRestClient.class);
+                    RegisterRestClient registerRestClient = aClass.getAnnotation(RegisterRestClient.class);
                     if (registerRestClient != null &&
                             registerRestClient.configKey() != null &&
                             !registerRestClient.configKey().isEmpty()) {
@@ -493,7 +492,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     private boolean isMapperDisabled() {
         boolean disabled = false;
-        Optional<Boolean> defaultMapperProp = config == null ? Optional.empty() : config.getOptionalValue(DEFAULT_MAPPER_PROP, Boolean.class);
+        Optional<Boolean> defaultMapperProp = config == null ? Optional.empty()
+                : config.getOptionalValue(DEFAULT_MAPPER_PROP, Boolean.class);
 
         // disabled through config api
         if (defaultMapperProp.isPresent() && defaultMapperProp.get().equals(Boolean.TRUE)) {
@@ -523,7 +523,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             return ((Field) element).getName();
         } else if (element instanceof Method) {
             Method m = (Method) element;
-            if (!m.getName().startsWith("get")) return null;
+            if (!m.getName().startsWith("get"))
+                return null;
             return Character.toLowerCase(m.getName().charAt(3)) + m.getName().substring(4);
         }
         return null;
@@ -534,8 +535,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             PathParam pp = element.getAnnotation(PathParam.class);
             return pp.value();
         } else if (element.isAnnotationPresent(org.jboss.resteasy.annotations.jaxrs.PathParam.class)) {
-            org.jboss.resteasy.annotations.jaxrs.PathParam pp = element.getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
-            if (pp.value().length() > 0) return pp.value();
+            org.jboss.resteasy.annotations.jaxrs.PathParam pp = element
+                    .getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
+            if (pp.value().length() > 0)
+                return pp.value();
             return getReflectName(element);
         }
         return null;
@@ -583,7 +586,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             Path methodPathAnno = method.getAnnotation(Path.class);
             if (methodPathAnno != null) {
                 template = classPathAnno == null ? (ResteasyUriBuilder) new ResteasyUriBuilderImpl().uri(methodPathAnno.value())
-                        : (ResteasyUriBuilder) new ResteasyUriBuilderImpl().uri(classPathAnno.value() + "/" + methodPathAnno.value());
+                        : (ResteasyUriBuilder) new ResteasyUriBuilderImpl()
+                                .uri(classPathAnno.value() + "/" + methodPathAnno.value());
             } else if (classPathAnno != null) {
                 template = (ResteasyUriBuilder) new ResteasyUriBuilderImpl().uri(classPathAnno.value());
             } else {
@@ -604,7 +608,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 if (pathParam != null) {
                     paramMap.put(pathParam.value(), "foobar");
                 } else if (p.isAnnotationPresent(org.jboss.resteasy.annotations.jaxrs.PathParam.class)) {
-                    org.jboss.resteasy.annotations.jaxrs.PathParam rePathParam = p.getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
+                    org.jboss.resteasy.annotations.jaxrs.PathParam rePathParam = p
+                            .getAnnotation(org.jboss.resteasy.annotations.jaxrs.PathParam.class);
                     String name = rePathParam.value() == null || rePathParam.value()
                             .length() == 0 ? p.getName() : rePathParam.value();
                     paramMap.put(name, "foobar");
@@ -614,13 +619,15 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             }
 
             if (allVariables.size() != paramMap.size()) {
-                throw new RestClientDefinitionException("Parameters and variables don't match on " + typeDef + "::" + method.getName());
+                throw new RestClientDefinitionException(
+                        "Parameters and variables don't match on " + typeDef + "::" + method.getName());
             }
 
             try {
                 template.resolveTemplates(paramMap, false).build();
             } catch (IllegalArgumentException ex) {
-                throw new RestClientDefinitionException("Parameter names don't match variable names on " + typeDef + "::" + method.getName(), ex);
+                throw new RestClientDefinitionException(
+                        "Parameter names don't match variable names on " + typeDef + "::" + method.getName(), ex);
             }
 
         }
@@ -648,10 +655,12 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 if (value instanceof List) {
                     arguments = ((List<?>) value).toArray();
                 } else {
-                    throw new IllegalArgumentException("Value must be an instance of List<> for ResteasyClientBuilder setter method: " + builderMethodName);
+                    throw new IllegalArgumentException(
+                            "Value must be an instance of List<> for ResteasyClientBuilder setter method: "
+                                    + builderMethodName);
                 }
             } else {
-                arguments = new Object[] {value};
+                arguments = new Object[] { value };
             }
             try {
                 builderMethod.invoke(builderDelegate, arguments);

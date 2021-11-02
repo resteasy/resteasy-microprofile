@@ -108,14 +108,14 @@ public final class SpscLinkedArrayQueue<E> extends AbstractQueue<E> implements Q
     }
 
     private boolean writeToQueue(final AtomicReferenceArray<Object> buffer, final E e, final long index,
-                                 final int offset) {
+            final int offset) {
         soElement(buffer, offset, e); // StoreStore
         soProducerIndex(index + 1); // this ensures atomic write of long on 32bit platforms
         return true;
     }
 
     private void resize(final AtomicReferenceArray<Object> oldBuffer, final long currIndex, final int offset, final E e,
-                        final long mask) {
+            final long mask) {
         final int capacity = oldBuffer.length();
         final AtomicReferenceArray<Object> newBuffer = new AtomicReferenceArray<>(capacity);
         producerBuffer = newBuffer;

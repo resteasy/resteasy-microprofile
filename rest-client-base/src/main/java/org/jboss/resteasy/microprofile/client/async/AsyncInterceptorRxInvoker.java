@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.core.GenericType;
@@ -36,7 +37,7 @@ import org.jboss.resteasy.microprofile.client.ExceptionMapping;
 /**
  * @author <a href="mailto:bburke@redhat.com">Bill Burke</a>
  * @author <a href="mailto:asoldano@redhat.com">Alessio Soldano</a>
- * <p>
+ *         <p>
  */
 public class AsyncInterceptorRxInvoker extends CompletionStageRxInvokerImpl {
     private Method method;

@@ -39,10 +39,10 @@ import org.junit.runner.RunWith;
  * @tpSubChapter MicroProfile rest client
  * @tpChapter Integration tests
  * @tpTestCaseDetails The microprofile-rest-client 2.0 specification describes use of a custom
- * ResponseExceptionMapper implementation and a default ResponseExceptionMapper.
- * There is a scenario in which the default ResponseExceptionMapper has been disabled
- * and the custom ResponseExceptionMapper returns null. This test verifies the proper
- * behavior for this scenario and when the default ResponseExceptionMapper is present.
+ *                    ResponseExceptionMapper implementation and a default ResponseExceptionMapper.
+ *                    There is a scenario in which the default ResponseExceptionMapper has been disabled
+ *                    and the custom ResponseExceptionMapper returns null. This test verifies the proper
+ *                    behavior for this scenario and when the default ResponseExceptionMapper is present.
  * @tpSince RESTEasy 4.7.0
  */
 @RunWith(Arquillian.class)

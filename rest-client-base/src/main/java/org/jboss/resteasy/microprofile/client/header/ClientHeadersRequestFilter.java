@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.annotation.Priority;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -35,7 +36,6 @@ import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 import org.eclipse.microprofile.rest.client.ext.DefaultClientHeadersFactoryImpl;
 import org.jboss.resteasy.microprofile.client.impl.MpClientInvocation;
 import org.jboss.resteasy.microprofile.client.utils.ClientRequestContextUtils;
-
 
 /**
  * First the headers from `@ClientHeaderParam` annotations are applied,
@@ -58,14 +58,15 @@ public class ClientHeadersRequestFilter implements ClientRequestFilter {
         Optional<ClientHeaderProvider> handler = ClientHeaderProviders.getProvider(method);
         handler.ifPresent(h -> h.addHeaders(headers));
 
-        Optional<ClientHeadersFactory> factory = ClientHeaderProviders.getFactory(ClientRequestContextUtils.getDeclaringClass(requestContext));
+        Optional<ClientHeadersFactory> factory = ClientHeaderProviders
+                .getFactory(ClientRequestContextUtils.getDeclaringClass(requestContext));
 
         requestContext.getHeaders().forEach(
-                (key, values) -> headers.put(key, castToListOfStrings(values))
-        );
+                (key, values) -> headers.put(key, castToListOfStrings(values)));
 
         @SuppressWarnings("unchecked")
-        MultivaluedMap<String, String> containerHeaders = (MultivaluedMap<String, String>) requestContext.getProperty(MpClientInvocation.CONTAINER_HEADERS);
+        MultivaluedMap<String, String> containerHeaders = (MultivaluedMap<String, String>) requestContext
+                .getProperty(MpClientInvocation.CONTAINER_HEADERS);
         if (containerHeaders == null)
             containerHeaders = EMPTY_MAP;
         // stupid final rules
@@ -78,8 +79,7 @@ public class ClientHeadersRequestFilter implements ClientRequestFilter {
         }
 
         factory.ifPresent(f -> f.update(incomingHeaders, headers)
-                .forEach((key, values) -> requestContext.getHeaders().put(key, castToListOfObjects(values)))
-        );
+                .forEach((key, values) -> requestContext.getHeaders().put(key, castToListOfObjects(values))));
     }
 
     private static List<Object> castToListOfObjects(List<String> values) {

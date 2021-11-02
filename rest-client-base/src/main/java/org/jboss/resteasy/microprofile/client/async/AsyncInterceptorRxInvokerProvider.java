@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.client.async;
 
 import java.util.concurrent.ExecutorService;
+
 import javax.ws.rs.client.CompletionStageRxInvoker;
 import javax.ws.rs.client.RxInvokerProvider;
 import javax.ws.rs.client.SyncInvoker;

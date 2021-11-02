@@ -44,6 +44,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
@@ -88,7 +89,6 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     public static final String HOSTNAME_VERIFIER = "%s/mp-rest/hostnameVerifier";
 
-
     private static final String PROPERTY_PREFIX = "%s/property/";
 
     private final Class<?> proxyType;
@@ -104,7 +104,7 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     private final Optional<String> configKey;
 
     RestClientDelegateBean(final Class<?> proxyType, final BeanManager beanManager, final Optional<String> baseUri,
-                           final Optional<String> configKey) {
+            final Optional<String> configKey) {
         this.proxyType = proxyType;
         this.beanManager = beanManager;
         this.baseUri = baseUri;
@@ -169,9 +169,11 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Could not find hostname verifier class" + verifier, e);
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("Failed to instantiate hostname verifier class. Make sure it has a public, no-argument constructor", e);
+            throw new RuntimeException(
+                    "Failed to instantiate hostname verifier class. Make sure it has a public, no-argument constructor", e);
         } catch (ClassCastException e) {
-            throw new RuntimeException("The provided hostname verifier " + verifier + " is not an instance of HostnameVerifier", e);
+            throw new RuntimeException("The provided hostname verifier " + verifier + " is not an instance of HostnameVerifier",
+                    e);
         }
     }
 
@@ -181,12 +183,14 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
         try {
             KeyStore keyStore = KeyStore.getInstance(keyStoreType.orElse("JKS"));
-            String password = keyStorePassword.orElseThrow(() -> new IllegalArgumentException("No password provided for keystore"));
+            String password = keyStorePassword
+                    .orElseThrow(() -> new IllegalArgumentException("No password provided for keystore"));
 
             try (InputStream input = locateStream(keyStorePath)) {
                 keyStore.load(input, password.toCharArray());
             } catch (IOException | CertificateException | NoSuchAlgorithmException e) {
-                throw new IllegalArgumentException("Failed to initialize trust store from classpath resource " + keyStorePath, e);
+                throw new IllegalArgumentException("Failed to initialize trust store from classpath resource " + keyStorePath,
+                        e);
             }
 
             builder.keyStore(keyStore, password);
@@ -201,12 +205,14 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
         try {
             KeyStore trustStore = KeyStore.getInstance(maybeTrustStoreType.orElse("JKS"));
-            String password = maybeTrustStorePassword.orElseThrow(() -> new IllegalArgumentException("No password provided for truststore"));
+            String password = maybeTrustStorePassword
+                    .orElseThrow(() -> new IllegalArgumentException("No password provided for truststore"));
 
             try (InputStream input = locateStream(trustStorePath)) {
                 trustStore.load(input, password.toCharArray());
             } catch (IOException | CertificateException | NoSuchAlgorithmException e) {
-                throw new IllegalArgumentException("Failed to initialize trust store from classpath resource " + trustStorePath, e);
+                throw new IllegalArgumentException("Failed to initialize trust store from classpath resource " + trustStorePath,
+                        e);
             }
 
             builder.trustStore(trustStore);
@@ -223,7 +229,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
                 resultStream = getClass().getResourceAsStream(path);
             }
             if (resultStream == null) {
-                throw new IllegalArgumentException("Classpath resource " + path + " not found for MicroProfile Rest Client SSL configuration");
+                throw new IllegalArgumentException(
+                        "Classpath resource " + path + " not found for MicroProfile Rest Client SSL configuration");
             }
             return resultStream;
         } else {
@@ -232,7 +239,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
             }
             File certificateFile = new File(path);
             if (!certificateFile.isFile()) {
-                throw new IllegalArgumentException("Certificate file: " + path + " not found for MicroProfile Rest Client SSL configuration");
+                throw new IllegalArgumentException(
+                        "Certificate file: " + path + " not found for MicroProfile Rest Client SSL configuration");
             }
             return new FileInputStream(certificateFile);
         }
@@ -281,7 +289,8 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     private <T> Optional<T> getOptionalProperty(String propertyFormat, Class<T> type) {
         Optional<T> value = config.getOptionalValue(String.format(propertyFormat, proxyType.getName()), type);
-        if (value.isPresent() || !configKey.isPresent()) return value;
+        if (value.isPresent() || !configKey.isPresent())
+            return value;
         return config.getOptionalValue(String.format(propertyFormat, configKey.get()), type);
     }
 

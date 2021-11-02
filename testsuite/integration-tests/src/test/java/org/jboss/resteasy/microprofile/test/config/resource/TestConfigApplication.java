@@ -21,6 +21,7 @@ package org.jboss.resteasy.microprofile.test.config.resource;
 
 import java.util.Collections;
 import java.util.Set;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.Provider;
