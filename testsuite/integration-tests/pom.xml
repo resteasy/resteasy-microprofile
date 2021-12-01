@@ -34,6 +34,9 @@
     <properties>
         <!-- Galleon -->
         <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
+        <feature.pack.groupId>org.jboss.resteasy.microprofile</feature.pack.groupId>
+        <feature.pack.artifactId>galleon-feature-pack</feature.pack.artifactId>
+        <feature.pack.version>${project.version}</feature.pack.version>
     </properties>
 
     <dependencies>
@@ -175,9 +178,9 @@
                     </plugin-options>
                     <feature-packs>
                         <feature-pack>
-                            <groupId>org.jboss.resteasy.microprofile</groupId>
-                            <artifactId>galleon-feature-pack</artifactId>
-                            <version>${project.version}</version>
+                            <groupId>${feature.pack.groupId}</groupId>
+                            <artifactId>${feature.pack.artifactId}</artifactId>
+                            <version>${feature.pack.version}</version>
                             <excluded-packages>
                                 <name>product.conf</name>
                                 <name>docs.schema</name>
