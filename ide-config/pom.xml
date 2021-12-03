@@ -31,7 +31,7 @@
 
     <groupId>org.jboss.resteasy.microprofile</groupId>
     <artifactId>ide-config</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Final</version>
     <name>RESTEasy MicroProfile IDE Configuration</name>
     <packaging>jar</packaging>
 
