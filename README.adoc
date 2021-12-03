@@ -1,0 +1,138 @@
+= RESTEasy MicroProfile
+:toc:
+
+The RESTEasy MicroProfile project contains implementations and utilities for the
+https://microprofile.io/[Eclipse MicroProfile].
+
+== Building
+
+Building requires https://maven.apache.org/download.cgi[Maven] and Java 11. The minimum runtime is Java 8.
+----
+mvn clean install
+----
+
+== Usage
+
+The simplest way to use these dependencies is to import the BOM.
+
+[source,xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.resteasy.microprofile</groupId>
+            <artifactId>resteasy-microprofile-bom</artifactId>
+            <version>${version.org.jboss.resteasy.microprofile}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+=== RESTEasy MicroProfile Client
+
+This is an implementation of the
+https://download.eclipse.org/microprofile/microprofile-rest-client-2.0/microprofile-rest-client-spec-2.0.html[MicroProfile REST Client].
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.jboss.resteasy.microprofile</groupId>
+    <artifactId>microprofile-rest-client</artifactId>
+</dependency>
+----
+
+=== RESTEasy Config
+
+This uses the https://download.eclipse.org/microprofile/microprofile-config-2.0/microprofile-config-spec-2.0.html[MicroProfile Config]
+to define some
+https://download.eclipse.org/microprofile/microprofile-config-2.0/apidocs/org/eclipse/microprofile/config/spi/ConfigSource.html[ConfigSource]
+options.
+
+The current sources for finding properties are:
+
+* `ServletConfig`
+* `FilterConfig`
+* `ServletContext`
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.jboss.resteasy.microprofile</groupId>
+    <artifactId>microprofile-config</artifactId>
+</dependency>
+----
+
+=== RESTEasy Context Propagation
+
+This adds a context provider for RESTEasy which works with
+https://download.eclipse.org/microprofile/microprofile-context-propagation-1.0/microprofile-context-propagation.html[MicroProfile Context Propagation].
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.jboss.resteasy.microprofile</groupId>
+    <artifactId>microprofile-context-propagation</artifactId>
+</dependency>
+----
+
+== Installation
+
+=== WildFly
+
+The MicroProfile REST Client implementation and MicroProfile Config sources are already provided in WildFly. If you'd
+like to upgrade or add all the modules to a provisioned WildFly server, you can use the
+https://docs.wildfly.org/galleon/[Galleon] tooling to do so.
+
+==== Galleon CLI
+
+----
+galleon.sh install org.jboss.resteasy.microprofile:galleon-feature-pack:$VERSION
+----
+
+
+==== Maven
+
+[source,xml]
+----
+<plugin>
+    <groupId>org.jboss.galleon</groupId>
+    <artifactId>galleon-maven-plugin</artifactId>
+    <configuration>
+        <install-dir>${jboss.home}</install-dir>
+        <record-state>false</record-state>
+        <plugin-options>
+            <jboss-maven-dist/>
+            <jboss-fork-embedded>true</jboss-fork-embedded>
+            <optional-packages>passive+</optional-packages>`
+        </plugin-options>
+        <feature-packs>
+            <feature-pack>
+                <groupId>org.jboss.resteasy.microprofile</groupId>
+                <artifactId>galleon-feature-pack</artifactId>
+                <version>${version.org.jboss.resteasy.microprofile}</version>
+            </feature-pack>
+        </feature-packs>
+        <configurations>
+            <config>
+                <model>standalone</model>
+                <name>standalone.xml</name>
+                <layers>
+                    <layer>cdi</layer>
+                    <layer>jaxrs-server</layer>
+                    <layer>microprofile-config</layer>
+                </layers>
+            </config>
+        </configurations>
+    </configuration>
+    <executions>
+        <execution>
+            <id>server-provisioning</id>
+            <goals>
+                <goal>provision</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+----
