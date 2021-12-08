@@ -28,8 +28,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.ws.rs.ext.Providers;
-import javax.ws.rs.sse.InboundSseEvent;
+import jakarta.ws.rs.ext.Providers;
+import jakarta.ws.rs.sse.InboundSseEvent;
 
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.concurrent.ContextualExecutorService;

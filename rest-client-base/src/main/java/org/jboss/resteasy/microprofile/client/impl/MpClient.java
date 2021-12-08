@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;

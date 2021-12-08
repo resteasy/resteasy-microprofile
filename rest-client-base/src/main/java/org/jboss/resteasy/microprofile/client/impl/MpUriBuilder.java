@@ -21,7 +21,7 @@ package org.jboss.resteasy.microprofile.client.impl;
 
 import java.net.URI;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;

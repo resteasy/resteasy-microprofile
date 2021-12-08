@@ -19,7 +19,7 @@
 
 package org.jboss.resteasy.microprofile.test.client.integration.resource;
 
-import javax.json.bind.annotation.JsonbPropertyOrder;
+import jakarta.json.bind.annotation.JsonbPropertyOrder;
 
 /**
  * Created by tterem.

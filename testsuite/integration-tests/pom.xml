@@ -56,6 +56,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>jakarta.json.bind</groupId>
+            <artifactId>jakarta.json.bind-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <scope>test</scope>
@@ -162,7 +167,7 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-            <plugin>
+                <plugin>
                 <groupId>org.jboss.galleon</groupId>
                 <artifactId>galleon-maven-plugin</artifactId>
                 <configuration>
@@ -172,9 +177,10 @@
                     <log-time>${galleon.log.time}</log-time>
                     <offline>${galleon.offline}</offline>
                     <plugin-options>
-                        <jboss-maven-dist/>
+                        <!-- <jboss-maven-dist/> -->
                         <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
-                        <optional-packages>passive+</optional-packages>`
+                        <optional-packages>passive+</optional-packages>
+                        <jboss-jakarta-transform-artifacts>true</jboss-jakarta-transform-artifacts>
                     </plugin-options>
                     <feature-packs>
                         <feature-pack>

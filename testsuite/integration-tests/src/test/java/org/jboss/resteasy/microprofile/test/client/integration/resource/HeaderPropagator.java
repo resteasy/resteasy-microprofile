@@ -21,8 +21,8 @@ package org.jboss.resteasy.microprofile.test.client.integration.resource;
 
 import java.util.List;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 import org.jboss.resteasy.core.ResteasyContext;

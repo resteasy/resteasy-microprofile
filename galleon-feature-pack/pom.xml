@@ -86,9 +86,15 @@
         <!-- Other feature pack dependencies -->
         <dependency>
             <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-galleon-pack</artifactId>
+            <artifactId>wildfly-preview-feature-pack</artifactId>
             <version>${version.org.wildfly}</version>
             <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.galleon-plugins</groupId>
+            <artifactId>transformer</artifactId>
+            <version>${version.org.wildfly.galleon-plugins}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
@@ -98,7 +104,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.wildfly</groupId>
-                    <artifactId>wildfly-ee-galleon-pack</artifactId>
+                    <artifactId>wildfly-preview-feature-pack</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -132,29 +138,20 @@
                         <phase>prepare-package</phase>
                         <configuration>
                             <fork-embedded>${galleon.fork.embedded}</fork-embedded>
+                            <task-properties>
+                                <jakarta.transform.artifacts>true</jakarta.transform.artifacts>
+                                <jakarta.transform.modules>false</jakarta.transform.modules>
+                                <jakarta.transform.artifacts.suffix>-ee9</jakarta.transform.artifacts.suffix>
+                            </task-properties>
+                            <jakarta-transform>true</jakarta-transform>
+                            <!--<jakarta-transform-verbose>true</jakarta-transform-verbose> -->
+                            <jakarta-transform-excluded-artifacts>
+                                <exclude>org.jboss.resteasy:.*\z</exclude>
+                            </jakarta-transform-excluded-artifacts>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>
-                <groupId>org.wildfly.maven.plugins</groupId>
-                <artifactId>licenses-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>update-licenses-xml</id>
-                        <goals>
-                            <goal>insert-versions</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <sortByGroupIdAndArtifactId>true</sortByGroupIdAndArtifactId>
-                            <licensesConfigFile>src/license/template-feature-pack-licenses.xml</licensesConfigFile>
-                            <licensesOutputFile>${license.output.directory}/template-feature-pack-licenses.xml</licensesOutputFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
         </plugins>
     </build>
 

@@ -19,13 +19,13 @@
 
 package org.jboss.resteasy.microprofile.client;
 
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+import static jakarta.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
-import javax.annotation.Priority;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.client.ClientResponseFilter;
-import javax.ws.rs.core.MediaType;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientResponseContext;
+import jakarta.ws.rs.client.ClientResponseFilter;
+import jakarta.ws.rs.core.MediaType;
 
 @Priority(Integer.MIN_VALUE)
 public class DefaultMediaTypeFilter implements ClientResponseFilter {

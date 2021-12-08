@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionException;
 
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.interceptor.InvocationContext;
-import javax.ws.rs.client.ResponseProcessingException;
+import jakarta.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.interceptor.InvocationContext;
+import jakarta.ws.rs.client.ResponseProcessingException;
 
 public class InvocationContextImpl implements InvocationContext {
 
@@ -87,7 +87,7 @@ public class InvocationContextImpl implements InvocationContext {
             if (cause instanceof ResponseProcessingException) {
                 ResponseProcessingException rpe = (ResponseProcessingException) cause;
                 // Note that the default client engine leverages a single connection
-                // MP FT: we need to close the response otherwise we would not be able to retry if the method returns javax.ws.rs.core.Response
+                // MP FT: we need to close the response otherwise we would not be able to retry if the method returns jakarta.ws.rs.core.Response
                 rpe.getResponse().close();
                 cause = rpe.getCause();
                 if (cause instanceof RuntimeException) {

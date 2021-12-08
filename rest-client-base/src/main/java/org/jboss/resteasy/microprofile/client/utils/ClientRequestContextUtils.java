@@ -21,7 +21,7 @@ package org.jboss.resteasy.microprofile.client.utils;
 
 import java.lang.reflect.Method;
 
-import javax.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestContext;
 
 import org.jboss.resteasy.client.jaxrs.internal.ClientInvocation;
 import org.jboss.resteasy.client.jaxrs.internal.ClientRequestContextImpl;
