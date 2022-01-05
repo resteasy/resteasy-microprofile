@@ -19,7 +19,7 @@
 
 package org.jboss.resteasy.microprofile.test.client.param.resource;
 
-import javax.ws.rs.PathParam;
+import jakarta.ws.rs.PathParam;
 
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 

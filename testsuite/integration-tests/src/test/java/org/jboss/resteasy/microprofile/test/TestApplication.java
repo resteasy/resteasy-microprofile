@@ -19,9 +19,9 @@
 
 package org.jboss.resteasy.microprofile.test;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.ext.Provider;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>

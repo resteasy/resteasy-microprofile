@@ -21,7 +21,7 @@ package org.jboss.resteasy.microprofile.client.impl;
 
 import java.net.URI;
 
-import javax.ws.rs.client.CompletionStageRxInvoker;
+import jakarta.ws.rs.client.CompletionStageRxInvoker;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.internal.ClientConfiguration;

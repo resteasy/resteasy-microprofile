@@ -19,7 +19,7 @@
 
 package org.jboss.resteasy.microprofile.test.client.exception.resource;
 
-import javax.ws.rs.Path;
+import jakarta.ws.rs.Path;
 
 @Path("/test")
 public class ResponseExceptionMapperRuntimeExceptionResource

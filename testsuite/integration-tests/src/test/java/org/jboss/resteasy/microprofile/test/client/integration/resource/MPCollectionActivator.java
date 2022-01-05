@@ -19,8 +19,8 @@
 
 package org.jboss.resteasy.microprofile.test.client.integration.resource;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 
 @ApplicationPath("/theService")
 public class MPCollectionActivator extends Application {

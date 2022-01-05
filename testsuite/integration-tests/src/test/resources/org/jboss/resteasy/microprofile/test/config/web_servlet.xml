@@ -46,7 +46,7 @@
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher</servlet-class>
 
         <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
+            <param-name>jakarta.ws.rs.Application</param-name>
             <param-value>org.jboss.resteasy.microprofile.test.config.resource.TestConfigApplication</param-value>
         </init-param>
 

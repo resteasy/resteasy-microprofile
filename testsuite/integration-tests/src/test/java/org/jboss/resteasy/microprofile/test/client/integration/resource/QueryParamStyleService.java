@@ -22,9 +22,9 @@ package org.jboss.resteasy.microprofile.test.client.integration.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
 
 @Path("/theService")
 public class QueryParamStyleService {
