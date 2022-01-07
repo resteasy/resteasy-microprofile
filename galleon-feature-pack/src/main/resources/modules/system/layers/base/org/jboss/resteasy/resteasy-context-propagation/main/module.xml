@@ -32,8 +32,6 @@
         <module name="jakarta.ws.rs.api"/>
         <module name="org.jboss.resteasy.resteasy-core" services="import"/>
         <module name="org.jboss.resteasy.resteasy-core-spi"/>
-        <!-- These need to be exported as modules consuming this module will need them -->
-        <module name="io.smallrye.smallrye-context-propagation" services="export" export="true"/>
         <module name="org.eclipse.microprofile.config.api" export="true"/>
         <module name="org.eclipse.microprofile.context-propagation" export="true"/>
     </dependencies>

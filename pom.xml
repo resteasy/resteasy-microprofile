@@ -59,7 +59,6 @@
         <version.jakarta.servlet>5.0.0</version.jakarta.servlet>
         <version.jakarta.ws.rs>3.0.0</version.jakarta.ws.rs>
 
-        <version.io.smallrye.context-propagation>1.2.2</version.io.smallrye.context-propagation>
         <version.io.smallrye.smallrye-config>3.0.0-RC1</version.io.smallrye.smallrye-config>
 
         <version.org.eclipse.microprofile.rest.client>3.0</version.org.eclipse.microprofile.rest.client>
