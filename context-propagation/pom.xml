@@ -61,12 +61,6 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.smallrye</groupId>
-            <artifactId>smallrye-context-propagation</artifactId>
-            <!-- Optional implementation for the MP Config API -->
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
 

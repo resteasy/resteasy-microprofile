@@ -111,43 +111,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>io.smallrye</groupId>
-                <artifactId>smallrye-context-propagation</artifactId>
-                <version>${version.io.smallrye.context-propagation}</version>
-                <!-- This an optional implementation for the MP context propagation API -->
-                <optional>true</optional>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.inject</groupId>
-                        <artifactId>javax.inject</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.enterprise</groupId>
-                        <artifactId>cdi-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>io.smallrye</groupId>
-                <artifactId>smallrye-context-propagation-api</artifactId>
-                <version>${version.io.smallrye.context-propagation}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.inject</groupId>
-                        <artifactId>javax.inject</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.enterprise</groupId>
-                        <artifactId>cdi-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>io.smallrye</groupId>
-                <artifactId>smallrye-context-propagation-storage</artifactId>
-                <version>${version.io.smallrye.context-propagation}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.eclipse.microprofile.rest.client</groupId>
