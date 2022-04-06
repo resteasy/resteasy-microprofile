@@ -97,6 +97,7 @@
         <javadoc.additional.params>--release=8</javadoc.additional.params>
         <!-- maven-surefire-plugin -->
         <surefire.system.args>-Xms512m -Xmx512m</surefire.system.args>
+        <additionalJvmArgs/>
 
         <maven.test.skip>false</maven.test.skip>
         <skipTests>${maven.test.skip}</skipTests>
@@ -124,6 +125,12 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <argLine>${surefire.system.args}</argLine>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.jboss.galleon</groupId>
                     <artifactId>galleon-maven-plugin</artifactId>
@@ -300,6 +307,18 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <surefire.system.args>-Xms512m -Xmx512m -Djdk.io.File.enableADS=true</surefire.system.args>
+                <additionalJvmArgs>-Djdk.io.File.enableADS=true</additionalJvmArgs>
+            </properties>
         </profile>
     </profiles>
 
