@@ -36,7 +36,7 @@ import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebA
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebApplicationExceptionProxyResourceInterface;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -72,7 +72,13 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                 .addClass(ClientWebApplicationExceptionMicroProfileProxyApplication.class)
                 .addClass(ClientWebApplicationExceptionMicroProfileProxyResource.class)
                 .addClass(ClientWebApplicationExceptionProxyResourceInterface.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addAsWebInfResource(new StringAsset("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<beans xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"\n" +
+                        "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                        "       xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_3_0.xsd\"\n"
+                        +
+                        "       version=\"3.0\" bean-discovery-mode=\"all\">\n" +
+                        "</beans>"), "beans.xml");
     }
 
     @Before
