@@ -34,7 +34,8 @@
 
     <properties>
         <!-- Test only dependencies -->
-        <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson>2.12.6</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson.databind>2.12.6.1</version.com.fasterxml.jackson.databind>
         <version.com.io7m.xom>1.2.10</version.com.io7m.xom>
 
         <version.jakarta.enterprise.concurrent>2.0.0</version.jakarta.enterprise.concurrent>
@@ -106,7 +107,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${version.com.fasterxml.jackson}</version>
+                <version>${version.com.fasterxml.jackson.databind}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
