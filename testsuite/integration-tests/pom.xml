@@ -167,7 +167,6 @@
                 <artifactId>galleon-maven-plugin</artifactId>
                 <configuration>
                     <install-dir>${jboss.home}</install-dir>
-                    <skip>${skipTests}</skip>
                     <record-state>false</record-state>
                     <log-time>${galleon.log.time}</log-time>
                     <offline>${galleon.offline}</offline>

@@ -100,6 +100,7 @@
 
         <maven.test.skip>false</maven.test.skip>
         <skipTests>${maven.test.skip}</skipTests>
+        <galleon.skip>${skipTests}</galleon.skip>
         <skip.format>false</skip.format>
 
         <!-- Galleon -->
@@ -127,6 +128,9 @@
                     <groupId>org.jboss.galleon</groupId>
                     <artifactId>galleon-maven-plugin</artifactId>
                     <version>${version.org.jboss.galleon}</version>
+                    <configuration>
+                        <skip>${galleon.skip}</skip>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.wildfly.galleon-plugins</groupId>
