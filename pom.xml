@@ -101,6 +101,7 @@
         <skipTests>${maven.test.skip}</skipTests>
         <galleon.skip>${skipTests}</galleon.skip>
         <skip.format>false</skip.format>
+        <skip.compile>false</skip.compile>
 
         <!-- Galleon -->
         <galleon.fork.embedded>true</galleon.fork.embedded>
@@ -123,6 +124,13 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <skip>${skip.compile}</skip>
+                        <skipMain>${skip.compile}</skipMain>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.jboss.galleon</groupId>
                     <artifactId>galleon-maven-plugin</artifactId>

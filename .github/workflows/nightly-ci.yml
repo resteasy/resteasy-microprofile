@@ -1,0 +1,118 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: RESTEasy MicroProfile Integration Tests
+
+on:
+  push:
+    branches:
+      - 'main'
+  schedule:
+    - cron: '0 0 * * *' # Every day at 00:00 UTC
+
+jobs:
+  resteasy-test:
+    name: Build and test against RESTEasy
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        java: [ '11', '17' ]
+
+    steps:
+      - name: Checkout RESTEasy MicroProfile
+        uses: actions/checkout@v3
+        with:
+          path: resteasy-microprofile
+      - name: Checkout RESTEasy
+        uses: actions/checkout@v3
+        with:
+          repository: resteasy/resteasy
+          path: resteasy
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Build RESTEasy Java ${{ matrix.java }} - ${{ matrix.os }}
+        run: |
+          cd resteasy
+          mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
+      - name: Determine the RESTEasy and Jakarta REST API Versions
+        id: dep-version
+        run: |
+          cd resteasy/resteasy-dependencies-bom
+          RESTEASY_VERSION="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+          JAKARTA_REST_VERSION="$(mvn help:evaluate -Dexpression=version.jakarta.ws.rs -q -DforceStdout)"
+          CDI_VERSION="$(mvn help:evaluate -Dexpression=version.jakarta.enterprise.cdi-api -q -DforceStdout)"
+          WELD_VERSION="$(mvn help:evaluate -Dexpression=version.weld -q -DforceStdout)"
+          JAKARTA_JSON_API="$(mvn help:evaluate -Dexpression=version.jakarta.json-api -q -DforceStdout)"
+          echo -e "VERSION_ARGS=-Dversion.jakarta.ws.rs=${JAKARTA_REST_VERSION} \
+            -Dversion.org.jboss.resteasy=${RESTEASY_VERSION} \
+            -Dversion.jakarta.enterprise=${CDI_VERSION} \
+            -Dversion.org.jboss.weld=${WELD_VERSION} \
+            -Dversion.jakarta.json.json-api=${JAKARTA_JSON_API}" >> $GITHUB_ENV
+      - name: Build and Test RESTEasy MicroProfile Java ${{ matrix.java }} - ${{ matrix.os }}
+        run: |
+          cd resteasy-microprofile
+          mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
+          echo "VERSION_ARGS=${VERSION_ARGS}"
+          mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
+            -pl config,context-propagation,rest-client,testsuite/integration-tests,testsuite/microprofile-rest-client-tck
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
+          path: '**/surefire-reports/*.txt'
+
+  wildfly-test:
+    name: Build and test against WildFly
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        java: [ '11', '17' ]
+    steps:
+      - name: Checkout RESTEasy MicroProfile
+        uses: actions/checkout@v3
+        with:
+          path: resteasy-microprofile
+      - name: Checkout RESTEasy
+        uses: actions/checkout@v3
+        with:
+          repository: wildfly/wildfly
+          path: wildfly
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Build WildFly Java ${{ matrix.java }} - ${{ matrix.os }}
+        run: |
+          cd wildfly
+          mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests -am -pl galleon-pack,ee-9/feature-pack
+      - name: Determine the WildFly Version
+        id: dep-version
+        run: |
+          cd wildfly
+          WILDFLY_VERSION="$(mvn help:evaluate -Dversion.help.plugin=3.2.0 -Dexpression=project.version -q -DforceStdout)"
+          echo -e "VERSION_ARGS=-Dversion.org.wildfly=${WILDFLY_VERSION}" >> $GITHUB_ENV
+      - name: Build and Test RESTEasy MicroProfile Java ${{ matrix.java }} - ${{ matrix.os }}
+        run: |
+          cd resteasy-microprofile
+          mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
+          echo "VERSION_ARGS=${VERSION_ARGS}"
+          mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
+            -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
+          path: '**/surefire-reports/*.txt'
+
