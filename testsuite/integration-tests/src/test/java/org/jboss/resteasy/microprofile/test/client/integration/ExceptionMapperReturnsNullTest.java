@@ -21,6 +21,8 @@ package org.jboss.resteasy.microprofile.test.client.integration;
 
 import java.net.URL;
 
+import jakarta.ws.rs.WebApplicationException;
+
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -68,17 +70,13 @@ public class ExceptionMapperReturnsNullTest {
         Assert.assertNull(data);
     }
 
-    @Test
-    public void testDefaultExceptionMapper() {
-        try {
-            RestClientBuilder.newBuilder()
-                    .baseUri(TestEnvironment.generateUri(url, "test-app"))
-                    .register(new Ignore404ExceptionMapper())
-                    .build(HealthService.class)
-                    .getHealthData();
-            Assert.fail("Exception should have been returned");
-        } catch (Exception e) {
-            // success exception was returned
-        }
+    @Test(expected = WebApplicationException.class)
+    public void testDefaultExceptionMapper() throws Exception {
+        HealthService healthServiceClient = RestClientBuilder.newBuilder()
+                .baseUri(TestEnvironment.generateUri(url, "test-app"))
+                .register(new Ignore404ExceptionMapper())
+                .build(HealthService.class);
+
+        healthServiceClient.getHealthData();
     }
 }
