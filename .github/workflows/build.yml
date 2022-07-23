@@ -87,7 +87,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Format Source
-        run: "mvn install -pl ide-config && mvn -B -pl '-ide-config' formatter:format"
+        run: "mvn -B formatter:format"
       - name: Check for changes
         run:  |
           [ -z "$(git status --porcelain=v1 2>/dev/null)" ] || (echo -e "::error ::Changes have been found\n$(git status --porcelain)" && exit 1)
