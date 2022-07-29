@@ -82,8 +82,6 @@
         <!-- Plugin Versions -->
         <version.org.jboss.galleon>4.2.8.Final</version.org.jboss.galleon>
         <version.org.wildfly.galleon-plugins>5.2.6.Final</version.org.wildfly.galleon-plugins>
-        <version.formatter-maven-plugin>2.17.0</version.formatter-maven-plugin>
-        <version.impsort-maven-plugin>1.6.2</version.impsort-maven-plugin>
 
         <!-- Plugin Versions, please keep in alphabetical order -->
         <!-- print logs to file by default -->
