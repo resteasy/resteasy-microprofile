@@ -51,7 +51,7 @@
         <version.org.jboss.arquillian.container.arquillian-weld-embedded>3.0.1.Final
         </version.org.jboss.arquillian.container.arquillian-weld-embedded>
         <version.org.jboss.dmr>1.6.1.Final</version.org.jboss.dmr>
-        <version.org.jboss.shrinkwrap.resolver>2.2.7</version.org.jboss.shrinkwrap.resolver>
+        <version.org.jboss.shrinkwrap.resolver>3.1.4</version.org.jboss.shrinkwrap.resolver>
         <version.org.jboss.weld>4.0.1.SP1</version.org.jboss.weld>
 
         <version.org.testng>6.14.2</version.org.testng>
