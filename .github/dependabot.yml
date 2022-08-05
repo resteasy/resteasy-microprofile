@@ -9,6 +9,17 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: 'org.jboss.resteasy:*'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'jakarta.enterprise:jakarta.enterprise.cdi-api'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'jakarta.servlet:jakarta.servlet-api'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'jakarta.ws.rs:jakarta.ws.rs-api'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'org.eclipse.microprofile.rest.client:*'
+        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
     rebase-strategy: disabled
   - package-ecosystem: "github-actions"
     # Workflow files stored in the
