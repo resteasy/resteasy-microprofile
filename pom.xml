@@ -56,7 +56,7 @@
         <!-- TODO (jrp) this can be removed when RESTEASY-2972 is resolved -->
         <version.commons-codec.commons-codec>1.15</version.commons-codec.commons-codec>
 
-        <version.jakarta.enterprise>3.0.0</version.jakarta.enterprise>
+        <version.jakarta.enterprise>3.0.1</version.jakarta.enterprise>
         <version.jakarta.servlet>5.0.0</version.jakarta.servlet>
         <version.jakarta.ws.rs>3.0.0</version.jakarta.ws.rs>
 
