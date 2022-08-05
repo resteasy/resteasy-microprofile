@@ -34,7 +34,7 @@ jobs:
           echo "::group::Build Logs"
           mvn clean install -U -B -fae
           echo "::endgroup::"
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
@@ -68,7 +68,7 @@ jobs:
       - name: Test with Java ${{ matrix.java }} - Windows
         if: runner.os == 'Windows'
         run: mvn clean install -U -B -fae '"-Dtest.java.home=%JDK_${{ matrix.java }}%"'
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}

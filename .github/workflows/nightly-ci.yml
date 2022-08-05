@@ -62,7 +62,7 @@ jobs:
           echo "VERSION_ARGS=${VERSION_ARGS}"
           mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
             -pl config,context-propagation,rest-client,testsuite/integration-tests,testsuite/microprofile-rest-client-tck
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
@@ -110,7 +110,7 @@ jobs:
           echo "VERSION_ARGS=${VERSION_ARGS}"
           mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
             -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
