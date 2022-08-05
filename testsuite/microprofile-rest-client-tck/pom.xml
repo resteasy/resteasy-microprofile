@@ -35,7 +35,7 @@
     <properties>
         <skip.mp.tck>false</skip.mp.tck>
         <jetty9.version>9.2.30.v20200428</jetty9.version>
-        <jetty.version>${jetty9.version}</jetty.version>
+        <jetty.version>11.0.11</jetty.version>
         <tck.timeout.offset>90000</tck.timeout.offset>
     </properties>
 
