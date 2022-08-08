@@ -77,7 +77,7 @@
         <version.junit>4.13.2</version.junit>
 
         <!-- Test only dependencies -->
-        <version.com.github.tomakehurst.wiremock>2.26.3</version.com.github.tomakehurst.wiremock>
+        <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
 
         <!-- Plugin Versions -->
         <version.org.jboss.galleon>4.2.8.Final</version.org.jboss.galleon>
