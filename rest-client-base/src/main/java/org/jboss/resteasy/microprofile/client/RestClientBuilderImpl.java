@@ -122,9 +122,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             }
             builderDelegate.providerFactory(localProviderFactory);
         }
-        if (getBeanManager() != null) {
+        this.beanManager = getBeanManager();
+        if (beanManager != null) {
             builderDelegate.getProviderFactory()
-                    .setInjectorFactory(new CdiInjectorFactory(getBeanManager()));
+                    .setInjectorFactory(new CdiInjectorFactory(beanManager));
         }
         configurationWrapper = new ConfigurationWrapper(builderDelegate.getConfiguration());
 
@@ -375,7 +376,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         interfaces[1] = RestClientProxy.class;
         interfaces[2] = Closeable.class;
 
-        final BeanManager beanManager = getBeanManager();
         T proxy = (T) Proxy.newProxyInstance(classLoader, interfaces,
                 new ProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager));
         ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
@@ -814,7 +814,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             CDI<Object> current = CDI.current();
             return current != null ? current.getBeanManager() : null;
         } catch (IllegalStateException e) {
-            LOGGER.warnf("CDI container is not available");
+            LOGGER.debug("CDI container is not available", e);
             return null;
         }
     }
@@ -856,4 +856,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     private final Set<Object> localProviderInstances = new HashSet<>();
     private final Collection<AsyncInvocationInterceptorFactory> invocationInterceptorFactories = new ArrayList<>();
+
+    private final BeanManager beanManager;
 }
