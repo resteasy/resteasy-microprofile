@@ -47,7 +47,7 @@
 
         <version.org.glassfish.jakarta.json>2.0.0</version.org.glassfish.jakarta.json>
 
-        <version.org.jboss.arquillian>1.7.0.Alpha10</version.org.jboss.arquillian>
+        <version.org.jboss.arquillian>1.7.0.Alpha12</version.org.jboss.arquillian>
         <version.org.jboss.arquillian.container.arquillian-weld-embedded>3.0.1.Final
         </version.org.jboss.arquillian.container.arquillian-weld-embedded>
         <version.org.jboss.dmr>1.6.1.Final</version.org.jboss.dmr>
