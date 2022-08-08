@@ -18,7 +18,7 @@ updates:
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'jakarta.json:jakarta.json-api'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
-      - dependency-name: 'jakarta.json.bind:jakarta.bind.json-api'
+      - dependency-name: 'jakarta.json.bind:jakarta.json.bind-api'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'jakarta.servlet:jakarta.servlet-api'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
