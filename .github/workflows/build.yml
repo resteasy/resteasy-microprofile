@@ -51,19 +51,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-          cache: 'maven'
-      - name: Set up JDK 11
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'maven'
       - run: echo "JDK_${{ matrix.java }}=$JAVA_HOME" >> $GITHUB_ENV
+      # This must be run after the previous setup to ensure the JAVA_HOME is always Java 11.
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'temurin'
+          cache: 'maven'
       # Since we need to pass the test.java.home we need different runs for Linux and Windows
       - name: Test with Java ${{ matrix.java }}  - Linux
         if: runner.os == 'Linux'
