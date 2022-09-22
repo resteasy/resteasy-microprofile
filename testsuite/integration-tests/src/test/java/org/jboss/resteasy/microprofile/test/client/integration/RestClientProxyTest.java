@@ -55,11 +55,13 @@ import org.jboss.resteasy.microprofile.test.client.integration.resource.HeaderPr
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloClient;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.NgHTTP2;
+import org.jboss.resteasy.microprofile.test.util.IgnoreOnCi;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import io.vertx.core.Vertx;
@@ -68,6 +70,7 @@ import io.vertx.core.http.HttpVersion;
 
 @RunWith(Arquillian.class)
 @RunAsClient
+@Category(IgnoreOnCi.class)
 public class RestClientProxyTest {
 
     public static final String EMOJIS = "\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00";

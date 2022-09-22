@@ -61,7 +61,8 @@ jobs:
           mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
           echo "VERSION_ARGS=${VERSION_ARGS}"
           mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
-            -pl config,context-propagation,rest-client,testsuite/integration-tests,testsuite/microprofile-rest-client-tck
+            -pl config,context-propagation,rest-client,testsuite/integration-tests,testsuite/microprofile-rest-client-tck \
+          -Pci
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
@@ -109,7 +110,7 @@ jobs:
           mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
           echo "VERSION_ARGS=${VERSION_ARGS}"
           mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
-            -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck
+            -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck -Pci
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
