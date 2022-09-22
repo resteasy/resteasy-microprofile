@@ -88,12 +88,6 @@
         <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
         <!-- maven-enforcer-plugin -->
         <maven.min.version>3.6.0</maven.min.version>
-
-        <!-- Require at least Java 11 to compile, but compile down to Java 8 -->
-        <jdk.min.version>11</jdk.min.version>
-        <maven.compiler.target>8</maven.compiler.target>
-        <maven.compiler.source>8</maven.compiler.source>
-        <javadoc.additional.params>--release=8</javadoc.additional.params>
         <!-- maven-surefire-plugin -->
         <surefire.system.args>-Xms512m -Xmx512m</surefire.system.args>
 

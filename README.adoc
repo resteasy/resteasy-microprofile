@@ -6,7 +6,7 @@ https://microprofile.io/[Eclipse MicroProfile].
 
 == Building
 
-Building requires https://maven.apache.org/download.cgi[Maven] and Java 11. The minimum runtime is Java 8.
+Building requires https://maven.apache.org/download.cgi[Maven] and Java 11.
 ----
 mvn clean install
 ----
