@@ -71,6 +71,7 @@ import io.vertx.core.http.HttpVersion;
 public class RestClientProxyTest {
 
     public static final String EMOJIS = "\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00";
+    private static final long TIMEOUT = TestEnvironment.calculateTimeout(30L);
     @ArquillianResource
     URL url;
 
@@ -151,7 +152,7 @@ public class RestClientProxyTest {
             latch.countDown();
             return s;
         });
-        boolean waitResult = latch.await(30, TimeUnit.SECONDS);
+        boolean waitResult = latch.await(TIMEOUT, TimeUnit.SECONDS);
         Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
         assertEquals("foo", value.get());
     }
@@ -163,7 +164,7 @@ public class RestClientProxyTest {
         final HelloClient client = builder.baseUri(generateUri()).build(HelloClient.class);
         final CompletionStage<String> cs = client.some(EMOJIS);
         final CompletableFuture<String> future = cs.toCompletableFuture();
-        assertEquals(EMOJIS, future.get(30, TimeUnit.SECONDS));
+        assertEquals(EMOJIS, future.get(TIMEOUT, TimeUnit.SECONDS));
     }
 
     @Test
@@ -174,7 +175,7 @@ public class RestClientProxyTest {
         assertNotNull(client);
         final CompletionStage<String> cs = client.some("foo");
         final CompletableFuture<String> future = cs.toCompletableFuture();
-        assertEquals("foo", future.get(30, TimeUnit.SECONDS));
+        assertEquals("foo", future.get(TIMEOUT, TimeUnit.SECONDS));
     }
 
     @Test
@@ -184,7 +185,7 @@ public class RestClientProxyTest {
 
         assertNotNull(client);
         CompletionStage<String> cs = client.asyncClient();
-        assertEquals("OK", cs.toCompletableFuture().get(30, TimeUnit.SECONDS));
+        assertEquals("OK", cs.toCompletableFuture().get(TIMEOUT, TimeUnit.SECONDS));
 
         assertEquals("OK", client.client());
     }
@@ -203,7 +204,7 @@ public class RestClientProxyTest {
             value.set(t.getCause());
             latch.countDown();
         });
-        boolean waitResult = latch.await(30, TimeUnit.SECONDS);
+        boolean waitResult = latch.await(TIMEOUT, TimeUnit.SECONDS);
         Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
         assertTrue(value.get() instanceof WebApplicationException);
         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), ((WebApplicationException) value.get()).getResponse()

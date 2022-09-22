@@ -37,6 +37,18 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
 public class TestEnvironment {
+    private static final int TIMEOUT_FACTOR = Integer.getInteger("dev.resteasy.timeout.test.factor", 1);
+
+    /**
+     * Calculates the timeout based on the {@code dev.resteasy.timeout.test.factor} system property. The default value
+     * is 1.
+     *
+     * @param timeout the timeout to calculate
+     * @return the re-calculated time based on the factor
+     */
+    public static long calculateTimeout(final long timeout) {
+        return timeout * TIMEOUT_FACTOR;
+    }
 
     public static WebArchive createWar(final String deploymentName) {
         return ShrinkWrap.create(WebArchive.class, deploymentName + ".war")

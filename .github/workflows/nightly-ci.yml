@@ -109,7 +109,7 @@ jobs:
           mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
           echo "VERSION_ARGS=${VERSION_ARGS}"
           mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
-            -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck
+            -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck -Ddev.resteasy.timeout.test.factor=2
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
