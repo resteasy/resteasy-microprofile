@@ -31,7 +31,7 @@ jobs:
       - name: Build with Maven Java 11  - ${{ matrix.os }}
         run: |
           echo "::group::Build Logs"
-          mvn clean install -U -B -fae
+          mvn clean install -U -B -fae  -Pci
           echo "::endgroup::"
       - uses: actions/upload-artifact@v3
         if: failure()
@@ -68,10 +68,10 @@ jobs:
       # Since we need to pass the test.java.home we need different runs for Linux and Windows
       - name: Test with Java ${{ matrix.java }}  - Linux
         if: runner.os == 'Linux'
-        run: mvn clean install -U -B -fae -Dtest.java.home="$JDK_${{ matrix.java }}"
+        run: mvn clean install -U -B -fae -Dtest.java.home="$JDK_${{ matrix.java }}" -Pci
       - name: Test with Java ${{ matrix.java }} - Windows
         if: runner.os == 'Windows'
-        run: mvn clean install -U -B -fae '"-Dtest.java.home=%JDK_${{ matrix.java }}%"'
+        run: mvn clean install -U -B -fae '"-Dtest.java.home=%JDK_${{ matrix.java }}%"' -Pci
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
