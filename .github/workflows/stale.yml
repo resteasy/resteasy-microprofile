@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'resteasy'
     steps:
-      - uses: actions/stale@v5
+      - uses: actions/stale@v6
         with:
           stale-pr-message: 'There has been no activity on this PR for 45 days. It will be auto-closed after 90 days.'
           close-pr-message: 'There has been no activity on this PR for 90 days and it has been closed automatically.'
