@@ -20,6 +20,8 @@
 package org.jboss.resteasy.microprofile.client.header;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +45,15 @@ public class HeaderUtils {
      * @return method handle
      */
     public static MethodHandle createMethodHandle(final Method method, final Object clientProxy) {
-        return JdkSpecific.createMethodHandle(method, clientProxy);
+        try {
+            final Class<?> proxyType = method.getDeclaringClass();
+            return MethodHandles.lookup()
+                    .findSpecial(proxyType, method.getName(),
+                            MethodType.methodType(method.getReturnType(), method.getParameterTypes()), proxyType)
+                    .bindTo(clientProxy);
+        } catch (IllegalAccessException | NoSuchMethodException e) {
+            throw new RestClientDefinitionException("Failed to generate method handle for " + method, e);
+        }
     }
 
     /**
