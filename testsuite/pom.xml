@@ -71,19 +71,6 @@
                 <jvm.debug.args>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:${debug.port}</jvm.debug.args>
             </properties>
         </profile>
-
-        <profile>
-            <id>debug-java-8</id>
-            <activation>
-                <property>
-                    <name>debug.java.8</name>
-                </property>
-            </activation>
-            <properties>
-                <debug.port>8787</debug.port>
-                <jvm.debug.args>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${debug.port}</jvm.debug.args>
-            </properties>
-        </profile>
     </profiles>
 
 </project>
