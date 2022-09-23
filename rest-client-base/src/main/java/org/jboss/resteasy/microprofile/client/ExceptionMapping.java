@@ -94,6 +94,17 @@ public class ExceptionMapping implements ClientResponseFilter {
                 }
             }
         }
+
+        // Check the request context as these would be candidates registered elsewhere like in a Feature.
+        final Set<Object> contextInstances = requestContext.getConfiguration().getInstances();
+        for (Object o : contextInstances) {
+            if (o instanceof ResponseExceptionMapper) {
+                ResponseExceptionMapper candidate = (ResponseExceptionMapper) o;
+                if (candidate.handles(response.getStatus(), response.getHeaders()) && !candidates.contains(candidate)) {
+                    candidates.add(candidate);
+                }
+            }
+        }
         if (candidates.isEmpty())
             return;
 
