@@ -94,8 +94,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.json</artifactId>
+            <groupId>org.eclipse.parsson</groupId>
+            <artifactId>parsson</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -215,7 +215,6 @@
                                 <!-- <jboss-maven-dist/> -->
                                 <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
                                 <optional-packages>passive+</optional-packages>
-                                <jboss-jakarta-transform-artifacts>true</jboss-jakarta-transform-artifacts>
                             </plugin-options>
                             <feature-packs>
                                 <feature-pack>

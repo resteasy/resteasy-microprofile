@@ -132,11 +132,6 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
-    }
-
-    @Override
     public Object create(CreationalContext<Object> creationalContext) {
         RestClientBuilder builder = RestClientBuilder.newBuilder();
 

@@ -10,36 +10,18 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: 'org.jboss.resteasy:*'
-        update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'jakarta.enterprise:jakarta.enterprise.cdi-api'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
-      - dependency-name: 'jakarta.json:jakarta.json-api'
-        update-types: ['version-update:semver-major', 'version-update:semver-minor']
-      - dependency-name: 'jakarta.json.bind:jakarta.json.bind-api'
-        update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'jakarta.servlet:jakarta.servlet-api'
-        update-types: ['version-update:semver-major', 'version-update:semver-minor']
-      - dependency-name: 'jakarta.ws.rs:jakarta.ws.rs-api'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'org.eclipse.jetty:*'
         update-types: ['version-update:semver-major']
-      - dependency-name: 'org.eclipse.microprofile.rest.client:*'
-        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
-      - dependency-name: 'org.eclipse:yasson'
-        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
-      - dependency-name: 'org.glassfish:jakarta.json'
-        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
       - dependency-name: 'org.jboss.weld:*'
         update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
       - dependency-name: 'org.jboss.weld.se:*'
         update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
-      - dependency-name: 'org.jboss.galleon:galleon-maven-plugin'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'org.wildfly.galleon-plugins:wildfly-galleon-maven-plugin'
-        update-types: ['version-update:semver-major']
     rebase-strategy: disabled
   - package-ecosystem: "github-actions"
     # Workflow files stored in the
