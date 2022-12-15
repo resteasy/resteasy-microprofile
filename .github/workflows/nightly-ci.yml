@@ -46,21 +46,13 @@ jobs:
         run: |
           cd resteasy/resteasy-dependencies-bom
           RESTEASY_VERSION="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
-          JAKARTA_REST_VERSION="$(mvn help:evaluate -Dexpression=version.jakarta.ws.rs -q -DforceStdout)"
-          CDI_VERSION="$(mvn help:evaluate -Dexpression=version.jakarta.enterprise.cdi-api -q -DforceStdout)"
-          WELD_VERSION="$(mvn help:evaluate -Dexpression=version.weld -q -DforceStdout)"
-          JAKARTA_JSON_API="$(mvn help:evaluate -Dexpression=version.jakarta.json-api -q -DforceStdout)"
-          echo -e "VERSION_ARGS=-Dversion.jakarta.ws.rs=${JAKARTA_REST_VERSION} \
-            -Dversion.org.jboss.resteasy=${RESTEASY_VERSION} \
-            -Dversion.jakarta.enterprise=${CDI_VERSION} \
-            -Dversion.org.jboss.weld=${WELD_VERSION} \
-            -Dversion.jakarta.json.json-api=${JAKARTA_JSON_API}" >> $GITHUB_ENV
+          echo -e "VERSION_ARGS=-Dversion.jakarta.ws.rs=$JAKARTA_REST_VERSION" >> $GITHUB_ENV
       - name: Build and Test RESTEasy MicroProfile Java ${{ matrix.java }} - ${{ matrix.os }}
         run: |
           cd resteasy-microprofile
           mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
-          echo "VERSION_ARGS=${VERSION_ARGS}"
-          mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
+          echo "VERSION_ARGS=$VERSION_ARGS"
+          mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true $VERSION_ARGS \
             -pl config,context-propagation,rest-client,testsuite/integration-tests,testsuite/microprofile-rest-client-tck \
           -Pci
       - uses: actions/upload-artifact@v3
@@ -103,13 +95,13 @@ jobs:
         run: |
           cd wildfly
           WILDFLY_VERSION="$(mvn help:evaluate -Dversion.help.plugin=3.2.0 -Dexpression=project.version -q -DforceStdout)"
-          echo -e "VERSION_ARGS=-Dversion.org.wildfly=${WILDFLY_VERSION}" >> $GITHUB_ENV
+          echo -e "VERSION_ARGS=-Dversion.org.wildfly=$WILDFLY_VERSION" >> $GITHUB_ENV
       - name: Build and Test RESTEasy MicroProfile Java ${{ matrix.java }} - ${{ matrix.os }}
         run: |
           cd resteasy-microprofile
           mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
-          echo "VERSION_ARGS=${VERSION_ARGS}"
-          mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true ${VERSION_ARGS} \
+          echo "VERSION_ARGS=$VERSION_ARGS"
+          mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true $VERSION_ARGS \
             -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck -Pci
       - uses: actions/upload-artifact@v3
         if: failure()
