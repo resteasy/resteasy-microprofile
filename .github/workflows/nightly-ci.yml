@@ -88,7 +88,7 @@ jobs:
         id: build-wildfly
         run: |
           cd wildfly
-          mvn clean install -B -Dquickly
+          mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
           echo "WILDFLY_VERSION=$(mvn help:evaluate -Dversion.help.plugin=3.2.0 -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
       - name: Build and Test RESTEasy MicroProfile Java ${{ matrix.java }} - ${{ matrix.os }}
         run: |
