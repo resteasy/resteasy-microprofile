@@ -21,18 +21,18 @@
 
 <module xmlns="urn:jboss:module:1.9" name="org.jboss.resteasy.microprofile.context-propagation">
     <properties>
-        <property name="jboss.api" value="private"/>
+        <property name="jboss.api" value="private" />
     </properties>
 
     <resources>
-        <artifact name="${org.jboss.resteasy.microprofile:microprofile-context-propagation}"/>
+        <artifact name="${org.jboss.resteasy.microprofile:microprofile-context-propagation}" />
     </resources>
 
     <dependencies>
-        <module name="jakarta.ws.rs.api"/>
-        <module name="org.jboss.resteasy.resteasy-core" services="import"/>
-        <module name="org.jboss.resteasy.resteasy-core-spi"/>
-        <module name="org.eclipse.microprofile.config.api" export="true"/>
-        <module name="org.eclipse.microprofile.context-propagation" export="true"/>
+        <module name="jakarta.ws.rs.api" />
+        <module name="org.jboss.resteasy.resteasy-core" services="import" />
+        <module name="org.jboss.resteasy.resteasy-core-spi" />
+        <module name="org.eclipse.microprofile.config.api" export="true" />
+        <module name="org.eclipse.microprofile.context-propagation" export="true" />
     </dependencies>
 </module>

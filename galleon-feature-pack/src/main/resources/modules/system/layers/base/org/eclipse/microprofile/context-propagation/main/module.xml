@@ -22,10 +22,10 @@
 <module xmlns="urn:jboss:module:1.9" name="org.eclipse.microprofile.context-propagation">
 
     <resources>
-        <artifact name="${org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api}"/>
+        <artifact name="${org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api}" />
     </resources>
 
     <dependencies>
-        <module name="java.logging"/>
+        <module name="java.logging" />
     </dependencies>
 </module>
