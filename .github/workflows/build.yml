@@ -7,8 +7,34 @@ on:
   push:
     branches:
       - 'main'
+    paths-ignore:
+      - '.gitignore'
+      - ".mvn"
+      - "CODEOWNERS"
+      - "CODE_OF_CONDUCT.md"
+      - "CONTRIBUTING.adoc"
+      - "dco.txt"
+      - "LICENSE"
+      - "mvnw"
+      - "mvnw.cmd"
+      - "README.adoc"
+      - "security.txt"
+      - "*/README.adoc"
   pull_request:
     types: [ opened, synchronize, reopened, ready_for_review ]
+    paths-ignore:
+      - '.gitignore'
+      - ".mvn"
+      - "CODEOWNERS"
+      - "CODE_OF_CONDUCT.md"
+      - "CONTRIBUTING.adoc"
+      - "dco.txt"
+      - "LICENSE"
+      - "mvnw"
+      - "mvnw.cmd"
+      - "README.adoc"
+      - "security.txt"
+      - "*/README.adoc"
 
 jobs:
   build:
@@ -82,6 +108,7 @@ jobs:
     name: Check Code Formatting
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -90,9 +117,7 @@ jobs:
           java-version: 11
           distribution: 'temurin'
           cache: 'maven'
-      - name: Format Source
-        run: "mvn -B formatter:format"
-      - name: Check for changes
-        run:  |
-          [ -z "$(git status --porcelain=v1 2>/dev/null)" ] || (echo -e "::error ::Changes have been found\n$(git status --porcelain)" && exit 1)
+      - name: Validate Formatting
+        run: |
+          mvn -B validate -Pformat-check -Denforcer.skip=true
 

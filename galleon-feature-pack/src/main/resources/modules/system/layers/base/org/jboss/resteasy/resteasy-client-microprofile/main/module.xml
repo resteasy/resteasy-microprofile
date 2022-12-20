@@ -22,25 +22,25 @@
 <module xmlns="urn:jboss:module:1.9" name="org.jboss.resteasy.resteasy-client-microprofile">
 
     <properties>
-        <property name="jboss.api" value="private"/>
+        <property name="jboss.api" value="private" />
     </properties>
     <resources>
-        <artifact name="${org.jboss.resteasy.microprofile:microprofile-rest-client}"/>
-        <artifact name="${org.jboss.resteasy.microprofile:microprofile-rest-client-base}"/>
+        <artifact name="${org.jboss.resteasy.microprofile:microprofile-rest-client}" />
+        <artifact name="${org.jboss.resteasy.microprofile:microprofile-rest-client-base}" />
     </resources>
 
     <dependencies>
-        <module name="jakarta.annotation.api"/>
-        <module name="jakarta.enterprise.api"/>
-        <module name="jakarta.ws.rs.api"/>
-        <module name="org.eclipse.microprofile.restclient"/>
-        <module name="org.eclipse.microprofile.config.api"/>
-        <module name="org.jboss.logging"/>
-        <module name="org.jboss.resteasy.resteasy-cdi" services="import"/>
-        <module name="org.jboss.resteasy.resteasy-client-api"/>
-        <module name="org.jboss.resteasy.resteasy-client" services="import"/>
-        <module name="org.jboss.resteasy.resteasy-core" services="import"/>
-        <module name="org.jboss.resteasy.resteasy-core-spi"/>
-        <module name="org.reactivestreams"/>
+        <module name="jakarta.annotation.api" />
+        <module name="jakarta.enterprise.api" />
+        <module name="jakarta.ws.rs.api" />
+        <module name="org.eclipse.microprofile.restclient" />
+        <module name="org.eclipse.microprofile.config.api" />
+        <module name="org.jboss.logging" />
+        <module name="org.jboss.resteasy.resteasy-cdi" services="import" />
+        <module name="org.jboss.resteasy.resteasy-client-api" />
+        <module name="org.jboss.resteasy.resteasy-client" services="import" />
+        <module name="org.jboss.resteasy.resteasy-core" services="import" />
+        <module name="org.jboss.resteasy.resteasy-core-spi" />
+        <module name="org.reactivestreams" />
     </dependencies>
 </module>
