@@ -7,6 +7,19 @@ on:
   push:
     branches:
       - 'main'
+    paths-ignore:
+      - '.gitignore'
+      - ".mvn"
+      - "CODEOWNERS"
+      - "CODE_OF_CONDUCT.md"
+      - "CONTRIBUTING.adoc"
+      - "dco.txt"
+      - "LICENSE"
+      - "mvnw"
+      - "mvnw.cmd"
+      - "README.adoc"
+      - "security.txt"
+      - "*/README.adoc"
   schedule:
     - cron: '0 0 * * *' # Every day at 00:00 UTC
 
@@ -68,6 +81,9 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         java: [ '11', '17' ]
+        profile:
+          - ''
+          - "'-Dprovision.preview'"
     steps:
       - name: Checkout RESTEasy MicroProfile
         uses: actions/checkout@v3
@@ -96,7 +112,7 @@ jobs:
           mvn clean install -B -Denforcer.skip=true -Dcheckstyle.skip=true -DskipTests
           echo "WILDFLY_VERSION=${{ steps.build-wildfly.outputs.WILDFLY_VERSION }}"
           mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true -Dversion.org.wildfly=${{ steps.build-wildfly.outputs.WILDFLY_VERSION }} \
-            -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck -Pci
+            -pl testsuite/integration-tests,testsuite/microprofile-rest-client-tck -Pci ${{ matrix.profile }}
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
