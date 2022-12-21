@@ -45,35 +45,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest ]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-          cache: 'maven'
-      - name: Build with Maven Java 11  - ${{ matrix.os }}
-        run: |
-          echo "::group::Build Logs"
-          mvn clean install -U -B -fae  -Pci
-          echo "::endgroup::"
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
-          path: '**/surefire-reports/*.txt'
-
-  jvm-tests:
-    name: Test with Java ${{ matrix.java }} (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, windows-latest ]
-        java: [ '17' ]
+        java: [ '11', '17' ]
 
     steps:
       - uses: actions/checkout@v3
@@ -83,21 +55,47 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'maven'
-      - run: echo "JDK_${{ matrix.java }}=$JAVA_HOME" >> $GITHUB_ENV
-      # This must be run after the previous setup to ensure the JAVA_HOME is always Java 11.
-      - name: Set up JDK 11
+      - name: Build with Maven Java ${{ matrix.java }}  - ${{ matrix.os }}
+        run: |
+          mvn clean install -U -B -fae  -Pci
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
+          path: '**/surefire-reports/*.txt'
+
+  additional-profiles:
+    name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }} - WildFly ${{ matrix.wildfly-version }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        java: [ '11', '17' ]
+        profile:
+          - "'-Dprovision.preview'"
+        wildfly-version: ['27.0.0.Final']
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+      # This must be run after the previous setup to ensure the JAVA_HOME is always Java 11.
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'maven'
       # Since we need to pass the test.java.home we need different runs for Linux and Windows
-      - name: Test with Java ${{ matrix.java }}  - Linux
-        if: runner.os == 'Linux'
-        run: mvn clean install -U -B -fae -Dtest.java.home="$JDK_${{ matrix.java }}" -Pci
-      - name: Test with Java ${{ matrix.java }} - Windows
-        if: runner.os == 'Windows'
-        run: mvn clean install -U -B -fae '"-Dtest.java.home=%JDK_${{ matrix.java }}%"' -Pci
+      - name: Test with Java ${{ matrix.java }} - ${{ matrix.os }} ${{ matrix.profile }}
+        run: |
+          mvn clean install -U -B -fae ${{ matrix.profile }} -Pci '-Dversion.org.wildfly=${{ matrix.wildfly-version }}'
       - uses: actions/upload-artifact@v3
         if: failure()
         with:

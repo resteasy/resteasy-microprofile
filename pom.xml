@@ -110,7 +110,7 @@
         <module>rest-client-base</module>
         <module>rest-client</module>
         <module>context-propagation</module>
-        <module>galleon-feature-pack</module>
+        <module>galleon-pack</module>
         <module>testsuite</module>
     </modules>
 

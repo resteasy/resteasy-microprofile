@@ -31,6 +31,14 @@
     <artifactId>integration-tests</artifactId>
     <name>RESTEasy MicroProfile: Integration Tests</name>
 
+    <properties>
+        <!-- Galleon -->
+        <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
+        <feature.pack.groupId>org.jboss.resteasy.microprofile</feature.pack.groupId>
+        <feature.pack.artifactId>galleon-feature-pack</feature.pack.artifactId>
+        <feature.pack.version>${project.version}</feature.pack.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.io7m.xom</groupId>
@@ -159,6 +167,43 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jboss.galleon</groupId>
+                <artifactId>galleon-maven-plugin</artifactId>
+                <configuration>
+                    <install-dir>${jboss.home}</install-dir>
+                    <record-state>false</record-state>
+                    <log-time>${galleon.log.time}</log-time>
+                    <offline>${galleon.offline}</offline>
+                    <plugin-options>
+                        <!-- <jboss-maven-dist/> -->
+                        <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
+                        <optional-packages>passive+</optional-packages>
+                    </plugin-options>
+                    <feature-packs>
+                        <feature-pack>
+                            <groupId>${feature.pack.groupId}</groupId>
+                            <artifactId>${feature.pack.artifactId}</artifactId>
+                            <version>${feature.pack.version}</version>
+                            <excluded-packages>
+                                <name>product.conf</name>
+                                <name>docs.schema</name>
+                            </excluded-packages>
+                        </feature-pack>
+                    </feature-packs>
+                    <configurations>
+                        <config>
+                            <model>standalone</model>
+                            <name>standalone.xml</name>
+                            <layers>
+                                <layer>cdi</layer>
+                                <layer>jaxrs-server</layer>
+                                <layer>microprofile-config</layer>
+                            </layers>
+                        </config>
+                    </configurations>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -194,51 +239,11 @@
                     <name>!server.home</name>
                 </property>
             </activation>
-            <properties>
-                <!-- Galleon -->
-                <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
-                <feature.pack.groupId>org.jboss.resteasy.microprofile</feature.pack.groupId>
-                <feature.pack.artifactId>galleon-feature-pack</feature.pack.artifactId>
-                <feature.pack.version>${project.version}</feature.pack.version>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.jboss.galleon</groupId>
                         <artifactId>galleon-maven-plugin</artifactId>
-                        <configuration>
-                            <install-dir>${jboss.home}</install-dir>
-                            <record-state>false</record-state>
-                            <log-time>${galleon.log.time}</log-time>
-                            <offline>${galleon.offline}</offline>
-                            <plugin-options>
-                                <!-- <jboss-maven-dist/> -->
-                                <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
-                                <optional-packages>passive+</optional-packages>
-                            </plugin-options>
-                            <feature-packs>
-                                <feature-pack>
-                                    <groupId>${feature.pack.groupId}</groupId>
-                                    <artifactId>${feature.pack.artifactId}</artifactId>
-                                    <version>${feature.pack.version}</version>
-                                    <excluded-packages>
-                                        <name>product.conf</name>
-                                        <name>docs.schema</name>
-                                    </excluded-packages>
-                                </feature-pack>
-                            </feature-packs>
-                            <configurations>
-                                <config>
-                                    <model>standalone</model>
-                                    <name>standalone.xml</name>
-                                    <layers>
-                                        <layer>cdi</layer>
-                                        <layer>jaxrs-server</layer>
-                                        <layer>microprofile-config</layer>
-                                    </layers>
-                                </config>
-                            </configurations>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>server-provisioning</id>
@@ -250,6 +255,19 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>provision.preview.server</id>
+            <activation>
+                <property>
+                    <name>provision.preview</name>
+                </property>
+            </activation>
+
+            <properties>
+                <!-- Galleon -->
+                <feature.pack.artifactId>galleon-preview-feature-pack</feature.pack.artifactId>
+            </properties>
         </profile>
     </profiles>
 
