@@ -21,7 +21,7 @@ package org.jboss.resteasy.microprofile.test.config;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.resteasy.microprofile.config.ConfigConfigurationFactory;
+import org.jboss.resteasy.microprofile.config.ConfigConfiguration;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.resteasy.spi.config.ConfigurationFactory;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -48,7 +48,7 @@ public class ConfigConfigurationFactoryTest {
     @Test
     public void checkConfigurationFactory() {
         final ConfigurationFactory factory = ConfigurationFactory.getInstance();
-        Assert.assertTrue(String.format("Expected factory %s to be an instance of ConfigConfigurationFactory", factory),
-                factory instanceof ConfigConfigurationFactory);
+        Assert.assertTrue(String.format("Expected configuration %s to be an instance of ConfigConfiguration", factory),
+                factory.getConfiguration() instanceof ConfigConfiguration);
     }
 }
