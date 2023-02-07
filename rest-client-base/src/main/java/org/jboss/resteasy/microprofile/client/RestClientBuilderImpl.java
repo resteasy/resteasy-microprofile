@@ -42,6 +42,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +53,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -103,10 +105,16 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     private static final String DEFAULT_MAPPER_PROP = "microprofile.rest.client.disable.default.mapper";
     private static final Logger LOGGER = Logger.getLogger(RestClientBuilderImpl.class);
     private static final DefaultMediaTypeFilter DEFAULT_MEDIA_TYPE_FILTER = new DefaultMediaTypeFilter();
+    private static final Collection<Method> IGNORED_METHODS = new ArrayList<>();
     public static final MethodInjectionFilter METHOD_INJECTION_FILTER = new MethodInjectionFilter();
     public static final ClientHeadersRequestFilter HEADERS_REQUEST_FILTER = new ClientHeadersRequestFilter();
 
     static ResteasyProviderFactory PROVIDER_FACTORY;
+
+    static {
+        Collections.addAll(IGNORED_METHODS, Closeable.class.getMethods());
+        Collections.addAll(IGNORED_METHODS, AutoCloseable.class.getMethods());
+    }
 
     public static void setProviderFactory(ResteasyProviderFactory providerFactory) {
         PROVIDER_FACTORY = providerFactory;
@@ -565,7 +573,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     private <T> void verifyInterface(Class<T> typeDef) {
 
-        Method[] methods = typeDef.getMethods();
+        final Method[] methods = resolveMethods(typeDef);
 
         // multiple verbs
         for (Method method : methods) {
@@ -824,6 +832,16 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             return System.getProperty(key, def);
         }
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key, def));
+    }
+
+    private static Method[] resolveMethods(final Class<?> type) {
+        // If the type extends Closeable or AutoCloseable, we need to filter out their methods
+        if (AutoCloseable.class.isAssignableFrom(type)) {
+            return Stream.of(type.getMethods())
+                    .filter(method -> !IGNORED_METHODS.contains(method))
+                    .toArray(Method[]::new);
+        }
+        return type.getMethods();
     }
 
     private final MpClientBuilderImpl builderDelegate;
