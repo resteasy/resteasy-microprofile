@@ -35,7 +35,7 @@
     <properties>
         <!-- Test only dependencies -->
         <version.com.fasterxml.jackson>2.13.4</version.com.fasterxml.jackson>
-        <version.com.fasterxml.jackson.databind>${version.com.fasterxml.jackson}</version.com.fasterxml.jackson.databind>
+        <version.com.fasterxml.jackson.databind>2.14.1.redhat-00001</version.com.fasterxml.jackson.databind>
         <version.com.io7m.xom>1.2.10</version.com.io7m.xom>
 
         <version.jakarta.enterprise.concurrent>2.0.0</version.jakarta.enterprise.concurrent>
