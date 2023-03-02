@@ -34,6 +34,16 @@
     <properties>
         <!-- Galleon -->
         <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
+
+        <!-- Feature Packs -->
+        <wildfly.feature.pack.groupId>org.wildfly</wildfly.feature.pack.groupId>
+        <wildfly.feature.pack.artifactId>wildfly-galleon-pack</wildfly.feature.pack.artifactId>
+        <wildfly.feature.pack.version>${version.org.wildfly}</wildfly.feature.pack.version>
+
+        <resteasy.feature.pack.groupId>org.jboss.resteasy</resteasy.feature.pack.groupId>
+        <resteasy.feature.pack.artifactId>galleon-feature-pack</resteasy.feature.pack.artifactId>
+        <resteasy.feature.pack.version>${version.org.jboss.resteasy}</resteasy.feature.pack.version>
+
         <feature.pack.groupId>org.jboss.resteasy.microprofile</feature.pack.groupId>
         <feature.pack.artifactId>galleon-feature-pack</feature.pack.artifactId>
         <feature.pack.version>${project.version}</feature.pack.version>
@@ -182,6 +192,16 @@
                     </plugin-options>
                     <feature-packs>
                         <feature-pack>
+                            <groupId>${wildfly.feature.pack.groupId}</groupId>
+                            <artifactId>${wildfly.feature.pack.artifactId}</artifactId>
+                            <version>${wildfly.feature.pack.version}</version>
+                        </feature-pack>
+                        <feature-pack>
+                            <groupId>${resteasy.feature.pack.groupId}</groupId>
+                            <artifactId>${resteasy.feature.pack.artifactId}</artifactId>
+                            <version>${resteasy.feature.pack.version}</version>
+                        </feature-pack>
+                        <feature-pack>
                             <groupId>${feature.pack.groupId}</groupId>
                             <artifactId>${feature.pack.artifactId}</artifactId>
                             <version>${feature.pack.version}</version>
@@ -266,6 +286,8 @@
 
             <properties>
                 <!-- Galleon -->
+                <wildfly.feature.pack.artifactId>wildfly-preview-feature-pack</wildfly.feature.pack.artifactId>
+                <resteasy.feature.pack.artifactId>galleon-preview-feature-pack</resteasy.feature.pack.artifactId>
                 <feature.pack.artifactId>galleon-preview-feature-pack</feature.pack.artifactId>
             </properties>
         </profile>
