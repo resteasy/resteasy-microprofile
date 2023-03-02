@@ -22,11 +22,14 @@ package org.jboss.resteasy.microprofile.test.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.microprofile.config.ConfigConfiguration;
+import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigResource;
+import org.jboss.resteasy.microprofile.test.config.resource.TestConfigApplication;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.resteasy.spi.config.ConfigurationFactory;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,11 +40,13 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
 @RunWith(Arquillian.class)
+@Ignore("This breaks with WildFly 27 and RESTEasy 6.2.3.Final. Once WildFly 28 is released, this can be re-enabled.")
 public class ConfigConfigurationFactoryTest {
 
     @Deployment
     public static WebArchive deployment() {
         return TestEnvironment.createWar(ConfigConfigurationFactoryTest.class)
+                .addClasses(TestConfigApplication.class, MicroProfileConfigResource.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
