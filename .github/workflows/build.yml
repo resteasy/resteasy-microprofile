@@ -66,14 +66,14 @@ jobs:
 
   additional-profiles:
     name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }} - WildFly ${{ matrix.wildfly-version }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
         java: [ '11', '17' ]
         profile:
+          - "'-Dsecurity.manager'"
           - "'-Dprovision.preview'"
         wildfly-version: ['27.0.1.Final']
 
@@ -93,13 +93,13 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       # Since we need to pass the test.java.home we need different runs for Linux and Windows
-      - name: Test with Java ${{ matrix.java }} - ${{ matrix.os }} ${{ matrix.profile }}
+      - name: Test with Java ${{ matrix.java }} - ${{ matrix.profile }}
         run: |
           mvn clean install -U -B -fae ${{ matrix.profile }} -Pci '-Dversion.org.wildfly=${{ matrix.wildfly-version }}'
       - uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
+          name: surefire-reports-${{ matrix.profile }}-${{ matrix.java }}
           path: '**/surefire-reports/*.txt'
 
   format-check:

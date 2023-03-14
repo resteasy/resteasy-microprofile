@@ -36,10 +36,6 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 @Path("/")
 public class MicroProfileConfigResource {
 
-    static {
-        System.setProperty("system", "system-system");
-    }
-
     @Inject
     Config config;
 

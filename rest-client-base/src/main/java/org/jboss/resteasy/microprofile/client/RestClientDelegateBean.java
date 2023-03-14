@@ -30,9 +30,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivilegedAction;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,7 +135,14 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     @Override
     public Object create(CreationalContext<Object> creationalContext) {
-        RestClientBuilder builder = RestClientBuilder.newBuilder();
+        RestClientBuilder builder;
+        // This can be removed once the below issue is resolved. However, for now we can handle this safely here.
+        // See https://github.com/eclipse/microprofile-rest-client/issues/353
+        if (System.getSecurityManager() == null) {
+            builder = RestClientBuilder.newBuilder();
+        } else {
+            builder = AccessController.doPrivileged((PrivilegedAction<RestClientBuilder>) RestClientBuilder::newBuilder);
+        }
 
         configureUri(builder);
 

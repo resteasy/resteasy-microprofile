@@ -20,6 +20,8 @@
 package org.jboss.resteasy.microprofile.client.header;
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -139,15 +141,20 @@ public class ClientHeaderProviders {
     }
 
     static {
-        ServiceLoader<HeaderFillerFactory> fillerFactories = ServiceLoader.load(HeaderFillerFactory.class);
-        int highestPrio = Integer.MIN_VALUE;
-        HeaderFillerFactory result = null;
-        for (HeaderFillerFactory factory : fillerFactories) {
-            if (factory.getPriority() > highestPrio) {
-                highestPrio = factory.getPriority();
-                result = factory;
+        final PrivilegedAction<HeaderFillerFactory> action = () -> {
+            ServiceLoader<HeaderFillerFactory> fillerFactories = ServiceLoader.load(HeaderFillerFactory.class);
+            int highestPrio = Integer.MIN_VALUE;
+            HeaderFillerFactory result = null;
+            for (HeaderFillerFactory factory : fillerFactories) {
+                if (factory.getPriority() > highestPrio) {
+                    highestPrio = factory.getPriority();
+                    result = factory;
+                }
             }
-        }
+            return result;
+        };
+        final HeaderFillerFactory result = System.getSecurityManager() == null ? action.run()
+                : AccessController.doPrivileged(action);
         if (result == null) {
             throw new IllegalStateException("Unable to find a HeaderFillerFactory implementation");
         } else {
