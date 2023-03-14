@@ -22,7 +22,6 @@ package org.jboss.resteasy.microprofile.test.config;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.PropertyPermission;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -32,10 +31,11 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigFilter;
 import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigResource;
 import org.jboss.resteasy.microprofile.test.config.resource.TestConfigApplication;
-import org.jboss.resteasy.microprofile.test.util.PermissionUtil;
+import org.jboss.resteasy.microprofile.test.util.MicroProfileConfigSystemPropertySetupTask;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -53,6 +53,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
+@ServerSetup(MicroProfileConfigSystemPropertySetupTask.class)
 public class MicroProfileConfigServletTest {
 
     static Client client;
@@ -64,9 +65,7 @@ public class MicroProfileConfigServletTest {
         return TestEnvironment.createWar(MicroProfileConfigServletTest.class)
                 .addClasses(TestConfigApplication.class, MicroProfileConfigFilter.class, MicroProfileConfigResource.class)
                 .setWebXML(MicroProfileConfigServletTest.class.getPackage(), "web_servlet.xml")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsManifestResource(PermissionUtil.createPermissionsXmlAsset(
-                        new PropertyPermission("system", "write")), "permissions.xml");
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @BeforeClass

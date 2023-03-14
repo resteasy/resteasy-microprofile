@@ -47,6 +47,8 @@
         <feature.pack.groupId>org.jboss.resteasy.microprofile</feature.pack.groupId>
         <feature.pack.artifactId>galleon-feature-pack</feature.pack.artifactId>
         <feature.pack.version>${project.version}</feature.pack.version>
+
+        <jboss.arguments/>
     </properties>
 
     <dependencies>
@@ -137,6 +139,11 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-json-p-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>arquillian-utils</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -275,6 +282,17 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>security.manager</id>
+            <activation>
+                <property>
+                    <name>security.manager</name>
+                </property>
+            </activation>
+            <properties>
+                <jboss.arguments>-secmgr</jboss.arguments>
+            </properties>
         </profile>
         <profile>
             <id>provision.preview.server</id>

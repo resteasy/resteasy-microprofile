@@ -232,6 +232,19 @@
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
+                <artifactId>arquillian-utils</artifactId>
+                <version>${version.org.jboss.resteasy}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-undertow</artifactId>
                 <version>${version.org.jboss.resteasy}</version>
                 <scope>test</scope>

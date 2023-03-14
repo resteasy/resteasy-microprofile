@@ -19,12 +19,14 @@
 
 package org.jboss.resteasy.microprofile.client;
 
-import java.util.ArrayList;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.rest.client.spi.RestClientListener;
 
@@ -41,14 +43,31 @@ public class RestClientListeners {
             .synchronizedMap(new WeakHashMap<>());
 
     public static Collection<RestClientListener> get() {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        Collection<RestClientListener> c;
-        c = map.get(loader);
-        if (c == null) {
-            c = new ArrayList<>();
-            ServiceLoader.load(RestClientListener.class, loader).forEach(c::add);
-            map.put(loader, Collections.unmodifiableCollection(c));
+        ClassLoader loader = getClassLoader();
+        if (loader == null) {
+            return Collections.emptyList();
         }
-        return c;
+        final PrivilegedAction<Collection<RestClientListener>> action = () -> ServiceLoader
+                .load(RestClientListener.class, loader)
+                .stream()
+                .map(ServiceLoader.Provider::get)
+                .collect(Collectors.toUnmodifiableList());
+        return map.computeIfAbsent(loader, classLoader -> {
+            if (System.getSecurityManager() == null) {
+                return action.run();
+            }
+            return AccessController.doPrivileged(action);
+        });
+    }
+
+    private static ClassLoader getClassLoader() {
+        if (System.getSecurityManager() == null) {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            return cl == null ? RestClientListeners.class.getClassLoader() : cl;
+        }
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            return cl == null ? RestClientListeners.class.getClassLoader() : cl;
+        });
     }
 }

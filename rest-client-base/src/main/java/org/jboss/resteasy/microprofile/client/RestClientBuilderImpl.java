@@ -268,7 +268,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
         builderDelegate.register(new ExceptionMapping(localProviderInstances), 1);
 
-        ClassLoader classLoader = aClass.getClassLoader();
+        ClassLoader classLoader = getClassLoader(aClass);
 
         T actualClient;
         ResteasyClient client;
@@ -427,7 +427,13 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     }
 
     private Optional<InetSocketAddress> selectHttpProxy() {
-        return ProxySelector.getDefault().select(baseURI).stream()
+        final ProxySelector selector;
+        if (System.getSecurityManager() == null) {
+            selector = ProxySelector.getDefault();
+        } else {
+            selector = AccessController.doPrivileged((PrivilegedAction<ProxySelector>) ProxySelector::getDefault);
+        }
+        return selector.select(baseURI).stream()
                 .filter(proxy -> proxy.type() == java.net.Proxy.Type.HTTP)
                 .map(java.net.Proxy::address)
                 .map(InetSocketAddress.class::cast)
@@ -842,6 +848,13 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                     .toArray(Method[]::new);
         }
         return type.getMethods();
+    }
+
+    private static ClassLoader getClassLoader(final Class<?> type) {
+        if (System.getSecurityManager() == null) {
+            return type.getClassLoader();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) type::getClassLoader);
     }
 
     private final MpClientBuilderImpl builderDelegate;

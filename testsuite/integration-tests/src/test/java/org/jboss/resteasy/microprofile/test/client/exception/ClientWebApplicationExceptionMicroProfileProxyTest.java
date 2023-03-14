@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.client.exception;
 
 import java.net.URL;
+import java.util.PropertyPermission;
 
 import jakarta.ws.rs.RedirectionException;
 import jakarta.ws.rs.WebApplicationException;
@@ -35,6 +36,7 @@ import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebA
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebApplicationExceptionMicroProfileProxyResource;
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebApplicationExceptionProxyResourceInterface;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
+import org.jboss.resteasy.utils.PermissionUtil;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.Assert;
@@ -78,7 +80,10 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                         "       xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_3_0.xsd\"\n"
                         +
                         "       version=\"3.0\" bean-discovery-mode=\"all\">\n" +
-                        "</beans>"), "beans.xml");
+                        "</beans>"), "beans.xml")
+                .addAsManifestResource(PermissionUtil.createPermissionsXmlAsset(
+                        new PropertyPermission("resteasy.original.webapplicationexception.behavior", "write")),
+                        "permissions.xml");
     }
 
     @Before

@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.test.config;
 
 import java.net.URL;
+import java.util.Map;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -29,8 +30,10 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.resteasy.microprofile.test.config.resource.OptionalConfigPropertyInjectionResource;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
+import org.jboss.resteasy.setup.SystemPropertySetupTask;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.AfterClass;
@@ -47,7 +50,15 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
+@ServerSetup(OptionalConfigPropertyInjectionTest.PropertySetupTask.class)
 public class OptionalConfigPropertyInjectionTest {
+
+    public static class PropertySetupTask extends SystemPropertySetupTask {
+        public PropertySetupTask() {
+            super(Map.of(OptionalConfigPropertyInjectionResource.PRESENT_OPTIONAL_PROPERTY_NAME,
+                    OptionalConfigPropertyInjectionResource.OPTIONAL_PROPERTY_VALUE));
+        }
+    }
 
     private static Client client;
 

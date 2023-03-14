@@ -36,12 +36,8 @@ public class OptionalConfigPropertyInjectionResource {
     public static final String PRESENT_OPTIONAL_PROPERTY_PATH = "/presentOptionalProperty";
 
     private static final String MISSING_OPTIONAL_PROPERTY_NAME = "org.jboss.resteasy.test.missingOptionalProperty";
-    private static final String PRESENT_OPTIONAL_PROPERTY_NAME = "org.jboss.resteasy.test.presentOptionalProperty";
+    public static final String PRESENT_OPTIONAL_PROPERTY_NAME = "org.jboss.resteasy.test.presentOptionalProperty";
     public static final String OPTIONAL_PROPERTY_VALUE = "I'm a optional property but I'm here";
-
-    static {
-        System.setProperty(PRESENT_OPTIONAL_PROPERTY_NAME, OPTIONAL_PROPERTY_VALUE);
-    }
 
     @Inject
     @ConfigProperty(name = MISSING_OPTIONAL_PROPERTY_NAME)
