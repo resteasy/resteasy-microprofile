@@ -65,6 +65,7 @@ jobs:
           echo "RESTEASY_VERSION=${{ steps.build-resteasy.outputs.RESTEASY_VERSION }}"
           mvn verify -B -Denforcer.skip=true -Dcheckstyle.skip=true -Dskip.compile=true -Dversion.org.jboss.resteasy=${{ steps.build-resteasy.outputs.RESTEASY_VERSION }} \
             -pl config,context-propagation,rest-client,testsuite/integration-tests,testsuite/microprofile-rest-client-tck \
+            -Dversion.jakarta.servlet=6.0.0
           -Pci
       - uses: actions/upload-artifact@v3
         if: failure()
