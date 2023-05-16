@@ -46,7 +46,7 @@
         <version.org.eclipse.parsson>1.1.1</version.org.eclipse.parsson>
         <version.org.eclipse.yasson>3.0.2</version.org.eclipse.yasson>
 
-        <version.org.jboss.arquillian>1.7.0.Alpha14</version.org.jboss.arquillian>
+        <version.org.jboss.arquillian>1.7.0.Final</version.org.jboss.arquillian>
         <version.org.jboss.arquillian.container.arquillian-weld-embedded>3.0.2.Final</version.org.jboss.arquillian.container.arquillian-weld-embedded>
         <version.org.jboss.dmr>1.6.1.Final</version.org.jboss.dmr>
         <version.org.jboss.shrinkwrap.resolver>3.1.4</version.org.jboss.shrinkwrap.resolver>
