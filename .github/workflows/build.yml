@@ -75,7 +75,7 @@ jobs:
         profile:
           - "'-Dsecurity.manager'"
           - "'-Dprovision.preview'"
-        wildfly-version: ['27.0.1.Final']
+        wildfly-version: ['28.0.0.Final']
 
     steps:
       - uses: actions/checkout@v3
