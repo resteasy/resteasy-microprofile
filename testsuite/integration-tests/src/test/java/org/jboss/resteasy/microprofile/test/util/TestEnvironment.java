@@ -60,7 +60,7 @@ public class TestEnvironment {
         final String url = getHttpUrl() + test.getSimpleName()
                 + (path == null ? "" : (path.charAt(0) == '/' ? path : "/" + path));
         return addConfigProperties(createWar(test),
-                Collections.singletonMap(resource.getCanonicalName() + "/mp-rest/url", url));
+                Collections.singletonMap(resource.getName() + "/mp-rest/url", url));
     }
 
     public static WebArchive createWarWithConfigUrl(final String deploymentName, final Class<?> resource,
