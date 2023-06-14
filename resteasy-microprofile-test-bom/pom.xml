@@ -54,7 +54,7 @@
 
         <version.org.testng>7.7.0</version.org.testng>
 
-        <version.org.wildfly.arquillian>5.0.0.Alpha6</version.org.wildfly.arquillian>
+        <version.org.wildfly.arquillian>5.0.0.Final</version.org.wildfly.arquillian>
     </properties>
 
     <dependencyManagement>
