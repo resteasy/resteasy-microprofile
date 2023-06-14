@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
-        java: [ '11', '17' ]
+        java: [ '11', '17' , '20']
 
     steps:
       - name: Checkout RESTEasy MicroProfile
@@ -81,7 +81,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
-        java: [ '11', '17' ]
+        java: [ '11', '17', '20' ]
         profile:
           - ''
           - "'-Dprovision.preview'"
