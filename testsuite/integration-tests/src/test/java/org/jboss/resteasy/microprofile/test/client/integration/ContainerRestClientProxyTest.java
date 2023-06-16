@@ -64,11 +64,13 @@ public class ContainerRestClientProxyTest {
                         InterceptedClient.class,
                         TestResource.class,
                         ClientInterceptor.class,
-                        ClientInterceptorBinding.class)
+                        ClientInterceptorBinding.class,
+                        ClientMethodInterceptor.class,
+                        ClientMethodInterceptorBinding.class)
                 .addAsManifestResource(PermissionUtil.createPermissionsXmlAsset(
-                                new PropertyPermission("arquillian.*", "read"),
-                                new ReflectPermission("suppressAccessChecks"),
-                                new RuntimePermission("accessDeclaredMembers")),
+                        new PropertyPermission("arquillian.*", "read"),
+                        new ReflectPermission("suppressAccessChecks"),
+                        new RuntimePermission("accessDeclaredMembers")),
                         "permissions.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
@@ -80,7 +82,11 @@ public class ContainerRestClientProxyTest {
     @Test
     public void intercepted() {
         Assert.assertNotNull(client);
+        Assert.assertFalse(ClientInterceptor.invoked);
+        Assert.assertFalse(ClientMethodInterceptor.invoked);
         Assert.assertEquals("test", client.get());
+        Assert.assertTrue(ClientInterceptor.invoked);
+        Assert.assertTrue(ClientMethodInterceptor.invoked);
     }
 
     @RegisterRestClient
@@ -91,6 +97,7 @@ public class ContainerRestClientProxyTest {
 
         @GET
         @Path("/test")
+        @ClientMethodInterceptorBinding
         String get();
 
     }
@@ -109,12 +116,33 @@ public class ContainerRestClientProxyTest {
     @Interceptor
     public static class ClientInterceptor {
 
+        public static boolean invoked = false;
+
         @Inject
         @Intercepted
         Bean<?> bean;
 
         @AroundInvoke
         public Object doSomething(InvocationContext ic) throws Exception {
+            invoked = true;
+            return ic.proceed();
+        }
+    }
+
+    @Priority(1)
+    @Interceptor
+    @ClientMethodInterceptorBinding
+    public static class ClientMethodInterceptor {
+
+        public static boolean invoked = false;
+
+        @Inject
+        @Intercepted
+        Bean<?> bean;
+
+        @AroundInvoke
+        public Object doSomething(InvocationContext ic) throws Exception {
+            invoked = true;
             return ic.proceed();
         }
     }
@@ -123,5 +151,11 @@ public class ContainerRestClientProxyTest {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
     public @interface ClientInterceptorBinding {
+    }
+
+    @InterceptorBinding
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+    public @interface ClientMethodInterceptorBinding {
     }
 }

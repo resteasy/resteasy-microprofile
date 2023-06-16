@@ -52,10 +52,10 @@ import javax.net.ssl.HostnameVerifier;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Any;
-import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InterceptionFactory;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.enterprise.util.AnnotationLiteral;
 
@@ -65,7 +65,7 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
-public class RestClientDelegateBean implements Bean<Object>, PassivationCapable {
+public class RestClientDelegateBean<T> implements Bean<T>, PassivationCapable {
     private static final Logger LOGGER = Logger.getLogger(RestClientDelegateBean.class);
 
     public static final String REST_URL_FORMAT = "%s/mp-rest/url";
@@ -96,7 +96,7 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     private static final String PROPERTY_PREFIX = "%s/property/";
 
-    private final Class<?> proxyType;
+    private final Class<T> proxyType;
 
     private final Class<? extends Annotation> scope;
 
@@ -108,7 +108,7 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     private final Optional<String> configKey;
 
-    RestClientDelegateBean(final Class<?> proxyType, final BeanManager beanManager, final Optional<String> baseUri,
+    RestClientDelegateBean(final Class<T> proxyType, final BeanManager beanManager, final Optional<String> baseUri,
             final Optional<String> configKey) {
         this.proxyType = proxyType;
         this.beanManager = beanManager;
@@ -134,7 +134,7 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     }
 
     @Override
-    public Object create(CreationalContext<Object> creationalContext) {
+    public T create(CreationalContext<T> creationalContext) {
         RestClientBuilder builder;
         // This can be removed once the below issue is resolved. However, for now we can handle this safely here.
         // See https://github.com/eclipse/microprofile-rest-client/issues/353
@@ -153,7 +153,14 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
         configureSsl(builder);
 
         getConfigProperties().forEach(builder::property);
-        return builder.build(proxyType);
+
+        // We want to use the interception factory to let CDI handle all interception
+        InterceptionFactory<T> interceptionFactory = beanManager.createInterceptionFactory(creationalContext, proxyType);
+        // Weld takes the interceptor bindings from the class (proxyType) used to create InterceptionFactory
+        // NOTE: This is somewhat grey area, it might be safer (but way more complex) to properly look up all bindings and
+        // register them here via - interceptionFactory.configure().add(SomeBinding.Literal.INSTANCE)
+        // Finally, create the proxy type and feed it to the interception factory
+        return interceptionFactory.createInterceptedInstance(builder.build(proxyType));
     }
 
     private void configureSsl(RestClientBuilder builder) {
@@ -318,7 +325,7 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
     }
 
     @Override
-    public void destroy(Object instance, CreationalContext<Object> creationalContext) {
+    public void destroy(T instance, CreationalContext<T> creationalContext) {
         if (instance instanceof AutoCloseable) {
             try {
                 ((AutoCloseable) instance).close();
@@ -326,18 +333,21 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
                 LOGGER.debugf(e, "Failed to close client %s", instance);
             }
         }
+        // release all possibly created dependent objects of this creational context
+        // this will most likely be a no-op
+        creationalContext.release();
     }
 
     @Override
     public Set<Type> getTypes() {
+        // only add the interface type
+        // NOTE: if there is a hierarchy of interfaces, should all be added as bean types?
         return Collections.singleton(proxyType);
     }
 
     @Override
     public Set<Annotation> getQualifiers() {
         Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.add(new AnnotationLiteral<Default>() {
-        });
         qualifiers.add(new AnnotationLiteral<Any>() {
         });
         qualifiers.add(RestClient.LITERAL);
@@ -351,6 +361,7 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     @Override
     public String getName() {
+        // NOTE: this is an EL bean name, chances are this could just be null?
         return proxyType.getName();
     }
 
