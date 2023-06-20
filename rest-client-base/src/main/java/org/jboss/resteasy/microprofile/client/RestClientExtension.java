@@ -53,7 +53,7 @@ public class RestClientExtension implements Extension {
             Optional<String> maybeConfigKey = extractConfigKey(annotation);
 
             proxyTypes.add(new RestClientData(javaClass, maybeUri, maybeConfigKey));
-            type.veto();
+            // no need to veto() these types because interfaces cannot become beans anyway
         } else {
             errors.add(new IllegalArgumentException("Rest client needs to be an interface " + javaClass));
         }
@@ -107,12 +107,12 @@ public class RestClientExtension implements Extension {
         // nothing to do
     }
 
-    private static class RestClientData {
-        private final Class<?> javaClass;
+    private static class RestClientData<T> {
+        private final Class<T> javaClass;
         private final Optional<String> baseUri;
         private final Optional<String> configKey;
 
-        private RestClientData(final Class<?> javaClass, final Optional<String> baseUri,
+        private RestClientData(final Class<T> javaClass, final Optional<String> baseUri,
                 final Optional<String> configKey) {
             this.javaClass = javaClass;
             this.baseUri = baseUri;
