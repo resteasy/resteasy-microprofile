@@ -32,7 +32,7 @@
 
     <groupId>org.jboss.resteasy.microprofile</groupId>
     <artifactId>resteasy-microprofile-parent</artifactId>
-    <version>2.1.2.Final-SNAPSHOT</version>
+    <version>2.1.2.Final</version>
     <packaging>pom</packaging>
 
     <url>https://jboss.org/resteasy</url>
