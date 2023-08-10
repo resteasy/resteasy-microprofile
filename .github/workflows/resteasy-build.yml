@@ -21,7 +21,7 @@ jobs:
       resteasy-branch: "6.2"
       resteasy-repo: "resteasy/resteasy"
 
-  resteasy-spring-build:
+  resteasy-microprofile-build:
     runs-on: ${{ matrix.os }}
     needs: resteasy-build
     strategy:
