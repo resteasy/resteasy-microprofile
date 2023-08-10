@@ -1,0 +1,61 @@
+# This workflow is for a nightly run against WildFly upstream
+
+name: WildFly Test Build
+
+on:
+  push:
+    branches:
+      - 'main'
+  schedule:
+    - cron: '0 0 * * *' # Every day at 00:00 UTC
+
+# Only run the latest job and cancel previous ones
+concurrency:
+  group: '${{ github.ref || github.run_id }}'
+  cancel-in-progress: true
+
+jobs:
+  wildfly-build:
+    uses: wildfly/wildfly/.github/workflows/shared-wildfly-build.yml@main
+    with:
+      wildfly-branch: "main"
+      wildfly-repo: "wildfly/wildfly"
+
+  resteasy-build:
+    runs-on: ${{ matrix.os }}
+    needs: wildfly-build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java: ['11', '17', '21-ea']
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: wildfly-maven-repository
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf wildfly-maven-repository.tar.gz -C ~
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Build with Maven Java ${{ matrix.java }}
+        run: mvn  -B clean install '-Dversion.org.wildfly=${{ needs.wildfly-build.outputs.wildfly-version }}'
+      - name: Upload surefire reports
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
+          path: '**/surefire-reports/'
+      - name: Upload server logs
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: server-logs-${{ matrix.os }}-${{ matrix.java }}
+          path: '**/*.log'

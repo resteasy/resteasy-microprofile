@@ -5,11 +5,13 @@ name: RESTEasy MicroProfile Build and Test
 
 on:
   push:
-    branches:
-      - 'main'
+    branches-ignore:
+      - 'dependabot/**'
     paths-ignore:
       - '.gitignore'
-      - ".mvn"
+      - ".mvn/**"
+      - "docbook/**"
+      - "distribution/**"
       - "CODEOWNERS"
       - "CODE_OF_CONDUCT.md"
       - "CONTRIBUTING.adoc"
@@ -18,13 +20,16 @@ on:
       - "mvnw"
       - "mvnw.cmd"
       - "README.adoc"
-      - "security.txt"
-      - "*/README.adoc"
+      - "SECURITY.md"
   pull_request:
-    types: [ opened, synchronize, reopened, ready_for_review ]
+    branches:
+      - '**'
     paths-ignore:
       - '.gitignore'
-      - ".mvn"
+      - ".github/workflows/manual-*.yml"
+      - ".mvn/**"
+      - "docbook/**"
+      - "distribution/**"
       - "CODEOWNERS"
       - "CODE_OF_CONDUCT.md"
       - "CONTRIBUTING.adoc"
@@ -33,8 +38,7 @@ on:
       - "mvnw"
       - "mvnw.cmd"
       - "README.adoc"
-      - "security.txt"
-      - "*/README.adoc"
+      - "SECURITY.md"
 
 # Only run the latest job
 concurrency:
@@ -67,7 +71,7 @@ jobs:
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
-          path: '**/surefire-reports/*.txt'
+          path: '**/surefire-reports/'
 
   additional-profiles:
     name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }} - WildFly ${{ matrix.wildfly-version }}
@@ -80,7 +84,7 @@ jobs:
         profile:
           - "'-Dsecurity.manager'"
           - "'-Dprovision.preview'"
-        wildfly-version: ['28.0.1.Final']
+        wildfly-version: ['28.0.1.Final', '29.0.0.Final']
 
     steps:
       - uses: actions/checkout@v3
@@ -105,7 +109,7 @@ jobs:
         if: failure()
         with:
           name: surefire-reports-${{ matrix.profile }}-${{ matrix.java }}
-          path: '**/surefire-reports/*.txt'
+          path: '**/surefire-reports/'
 
   format-check:
     name: Check Code Formatting
