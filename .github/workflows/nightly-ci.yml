@@ -52,7 +52,6 @@ jobs:
           cache: 'maven'
       - name: Build and Test RESTEasy MicroProfile Java ${{ matrix.java }} - ${{ matrix.os }}
         run: |
-          cd resteasy-microprofile
           mvn clean install -B -Dversion.org.jboss.resteasy=${{ steps.build-resteasy.outputs.RESTEASY_VERSION }} -Pci
       - uses: actions/upload-artifact@v3
         if: failure()
