@@ -29,7 +29,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  resteasy-test:
+  resteasy-nightly-test:
     name: Build and test against RESTEasy
     outputs:
       wildfly-version: ${{steps.version.outputs.resteasy-version}}
