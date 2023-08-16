@@ -25,7 +25,7 @@ on:
 
 # Only run the latest job and cancel previous ones
 concurrency:
-  group: '${{ github.ref || github.run_id }}'
+  group: 'nightly-${{ github.ref || github.run_id }}'
   cancel-in-progress: true
 
 jobs:
