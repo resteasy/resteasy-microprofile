@@ -37,9 +37,8 @@ jobs:
 
   resteasy-nightly-test:
     name: Build and test against RESTEasy
-    outputs:
-      wildfly-version: ${{steps.version.outputs.resteasy-version}}
     runs-on: ${{ matrix.os }}
+    needs: resteasy-build
     timeout-minutes: 60
     strategy:
       fail-fast: false
