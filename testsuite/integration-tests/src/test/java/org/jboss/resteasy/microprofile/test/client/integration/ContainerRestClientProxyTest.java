@@ -76,8 +76,16 @@ public class ContainerRestClientProxyTest {
     }
 
     @Inject
-    @RestClient
     private InterceptedClient client;
+
+    @Inject
+    @RestClient
+    private InterceptedClient qualifiedClient;
+
+    @Test
+    public void checkQualifiedClient() {
+        Assert.assertNotNull("Cliented injected with qualifier @RestClient should not be null", qualifiedClient);
+    }
 
     @Test
     public void intercepted() {

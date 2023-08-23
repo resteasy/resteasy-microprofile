@@ -52,6 +52,7 @@ import javax.net.ssl.HostnameVerifier;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
@@ -350,6 +351,7 @@ public class RestClientDelegateBean<T> implements Bean<T>, PassivationCapable {
         Set<Annotation> qualifiers = new HashSet<Annotation>();
         qualifiers.add(new AnnotationLiteral<Any>() {
         });
+        qualifiers.add(Default.Literal.INSTANCE);
         qualifiers.add(RestClient.LITERAL);
         return qualifiers;
     }
