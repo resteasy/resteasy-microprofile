@@ -54,7 +54,7 @@
     <properties>
         <!-- Dependency versions, please keep in alphabetical order -->
         <!-- TODO (jrp) this can be removed when RESTEASY-2972 is resolved -->
-        <version.commons-codec.commons-codec>1.15</version.commons-codec.commons-codec>
+        <version.commons-codec.commons-codec>1.16.0.redhat-00001</version.commons-codec.commons-codec>
 
         <version.jakarta.enterprise>4.0.1</version.jakarta.enterprise>
         <version.jakarta.servlet>6.0.0</version.jakarta.servlet>
