@@ -41,7 +41,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 public class RestClientExtension implements Extension {
 
-    private final Set<RestClientData> proxyTypes = new LinkedHashSet<>();
+    private final Set<RestClientData<?>> proxyTypes = new LinkedHashSet<>();
 
     private final Set<Throwable> errors = new LinkedHashSet<>();
 
@@ -52,7 +52,7 @@ public class RestClientExtension implements Extension {
             Optional<String> maybeUri = extractBaseUri(annotation);
             Optional<String> maybeConfigKey = extractConfigKey(annotation);
 
-            proxyTypes.add(new RestClientData(javaClass, maybeUri, maybeConfigKey));
+            proxyTypes.add(new RestClientData<>(javaClass, maybeUri, maybeConfigKey));
             // no need to veto() these types because interfaces cannot become beans anyway
         } else {
             errors.add(new IllegalArgumentException("Rest client needs to be an interface " + javaClass));
@@ -70,9 +70,9 @@ public class RestClientExtension implements Extension {
     }
 
     public void createProxy(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        for (RestClientData clientData : proxyTypes) {
+        for (RestClientData<?> clientData : proxyTypes) {
             afterBeanDiscovery.addBean(
-                    new RestClientDelegateBean(clientData.javaClass, beanManager, clientData.baseUri, clientData.configKey));
+                    new RestClientDelegateBean<>(clientData.javaClass, beanManager, clientData.baseUri, clientData.configKey));
         }
     }
 
@@ -125,7 +125,7 @@ public class RestClientExtension implements Extension {
                 return true;
             if (o == null || getClass() != o.getClass())
                 return false;
-            RestClientData that = (RestClientData) o;
+            RestClientData<?> that = (RestClientData<?>) o;
             return javaClass.equals(that.javaClass);
         }
 
