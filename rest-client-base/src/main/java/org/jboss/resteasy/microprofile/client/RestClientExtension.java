@@ -19,9 +19,12 @@
 
 package org.jboss.resteasy.microprofile.client;
 
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -35,15 +38,18 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessSessionBean;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 public class RestClientExtension implements Extension {
 
-    private final Set<RestClientData> proxyTypes = new LinkedHashSet<>();
+    private final Set<RestClientData<?>> proxyTypes = new LinkedHashSet<>();
 
     private final Set<Throwable> errors = new LinkedHashSet<>();
+
+    private final Map<Class<?>, Type> sessionBeanInterface = new HashMap<>();
 
     public void registerRestClient(@Observes @WithAnnotations(RegisterRestClient.class) ProcessAnnotatedType<?> type) {
         Class<?> javaClass = type.getAnnotatedType().getJavaClass();
@@ -52,7 +58,7 @@ public class RestClientExtension implements Extension {
             Optional<String> maybeUri = extractBaseUri(annotation);
             Optional<String> maybeConfigKey = extractConfigKey(annotation);
 
-            proxyTypes.add(new RestClientData(javaClass, maybeUri, maybeConfigKey));
+            proxyTypes.add(new RestClientData<>(javaClass, maybeUri, maybeConfigKey));
             // no need to veto() these types because interfaces cannot become beans anyway
         } else {
             errors.add(new IllegalArgumentException("Rest client needs to be an interface " + javaClass));
@@ -70,9 +76,9 @@ public class RestClientExtension implements Extension {
     }
 
     public void createProxy(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        for (RestClientData clientData : proxyTypes) {
+        for (RestClientData<?> clientData : proxyTypes) {
             afterBeanDiscovery.addBean(
-                    new RestClientDelegateBean(clientData.javaClass, beanManager, clientData.baseUri, clientData.configKey));
+                    new RestClientDelegateBean<>(clientData.javaClass, beanManager, clientData.baseUri, clientData.configKey));
         }
     }
 
@@ -80,6 +86,38 @@ public class RestClientExtension implements Extension {
         for (Throwable error : errors) {
             afterDeploymentValidation.addDeploymentProblem(error);
         }
+    }
+
+    /**
+     * Observes ProcessSessionBean events and creates a (Bean class {@literal ->} Local
+     * interface) map for Session beans with local interfaces. This map is
+     * necessary since RESTEasy identifies a bean class as JAX-RS components
+     * while CDI requires a local interface to be used for lookup.
+     *
+     * @param event event the process session bean event
+     */
+    public <T> void observeSessionBeans(@Observes ProcessSessionBean<T> event) {
+        final Bean<Object> sessionBean = event.getBean();
+
+        if (CdiHelper.isRestComponent(sessionBean.getBeanClass())) {
+            addSessionBeanInterface(sessionBean);
+        }
+    }
+
+    private void addSessionBeanInterface(Bean<?> bean) {
+        for (Type type : bean.getTypes()) {
+            if ((type instanceof Class<?>) && ((Class<?>) type).isInterface()) {
+                Class<?> clazz = (Class<?>) type;
+                if (CdiHelper.isRestAnnotatedClass(clazz)) {
+                    sessionBeanInterface.put(bean.getBeanClass(), type);
+                    return;
+                }
+            }
+        }
+    }
+
+    public Map<Class<?>, Type> getSessionBeanInterface() {
+        return Map.copyOf(sessionBeanInterface);
     }
 
     /**
@@ -125,7 +163,7 @@ public class RestClientExtension implements Extension {
                 return true;
             if (o == null || getClass() != o.getClass())
                 return false;
-            RestClientData that = (RestClientData) o;
+            RestClientData<?> that = (RestClientData<?>) o;
             return javaClass.equals(that.javaClass);
         }
 
