@@ -36,7 +36,7 @@ import org.eclipse.microprofile.rest.client.RestClientDefinitionException;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 import org.eclipse.microprofile.rest.client.ext.DefaultClientHeadersFactoryImpl;
-import org.jboss.resteasy.cdi.CdiConstructorInjector;
+import org.jboss.resteasy.microprofile.client.CdiConstructorInjector;
 
 /**
  * A storage of {@link ClientHeaderProvider}s

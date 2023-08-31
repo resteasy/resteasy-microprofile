@@ -44,10 +44,6 @@
                         <artifactId>jakarta.annotation-api</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>jakarta.interceptor</groupId>
-                        <artifactId>jakarta.interceptor-api</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>jakarta.el</groupId>
                         <artifactId>jakarta.el-api</artifactId>
                     </exclusion>
@@ -168,17 +164,6 @@
                     <exclusion>
                         <groupId>org.jboss.spec.javax.ws.rs</groupId>
                         <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-cdi</artifactId>
-                <version>${version.org.jboss.resteasy}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>jakarta.annotation</groupId>
-                        <artifactId>jakarta.annotation-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
