@@ -1,11 +1,25 @@
-# This workflow is for a nightly run against RESTEasy upstream
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: RESTEasy Test Build
+name: RESTEasy MicroProfile Integration Tests
 
 on:
   push:
     branches:
       - 'main'
+    paths-ignore:
+      - '.gitignore'
+      - ".mvn"
+      - "CODEOWNERS"
+      - "CODE_OF_CONDUCT.md"
+      - "CONTRIBUTING.adoc"
+      - "dco.txt"
+      - "LICENSE"
+      - "mvnw"
+      - "mvnw.cmd"
+      - "README.adoc"
+      - "security.txt"
+      - "*/README.adoc"
   schedule:
     - cron: '0 0 * * *' # Every day at 00:00 UTC
 
@@ -24,6 +38,7 @@ jobs:
   resteasy-microprofile-build:
     runs-on: ${{ matrix.os }}
     needs: resteasy-build
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -31,7 +46,8 @@ jobs:
         java: ['11', '17', '21-ea']
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout RESTEasy MicroProfile
+        uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: resteasy-maven-repository
@@ -45,17 +61,23 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'maven'
-      - name: Build with Maven Java ${{ matrix.java }}
-        run: mvn  -B clean install '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}'
-      - name: Upload surefire reports
-        uses: actions/upload-artifact@v3
+      - name: Build and Test RESTEasy MicroProfile Java ${{ matrix.java }} - ${{ matrix.os }}
+        run: |
+          mvn clean install -B -Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }} -Pci
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
           path: '**/surefire-reports/'
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: failsafe-reports-${{ matrix.os }}-${{ matrix.java }}
+          path: '**/failsafe-reports/'
       - name: Upload server logs
         uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: server-logs-${{ matrix.os }}-${{ matrix.java }}
           path: '**/*.log'
+
