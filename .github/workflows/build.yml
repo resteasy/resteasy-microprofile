@@ -71,7 +71,9 @@ jobs:
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
-          path: '**/surefire-reports/'
+          path: |
+            '**/surefire-reports/'
+            !galleon-pack/
 
   additional-profiles:
     name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }} - WildFly ${{ matrix.wildfly-version }}
@@ -109,7 +111,9 @@ jobs:
         if: failure()
         with:
           name: surefire-reports-${{ matrix.profile }}-${{ matrix.java }}
-          path: '**/surefire-reports/'
+          path: |
+            '**/surefire-reports/'
+            !galleon-pack/
 
   format-check:
     name: Check Code Formatting

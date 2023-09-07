@@ -52,10 +52,14 @@ jobs:
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
-          path: '**/surefire-reports/'
+          path: |
+            '**/surefire-reports/'
+            !galleon-pack/
       - name: Upload server logs
         uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: server-logs-${{ matrix.os }}-${{ matrix.java }}
-          path: '**/*.log'
+          path: |
+            '**/*.log'
+            !galleon-pack/
