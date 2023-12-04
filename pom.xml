@@ -80,7 +80,7 @@
         <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
 
         <!-- Plugin Versions -->
-        <version.org.jboss.galleon>5.2.0.Final</version.org.jboss.galleon>
+        <version.org.jboss.galleon>5.2.2.Final</version.org.jboss.galleon>
         <version.org.wildfly.galleon-plugins>6.4.4.Final</version.org.wildfly.galleon-plugins>
 
         <!-- Plugin Versions, please keep in alphabetical order -->
