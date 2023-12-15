@@ -64,14 +64,14 @@ jobs:
       - name: Build and Test RESTEasy MicroProfile Java ${{ matrix.java }} - ${{ matrix.os }}
         run: |
           mvn clean install -B '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}' -Pci
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
           path: |
             '**/surefire-reports/'
             !galleon-pack/
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: failsafe-reports-${{ matrix.os }}-${{ matrix.java }}
@@ -79,7 +79,7 @@ jobs:
             '**/failsafe-reports/'
             !galleon-pack/
       - name: Upload server logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-logs-${{ matrix.os }}-${{ matrix.java }}

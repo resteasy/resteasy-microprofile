@@ -67,7 +67,7 @@ jobs:
       - name: Build with Maven Java ${{ matrix.java }}  - ${{ matrix.os }}
         run: |
           mvn clean install -U -B -fae  -Pci
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
@@ -107,7 +107,7 @@ jobs:
       - name: Test with Java ${{ matrix.java }} - ${{ matrix.profile }}
         run: |
           mvn clean install -U -B -fae ${{ matrix.profile }} -Pci '-Dversion.org.wildfly=${{ matrix.wildfly-version }}'
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: surefire-reports-${{ matrix.profile }}-${{ matrix.java }}
