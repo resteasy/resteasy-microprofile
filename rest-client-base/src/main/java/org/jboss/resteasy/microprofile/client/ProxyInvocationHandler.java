@@ -24,11 +24,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.ResponseProcessingException;
 import jakarta.ws.rs.ext.ParamConverter;
@@ -48,16 +52,19 @@ public class ProxyInvocationHandler implements InvocationHandler {
     private final Set<Object> providerInstances;
 
     private final ResteasyClient client;
+    private final ClassLoader classLoader;
 
     private final AtomicBoolean closed;
 
     public ProxyInvocationHandler(final Class<?> restClientInterface,
-            final Object target,
-            final Set<Object> providerInstances,
-            final ResteasyClient client) {
+                                  final Object target,
+                                  final Set<Object> providerInstances,
+                                  final ResteasyClient client,
+                                  final ClassLoader classLoader) {
         this.target = target;
         this.providerInstances = providerInstances;
         this.client = client;
+        this.classLoader = classLoader;
         this.closed = new AtomicBoolean();
     }
 
@@ -137,7 +144,26 @@ public class ProxyInvocationHandler implements InvocationHandler {
         }
 
         try {
-            return method.invoke(target, args);
+            Object returnValue = method.invoke(target, args);
+
+            // SubResources interfaces must be proxified as well
+            // Those methods lack a jax-rs http method annotation, but have a Path annotation and return another interface.
+            Annotation[] declaredAnnotations = method.getDeclaredAnnotations();
+            Class<?> returnType = method.getReturnType();
+            boolean hasHttpMethodAnnotation = Arrays.stream(declaredAnnotations)
+                    .anyMatch(a -> a.annotationType().getDeclaredAnnotation(HttpMethod.class) != null);
+            boolean hasPathAnnotation = Arrays.stream(declaredAnnotations)
+                    .anyMatch(a -> a.annotationType().equals(Path.class));
+            boolean isInterfaceReturned = returnType.isInterface();
+            boolean isSubresourceMethod = !hasHttpMethodAnnotation && hasPathAnnotation && isInterfaceReturned;
+            if (isSubresourceMethod) {
+                // Instantiate a new proxy for the subresource
+                ProxyInvocationHandler subresourceProxyInvocationhandler = new ProxyInvocationHandler(returnType, returnValue,
+                        providerInstances, client, classLoader);
+                return Proxy.newProxyInstance(classLoader, new Class[]{returnType}, subresourceProxyInvocationhandler);
+            } else {
+                return returnValue;
+            }
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
             if (cause instanceof CompletionException) {
