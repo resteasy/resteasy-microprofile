@@ -30,7 +30,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 import java.net.ProxySelector;
 import java.net.URI;
@@ -88,7 +87,6 @@ import org.jboss.resteasy.concurrent.ContextualExecutorService;
 import org.jboss.resteasy.concurrent.ContextualExecutors;
 import org.jboss.resteasy.microprofile.client.async.AsyncInterceptorRxInvokerProvider;
 import org.jboss.resteasy.microprofile.client.async.AsyncInvocationInterceptorThreadContext;
-import org.jboss.resteasy.microprofile.client.header.ClientHeaderProviders;
 import org.jboss.resteasy.microprofile.client.header.ClientHeadersRequestFilter;
 import org.jboss.resteasy.microprofile.client.impl.MpClient;
 import org.jboss.resteasy.microprofile.client.impl.MpClientBuilderImpl;
@@ -378,15 +376,9 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 .defaultConsumes(MediaType.APPLICATION_JSON)
                 .defaultProduces(MediaType.APPLICATION_JSON).build();
 
-        Class<?>[] interfaces = new Class<?>[3];
-        interfaces[0] = aClass;
-        interfaces[1] = RestClientProxy.class;
-        interfaces[2] = Closeable.class;
-
-        T proxy = (T) Proxy.newProxyInstance(classLoader, interfaces,
-                new ProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client));
-        ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
-        return proxy;
+        return aClass.cast(
+                ProxyInvocationHandler.createProxy(aClass, actualClient, getLocalProviderInstances(), client,
+                        beanManager));
     }
 
     @SuppressWarnings("unchecked")
