@@ -76,17 +76,16 @@ jobs:
             !galleon-pack/
 
   additional-profiles:
-    name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }} - WildFly ${{ matrix.wildfly-version }}
+    name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        java: [ '11', '17' ]
+        java: [ '11', '17', '21' ]
         profile:
           - "'-Dsecurity.manager'"
           - "'-Dprovision.preview'"
-        wildfly-version: ['28.0.1.Final', '29.0.1.Final']
 
     steps:
       - uses: actions/checkout@v4
@@ -106,7 +105,7 @@ jobs:
       # Since we need to pass the test.java.home we need different runs for Linux and Windows
       - name: Test with Java ${{ matrix.java }} - ${{ matrix.profile }}
         run: |
-          mvn clean install -U -B -fae ${{ matrix.profile }} -Pci '-Dversion.org.wildfly=${{ matrix.wildfly-version }}'
+          mvn clean install -U -B -fae ${{ matrix.profile }} -Pci
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
