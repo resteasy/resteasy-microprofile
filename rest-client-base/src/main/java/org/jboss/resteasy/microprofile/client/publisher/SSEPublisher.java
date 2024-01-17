@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.Providers;
 import jakarta.ws.rs.sse.InboundSseEvent;
 
@@ -53,16 +54,18 @@ public class SSEPublisher<T> implements Publisher<T> {
 
     private final SseEventInputImpl input;
     private final Type genericType;
+    private final MediaType mediaType;
     private final Providers providers;
     private final ContextualExecutorService executor;
 
     private static final Logger LOGGER = Logger.getLogger(SSEPublisher.class);
 
     public SSEPublisher(final Type genericType, final Providers providers, final SseEventInputImpl input,
-            final ExecutorService es) {
+            final MediaType mediaType, final ExecutorService es) {
         this.genericType = genericType;
         this.input = input;
         this.providers = providers;
+        this.mediaType = mediaType;
         this.executor = ContextualExecutors.wrap(es);
     }
 
@@ -103,7 +106,11 @@ public class SSEPublisher<T> implements Publisher<T> {
                     } else {
                         try {
                             while ((event = input.read(providers)) != null) {
-                                processor.emit(event.readData((Class) typeArgument));
+                                if (mediaType == null) {
+                                    processor.emit(event.readData((Class) typeArgument));
+                                } else {
+                                    processor.emit(event.readData((Class) typeArgument, mediaType));
+                                }
                             }
                         } catch (Exception e) {
                             processor.onError(e);
