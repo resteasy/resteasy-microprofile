@@ -65,7 +65,7 @@ public class MpPublisherMessageBodyReader implements MessageBodyReader<Publisher
             MediaType mediaType,
             MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
             throws WebApplicationException {
-        MediaType streamType = mediaType;
+        MediaType streamType = null;
         if (mediaType.getParameters() != null) {
             Map<String, String> map = mediaType.getParameters();
             String elementType = map.get(SseConstants.SSE_ELEMENT_MEDIA_TYPE);
@@ -73,7 +73,8 @@ public class MpPublisherMessageBodyReader implements MessageBodyReader<Publisher
                 streamType = MediaType.valueOf(elementType);
             }
         }
-        SseEventInputImpl sseEventInput = new SseEventInputImpl(annotations, streamType, mediaType, httpHeaders, entityStream);
-        return new SSEPublisher<>(genericType, providers, sseEventInput, executor);
+        SseEventInputImpl sseEventInput = new SseEventInputImpl(annotations, streamType == null ? mediaType : streamType,
+                mediaType, httpHeaders, entityStream);
+        return new SSEPublisher<>(genericType, providers, sseEventInput, streamType, executor);
     }
 }
