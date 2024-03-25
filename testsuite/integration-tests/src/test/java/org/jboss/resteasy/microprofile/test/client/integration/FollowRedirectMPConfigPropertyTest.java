@@ -28,16 +28,16 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.client.RestClientBuilderImpl;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.FollowRedirectsService;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.FollowRedirectsServiceIntf;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile rest client
@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
  * @tpTestCaseDetails Show using microprofile-config property, "/mp-rest/followRedirects" works.
  * @tpSince RESTEasy 4.6.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class FollowRedirectMPConfigPropertyTest {
     private static final String MP_REST_FOLLOWREDIRECT = "/mp-rest/followRedirects";
@@ -106,8 +106,8 @@ public class FollowRedirectMPConfigPropertyTest {
             final Response.Status expectedStatus,
             final String expectedText) {
         try (Response response = followRedirectsServiceIntf.redirectPing()) {
-            Assert.assertEquals(expectedStatus.getStatusCode(), response.getStatus());
-            Assert.assertEquals(expectedText, response.readEntity(String.class));
+            Assertions.assertEquals(expectedStatus.getStatusCode(), response.getStatus());
+            Assertions.assertEquals(expectedText, response.readEntity(String.class));
         }
     }
 }

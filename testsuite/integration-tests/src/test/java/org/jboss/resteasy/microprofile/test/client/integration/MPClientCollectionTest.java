@@ -32,7 +32,7 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.MPCollectionActivator;
@@ -41,11 +41,11 @@ import org.jboss.resteasy.microprofile.test.client.integration.resource.MPCollec
 import org.jboss.resteasy.microprofile.test.client.integration.resource.MPCollectionServiceIntf;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile Config
@@ -54,7 +54,7 @@ import org.junit.runner.RunWith;
  *                    Show configuration required for a GenericType return type.
  * @tpSince RESTEasy 4.6.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class MPClientCollectionTest {
     protected static final Logger LOG = Logger.getLogger(MPCollectionTest.class.getName());
@@ -86,12 +86,12 @@ public class MPClientCollectionTest {
     @OperateOnDeployment(WAR_CLIENT)
     private URL clientUrl;
 
-    @BeforeClass
+    @BeforeAll
     public static void before() throws Exception {
         client = ClientBuilder.newClient();
     }
 
-    @AfterClass
+    @AfterAll
     public static void after() throws Exception {
         client.close();
     }
@@ -102,8 +102,8 @@ public class MPClientCollectionTest {
         // If this test fails the other tests will not pass
         Response response = client.target(
                 TestEnvironment.generateUri(warUrl, "/theService/ping")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("pong", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("pong", response.readEntity(String.class));
     }
 
     @Test
@@ -113,8 +113,8 @@ public class MPClientCollectionTest {
         // Test endpoint with simple (String) return type
         Response response = client.target(
                 TestEnvironment.generateUri(clientUrl, "/theService/thePatron/checking")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("pong thePatron", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("pong thePatron", response.readEntity(String.class));
     }
 
     @Test
@@ -123,10 +123,10 @@ public class MPClientCollectionTest {
         // Test endpoint with GenericType return type
         Response response = client.target(
                 TestEnvironment.generateUri(clientUrl, "/theService/thePatron/got")).request().get();
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
         List<String> l = response.readEntity(new GenericType<List<String>>() {
         });
-        Assert.assertEquals(4, l.size());
-        Assert.assertEquals("thePatron", l.get(3));
+        Assertions.assertEquals(4, l.size());
+        Assertions.assertEquals("thePatron", l.get(3));
     }
 }

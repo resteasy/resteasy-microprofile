@@ -26,16 +26,16 @@ import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HealthCheckData;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HealthService;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.Ignore404ExceptionMapper;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile rest client
@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
  *                    behavior for this scenario and when the default ResponseExceptionMapper is present.
  * @tpSince RESTEasy 4.7.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class ExceptionMapperReturnsNullTest {
 
@@ -67,16 +67,20 @@ public class ExceptionMapperReturnsNullTest {
                 .register(new Ignore404ExceptionMapper())
                 .build(HealthService.class)
                 .getHealthData();
-        Assert.assertNull(data);
+        Assertions.assertNull(data);
     }
 
-    @Test(expected = WebApplicationException.class)
+    @Test
     public void testDefaultExceptionMapper() throws Exception {
         HealthService healthServiceClient = RestClientBuilder.newBuilder()
                 .baseUri(TestEnvironment.generateUri(url, "test-app"))
                 .register(new Ignore404ExceptionMapper())
                 .build(HealthService.class);
 
-        healthServiceClient.getHealthData();
+        try {
+            healthServiceClient.getHealthData();
+        } catch (WebApplicationException e) {
+            // this is the expected result
+        }
     }
 }

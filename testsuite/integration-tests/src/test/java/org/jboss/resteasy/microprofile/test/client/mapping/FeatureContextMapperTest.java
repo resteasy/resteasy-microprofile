@@ -36,19 +36,19 @@ import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class FeatureContextMapperTest {
 
@@ -72,15 +72,15 @@ public class FeatureContextMapperTest {
         TestClient client = RestClientBuilder.newBuilder()
                 .baseUri(TestEnvironment.generateUri(url, "test-app"))
                 .build(TestClient.class);
-        Assert.assertNotNull(client);
+        Assertions.assertNotNull(client);
         try {
             final String value = client.test();
-            Assert.fail(String.format("Expected the client to throw a TestException but got a value of %s", value));
+            Assertions.fail(String.format("Expected the client to throw a TestException but got a value of %s", value));
         } catch (TestException expected) {
             final String msg = expected.getLocalizedMessage();
             final Response response = expected.getResponse();
-            Assert.assertEquals("test", msg);
-            Assert.assertEquals(Response.Status.NOT_IMPLEMENTED, response.getStatusInfo());
+            Assertions.assertEquals("test", msg);
+            Assertions.assertEquals(Response.Status.NOT_IMPLEMENTED, response.getStatusInfo());
         }
     }
 

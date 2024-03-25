@@ -32,7 +32,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.TestAsyncClient;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.TestAsyncFilter;
@@ -41,14 +41,14 @@ import org.jboss.resteasy.microprofile.test.client.integration.resource.TestAsyn
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class RestClientContextProviderTest {
 
@@ -85,17 +85,17 @@ public class RestClientContextProviderTest {
                 .executorService(testExecutorService)
                 .build(TestAsyncClient.class);
         final Response response = client.get().toCompletableFuture().get(5, TimeUnit.SECONDS);
-        Assert.assertEquals(Response.Status.OK, response.getStatusInfo());
-        Assert.assertEquals(String.format("{prepareContext=%s, applyContext=%s}", currentThreadName, asyncThreadName),
+        Assertions.assertEquals(Response.Status.OK, response.getStatusInfo());
+        Assertions.assertEquals(String.format("{prepareContext=%s, applyContext=%s}", currentThreadName, asyncThreadName),
                 response.getHeaderString("test1-state"));
 
         // Wait until the context has been removed
-        Assert.assertTrue("Timeout waiting for remove to be invoked.", removed.await(5, TimeUnit.SECONDS));
+        Assertions.assertTrue(removed.await(5, TimeUnit.SECONDS), "Timeout waiting for remove to be invoked.");
         final Map<String, String> data = TestAsyncInvocationInterceptorFactory.localState.get();
-        Assert.assertEquals("Expected 3 entries found: " + data, 3, data.size());
-        Assert.assertEquals(currentThreadName, data.get("prepareContext"));
-        Assert.assertEquals(asyncThreadName, data.get("applyContext"));
-        Assert.assertEquals(asyncThreadName, data.get("removeContext"));
+        Assertions.assertEquals(3, data.size(), "Expected 3 entries found: " + data);
+        Assertions.assertEquals(currentThreadName, data.get("prepareContext"));
+        Assertions.assertEquals(asyncThreadName, data.get("applyContext"));
+        Assertions.assertEquals(asyncThreadName, data.get("removeContext"));
 
         testExecutorService.shutdownNow();
     }

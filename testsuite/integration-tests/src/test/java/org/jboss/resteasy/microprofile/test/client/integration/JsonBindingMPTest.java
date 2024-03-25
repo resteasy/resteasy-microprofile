@@ -24,16 +24,16 @@ import java.net.URL;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.Dog;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.JsonBindingMPService;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.JsonBindingMPServiceIntf;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile rest client
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  * @tpTestCaseDetails Show JSON-Binding is supported.
  * @tpSince RESTEasy 4.6.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class JsonBindingMPTest {
 
@@ -64,10 +64,10 @@ public class JsonBindingMPTest {
         try {
             Dog dog = new Dog("Rex", "german shepherd");
             Dog response = jsonBindingMPServiceIntf.getDog(dog);
-            Assert.assertEquals("Jethro", response.getName());
-            Assert.assertEquals("stafford", response.getSort());
+            Assertions.assertEquals("Jethro", response.getName());
+            Assertions.assertEquals("stafford", response.getSort());
         } catch (Exception e) {
-            Assert.fail("Exception thrown: " + e);
+            Assertions.fail("Exception thrown: " + e);
         }
     }
 }

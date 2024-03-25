@@ -29,7 +29,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebApplicationExceptionMicroProfileProxyApplication;
@@ -39,11 +39,11 @@ import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.resteasy.utils.PermissionUtil;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter Resteasy-client
@@ -57,7 +57,7 @@ import org.junit.runner.RunWith;
  *                    and WebApplicationExceptionWrappers, MicroProfile REST Client proxies throw only WebApplicationExceptions
  *                    and WebApplicationExceptionWrappers.
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class ClientWebApplicationExceptionMicroProfileProxyTest {
 
@@ -86,7 +86,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                         "permissions.xml");
     }
 
-    @Before
+    @BeforeEach
     public void createProxy() throws Exception {
         proxy = RestClientBuilder.newBuilder()
                 .baseUri(TestEnvironment.generateUri(url, "/app/test/"))
@@ -106,36 +106,36 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
         for (int i = 1; i < ClientWebApplicationExceptionConstants.oldExceptions.length; i++) {
             try {
                 proxy.oldException(i);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException rwae) {
-                Assert.fail("Didn't expect ResteasyWebApplicationException");
+                Assertions.fail("Didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException wae) {
                 Response response = wae.getResponse();
                 WebApplicationException oldException = ClientWebApplicationExceptionConstants.oldExceptions[i];
-                Assert.assertEquals(oldException.getResponse().getStatus(), response.getStatus());
-                Assert.assertEquals(oldException.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
-                Assert.assertEquals(oldException.getResponse().getEntity(), response.readEntity(String.class));
-                Assert.assertEquals(WebApplicationException.class, wae.getClass());
+                Assertions.assertEquals(oldException.getResponse().getStatus(), response.getStatus());
+                Assertions.assertEquals(oldException.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
+                Assertions.assertEquals(oldException.getResponse().getEntity(), response.readEntity(String.class));
+                Assertions.assertEquals(WebApplicationException.class, wae.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         }
         // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
         // ClientInvocation creates a RedirectionException.
         try {
             proxy.oldException(0);
-            Assert.fail("expected exception");
+            Assertions.fail("expected exception");
         } catch (ResteasyWebApplicationException rwae) {
-            Assert.fail("Didn't expect ResteasyWebApplicationException");
+            Assertions.fail("Didn't expect ResteasyWebApplicationException");
         } catch (WebApplicationException wae) {
             Response response = wae.getResponse();
             WebApplicationException oldException = ClientWebApplicationExceptionConstants.oldExceptions[0];
-            Assert.assertEquals(oldException.getResponse().getStatus(), response.getStatus());
-            Assert.assertEquals(oldException.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
-            Assert.assertEquals(oldException.getResponse().getEntity(), response.readEntity(String.class));
-            Assert.assertEquals(RedirectionException.class, wae.getClass());
+            Assertions.assertEquals(oldException.getResponse().getStatus(), response.getStatus());
+            Assertions.assertEquals(oldException.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
+            Assertions.assertEquals(oldException.getResponse().getEntity(), response.readEntity(String.class));
+            Assertions.assertEquals(RedirectionException.class, wae.getClass());
         } catch (Exception e) {
-            Assert.fail("expected WebApplicationException");
+            Assertions.fail("expected WebApplicationException");
         }
     }
 
@@ -152,36 +152,36 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
         for (int i = 1; i < ClientWebApplicationExceptionConstants.newExceptions.length; i++) {
             try {
                 proxy.newException(i);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException rwae) {
-                Assert.fail("Didn't expect ResteasyWebApplicationException");
+                Assertions.fail("Didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 final String msg = String.format("Failed on %d: %s", i, ClientWebApplicationExceptionConstants.newExceptions[i]
                         .getResponse());
                 Response response = e.getResponse();
-                Assert.assertEquals(msg, ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
-                        .getStatus(), response.getStatus());
-                Assert.assertNull(msg, response.getHeaderString("foo"));
-                Assert.assertTrue(msg, response.readEntity(String.class).isEmpty());
-                Assert.assertEquals(msg, WebApplicationException.class, e.getClass());
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
+                        .getStatus(), response.getStatus(), msg);
+                Assertions.assertNull(response.getHeaderString("foo"), msg);
+                Assertions.assertTrue(response.readEntity(String.class).isEmpty(), msg);
+                Assertions.assertEquals(WebApplicationException.class, e.getClass(), msg);
             }
         }
         // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
         // ClientInvocation creates a RedirectionException.
         try {
             proxy.newException(0);
-            Assert.fail("expected exception");
+            Assertions.fail("expected exception");
         } catch (ResteasyWebApplicationException rwae) {
-            Assert.fail("Didn't expect ResteasyWebApplicationException");
+            Assertions.fail("Didn't expect ResteasyWebApplicationException");
         } catch (WebApplicationException e) {
             final String msg = String.format("Failed on %d: %s", 0, ClientWebApplicationExceptionConstants.newExceptions[0]
                     .getResponse());
             Response response = e.getResponse();
-            Assert.assertEquals(msg, ClientWebApplicationExceptionConstants.newExceptions[0].getResponse()
-                    .getStatus(), response.getStatus());
-            Assert.assertNull(msg, response.getHeaderString("foo"));
-            Assert.assertTrue(msg, response.readEntity(String.class).isEmpty());
-            Assert.assertEquals(msg, RedirectionException.class, e.getClass());
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[0].getResponse()
+                    .getStatus(), response.getStatus(), msg);
+            Assertions.assertNull(response.getHeaderString("foo"), msg);
+            Assertions.assertTrue(response.readEntity(String.class).isEmpty(), msg);
+            Assertions.assertEquals(RedirectionException.class, e.getClass(), msg);
         }
     }
 
@@ -212,36 +212,36 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
             for (int i = 1; i < ClientWebApplicationExceptionConstants.oldExceptions.length; i++) {
                 try {
                     proxy.noCatchOld(i);
-                    Assert.fail("expected exception");
+                    Assertions.fail("expected exception");
                 } catch (ResteasyWebApplicationException e) {
-                    Assert.fail("didn't expect ResteasyWebApplicationException");
+                    Assertions.fail("didn't expect ResteasyWebApplicationException");
                 } catch (WebApplicationException e) {
                     Response response = e.getResponse();
                     WebApplicationException wae = ClientWebApplicationExceptionConstants.oldExceptions[i];
-                    Assert.assertEquals(wae.getResponse().getStatus(), response.getStatus());
-                    Assert.assertEquals(wae.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
-                    Assert.assertEquals(wae.getResponse().getEntity(), response.readEntity(String.class));
-                    Assert.assertEquals(WebApplicationException.class, e.getClass());
+                    Assertions.assertEquals(wae.getResponse().getStatus(), response.getStatus());
+                    Assertions.assertEquals(wae.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
+                    Assertions.assertEquals(wae.getResponse().getEntity(), response.readEntity(String.class));
+                    Assertions.assertEquals(WebApplicationException.class, e.getClass());
                 } catch (Exception e) {
-                    Assert.fail("expected WebApplicationException");
+                    Assertions.fail("expected WebApplicationException");
                 }
             }
             // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
             // ClientInvocation creates a RedirectionException.
             try {
                 proxy.noCatchOld(0);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException e) {
-                Assert.fail("didn't expect ResteasyWebApplicationException");
+                Assertions.fail("didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 Response response = e.getResponse();
                 WebApplicationException wae = ClientWebApplicationExceptionConstants.oldExceptions[0];
-                Assert.assertEquals(wae.getResponse().getStatus(), response.getStatus());
-                Assert.assertEquals(wae.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
-                Assert.assertEquals(wae.getResponse().getEntity(), response.readEntity(String.class));
-                Assert.assertEquals(RedirectionException.class, e.getClass());
+                Assertions.assertEquals(wae.getResponse().getStatus(), response.getStatus());
+                Assertions.assertEquals(wae.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
+                Assertions.assertEquals(wae.getResponse().getEntity(), response.readEntity(String.class));
+                Assertions.assertEquals(RedirectionException.class, e.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         } finally {
             proxy.setBehavior("false");
@@ -273,36 +273,36 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
             for (int i = 1; i < ClientWebApplicationExceptionConstants.newExceptions.length; i++) {
                 try {
                     proxy.noCatchNew(i);
-                    Assert.fail("expected exception");
+                    Assertions.fail("expected exception");
                 } catch (ResteasyWebApplicationException e) {
-                    Assert.fail("didn't expect ResteasyWebApplicationException");
+                    Assertions.fail("didn't expect ResteasyWebApplicationException");
                 } catch (WebApplicationException e) {
                     Response response = e.getResponse();
-                    Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
+                    Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
                             .getStatus(), response.getStatus());
-                    Assert.assertNull(response.getHeaderString("foo"));
-                    Assert.assertTrue(response.readEntity(String.class).isEmpty());
-                    Assert.assertEquals(WebApplicationException.class, e.getClass());
+                    Assertions.assertNull(response.getHeaderString("foo"));
+                    Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+                    Assertions.assertEquals(WebApplicationException.class, e.getClass());
                 } catch (Exception e) {
-                    Assert.fail("expected WebApplicationException");
+                    Assertions.fail("expected WebApplicationException");
                 }
             }
             // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
             // ClientInvocation creates a RedirectionException.
             try {
                 proxy.noCatchNew(0);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException e) {
-                Assert.fail("didn't expect ResteasyWebApplicationException");
+                Assertions.fail("didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 Response response = e.getResponse();
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[0].getResponse()
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[0].getResponse()
                         .getStatus(), response.getStatus());
-                Assert.assertNull(response.getHeaderString("foo"));
-                Assert.assertTrue(response.readEntity(String.class).isEmpty());
-                Assert.assertEquals(RedirectionException.class, e.getClass());
+                Assertions.assertNull(response.getHeaderString("foo"));
+                Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+                Assertions.assertEquals(RedirectionException.class, e.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         } finally {
             proxy.setBehavior("false");
@@ -328,36 +328,36 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
         for (int i = 1; i < ClientWebApplicationExceptionConstants.oldExceptions.length; i++) {
             try {
                 proxy.noCatchOld(i);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException e) {
-                Assert.fail("didn't expect ResteasyWebApplicationException");
+                Assertions.fail("didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 Response response = e.getResponse();
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                         .getStatus(), response.getStatus());
-                Assert.assertNull(response.getHeaderString("foo"));
-                Assert.assertTrue(response.readEntity(String.class).isEmpty());
-                Assert.assertEquals(WebApplicationException.class, e.getClass());
+                Assertions.assertNull(response.getHeaderString("foo"));
+                Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+                Assertions.assertEquals(WebApplicationException.class, e.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         }
         // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
         // ClientInvocation creates a RedirectionException.
         try {
             proxy.noCatchOld(0);
-            Assert.fail("expected exception");
+            Assertions.fail("expected exception");
         } catch (ResteasyWebApplicationException e) {
-            Assert.fail("didn't expect ResteasyWebApplicationException");
+            Assertions.fail("didn't expect ResteasyWebApplicationException");
         } catch (WebApplicationException e) {
             Response response = e.getResponse();
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
                     .getStatus(), response.getStatus());
-            Assert.assertNull(response.getHeaderString("foo"));
-            Assert.assertTrue(response.readEntity(String.class).isEmpty());
-            Assert.assertEquals(RedirectionException.class, e.getClass());
+            Assertions.assertNull(response.getHeaderString("foo"));
+            Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+            Assertions.assertEquals(RedirectionException.class, e.getClass());
         } catch (Exception e) {
-            Assert.fail("expected WebApplicationException");
+            Assertions.fail("expected WebApplicationException");
         }
     }
 
@@ -380,36 +380,36 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
         for (int i = 1; i < ClientWebApplicationExceptionConstants.newExceptions.length; i++) {
             try {
                 proxy.noCatchNew(i);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException e) {
-                Assert.fail("didn't expect ResteasyWebApplicationException");
+                Assertions.fail("didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 Response response = e.getResponse();
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
                         .getStatus(), response.getStatus());
-                Assert.assertNull(response.getHeaderString("foo"));
-                Assert.assertTrue(response.readEntity(String.class).isEmpty());
-                Assert.assertEquals(WebApplicationException.class, e.getClass());
+                Assertions.assertNull(response.getHeaderString("foo"));
+                Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+                Assertions.assertEquals(WebApplicationException.class, e.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         }
         // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
         // ClientInvocation creates a RedirectionException.
         try {
             proxy.noCatchNew(0);
-            Assert.fail("expected exception");
+            Assertions.fail("expected exception");
         } catch (ResteasyWebApplicationException e) {
-            Assert.fail("didn't expect ResteasyWebApplicationException");
+            Assertions.fail("didn't expect ResteasyWebApplicationException");
         } catch (WebApplicationException e) {
             Response response = e.getResponse();
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[0].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[0].getResponse()
                     .getStatus(), response.getStatus());
-            Assert.assertNull(response.getHeaderString("foo"));
-            Assert.assertTrue(response.readEntity(String.class).isEmpty());
-            Assert.assertEquals(RedirectionException.class, e.getClass());
+            Assertions.assertNull(response.getHeaderString("foo"));
+            Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+            Assertions.assertEquals(RedirectionException.class, e.getClass());
         } catch (Exception e) {
-            Assert.fail("expected WebApplicationException");
+            Assertions.fail("expected WebApplicationException");
         }
     }
 
@@ -440,40 +440,40 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
             for (int i = 1; i < ClientWebApplicationExceptionConstants.oldExceptions.length; i++) {
                 try {
                     proxy.catchOldOld(i);
-                    Assert.fail("expected exception");
+                    Assertions.fail("expected exception");
                 } catch (ResteasyWebApplicationException e) {
-                    Assert.fail("didn't expect ResteasyWebApplicationException");
+                    Assertions.fail("didn't expect ResteasyWebApplicationException");
                 } catch (WebApplicationException e) {
                     Response response = e.getResponse();
-                    Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+                    Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                             .getStatus(), response.getStatus());
-                    Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+                    Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                             .getHeaderString("foo"), response.getHeaderString("foo"));
-                    Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+                    Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                             .getEntity(), response.readEntity(String.class));
-                    Assert.assertEquals(WebApplicationException.class, e.getClass());
+                    Assertions.assertEquals(WebApplicationException.class, e.getClass());
                 } catch (Exception e) {
-                    Assert.fail("expected WebApplicationException");
+                    Assertions.fail("expected WebApplicationException");
                 }
             }
             // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
             // ClientInvocation creates a RedirectionException.
             try {
                 proxy.catchOldOld(0);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException e) {
-                Assert.fail("didn't expect ResteasyWebApplicationException");
+                Assertions.fail("didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 Response response = e.getResponse();
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
                         .getStatus(), response.getStatus());
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
                         .getHeaderString("foo"), response.getHeaderString("foo"));
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
                         .getEntity(), response.readEntity(String.class));
-                Assert.assertEquals(RedirectionException.class, e.getClass());
+                Assertions.assertEquals(RedirectionException.class, e.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         } finally {
             proxy.setBehavior("false");
@@ -505,38 +505,38 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
             for (int i = 1; i < ClientWebApplicationExceptionConstants.newExceptions.length; i++) {
                 try {
                     proxy.catchOldNew(i);
-                    Assert.fail("expected exception");
+                    Assertions.fail("expected exception");
                 } catch (ResteasyWebApplicationException e) {
-                    Assert.fail("didn't expect ResteasyWebApplicationException");
+                    Assertions.fail("didn't expect ResteasyWebApplicationException");
                 } catch (WebApplicationException e) {
                     Response response = e.getResponse();
-                    Assert.assertNotNull(response);
-                    Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
+                    Assertions.assertNotNull(response);
+                    Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
                             .getStatus(), response.getStatus());
-                    Assert.assertNull(response.getHeaderString("foo"));
-                    Assert.assertTrue(response.readEntity(String.class).length() == 0);
-                    Assert.assertEquals(WebApplicationException.class, e.getClass());
+                    Assertions.assertNull(response.getHeaderString("foo"));
+                    Assertions.assertTrue(response.readEntity(String.class).length() == 0);
+                    Assertions.assertEquals(WebApplicationException.class, e.getClass());
                 } catch (Exception e) {
-                    Assert.fail("expected WebApplicationException");
+                    Assertions.fail("expected WebApplicationException");
                 }
             }
             // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
             // ClientInvocation creates a RedirectionException.
             try {
                 proxy.catchOldNew(0);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException e) {
-                Assert.fail("didn't expect ResteasyWebApplicationException");
+                Assertions.fail("didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 Response response = e.getResponse();
-                Assert.assertNotNull(response);
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[0].getResponse()
+                Assertions.assertNotNull(response);
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[0].getResponse()
                         .getStatus(), response.getStatus());
-                Assert.assertNull(response.getHeaderString("foo"));
-                Assert.assertTrue(response.readEntity(String.class).length() == 0);
-                Assert.assertEquals(RedirectionException.class, e.getClass());
+                Assertions.assertNull(response.getHeaderString("foo"));
+                Assertions.assertTrue(response.readEntity(String.class).length() == 0);
+                Assertions.assertEquals(RedirectionException.class, e.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         } finally {
             proxy.setBehavior("false");
@@ -558,41 +558,41 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
      * @tpSince RESTEasy 4.6.0.Final
      */
     @Test
-    @Ignore("This test does not work for some reason.")
+    @Disabled("This test does not work for some reason.")
     public void testCatchNewBehaviorOldExceptions() {
         for (int i = 1; i < ClientWebApplicationExceptionConstants.oldExceptions.length; i++) {
             try {
                 proxy.catchNewOld(i);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException e) {
-                Assert.fail("didn't expect ResteasyWebApplicationException");
+                Assertions.fail("didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 Response response = e.getResponse();
-                Assert.assertNotNull(response);
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+                Assertions.assertNotNull(response);
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                         .getStatus(), response.getStatus());
-                Assert.assertNull(response.getHeaderString("foo"));
-                Assert.assertTrue(response.readEntity(String.class).isEmpty());
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getClass(), e.getClass());
+                Assertions.assertNull(response.getHeaderString("foo"));
+                Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getClass(), e.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         }
         try {
             proxy.catchNewOld(0);
-            Assert.fail("expected exception");
+            Assertions.fail("expected exception");
         } catch (ResteasyWebApplicationException e) {
-            Assert.fail("didn't expect ResteasyWebApplicationException");
+            Assertions.fail("didn't expect ResteasyWebApplicationException");
         } catch (WebApplicationException e) {
             Response response = e.getResponse();
-            Assert.assertNotNull(response);
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
+            Assertions.assertNotNull(response);
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
                     .getStatus(), response.getStatus());
-            Assert.assertNull(response.getHeaderString("foo"));
-            Assert.assertTrue(response.readEntity(String.class).isEmpty());
-            Assert.assertEquals(RedirectionException.class, e.getClass());
+            Assertions.assertNull(response.getHeaderString("foo"));
+            Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+            Assertions.assertEquals(RedirectionException.class, e.getClass());
         } catch (Exception e) {
-            Assert.fail("expected WebApplicationException");
+            Assertions.fail("expected WebApplicationException");
         }
     }
 
@@ -611,41 +611,41 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
      * @tpSince RESTEasy 4.6.0.Final
      */
     @Test
-    @Ignore("This test does not work for some reason.")
+    @Disabled("This test does not work for some reason.")
     public void testCatchNewBehaviorNewExceptions() {
         for (int i = 1; i < ClientWebApplicationExceptionConstants.newExceptions.length; i++) {
             try {
                 proxy.catchNewNew(i);
-                Assert.fail("expected exception");
+                Assertions.fail("expected exception");
             } catch (ResteasyWebApplicationException e) {
-                Assert.fail("didn't expect ResteasyWebApplicationException");
+                Assertions.fail("didn't expect ResteasyWebApplicationException");
             } catch (WebApplicationException e) {
                 Response response = e.getResponse();
-                Assert.assertNotNull(response);
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+                Assertions.assertNotNull(response);
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                         .getStatus(), response.getStatus());
-                Assert.assertNull(response.getHeaderString("foo"));
-                Assert.assertTrue(response.readEntity(String.class).isEmpty());
-                Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getClass(), e.getClass());
+                Assertions.assertNull(response.getHeaderString("foo"));
+                Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+                Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getClass(), e.getClass());
             } catch (Exception e) {
-                Assert.fail("expected WebApplicationException");
+                Assertions.fail("expected WebApplicationException");
             }
         }
         try {
             proxy.catchNewNew(0);
-            Assert.fail("expected exception");
+            Assertions.fail("expected exception");
         } catch (ResteasyWebApplicationException e) {
-            Assert.fail("didn't expect ResteasyWebApplicationException: " + e.getClass());
+            Assertions.fail("didn't expect ResteasyWebApplicationException: " + e.getClass());
         } catch (WebApplicationException e) {
             Response response = e.getResponse();
-            Assert.assertNotNull(response);
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
+            Assertions.assertNotNull(response);
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[0].getResponse()
                     .getStatus(), response.getStatus());
-            Assert.assertNull(response.getHeaderString("foo"));
-            Assert.assertTrue(response.readEntity(String.class).isEmpty());
-            Assert.assertEquals(RedirectionException.class, e.getClass());
+            Assertions.assertNull(response.getHeaderString("foo"));
+            Assertions.assertTrue(response.readEntity(String.class).isEmpty());
+            Assertions.assertEquals(RedirectionException.class, e.getClass());
         } catch (Exception e) {
-            Assert.fail("expected WebApplicationException");
+            Assertions.fail("expected WebApplicationException");
         }
     }
 }
