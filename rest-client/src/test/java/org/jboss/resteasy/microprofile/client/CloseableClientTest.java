@@ -27,8 +27,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
@@ -42,7 +42,7 @@ public class CloseableClientTest {
     public void buildAutoCloseableClientWithUriTemplate() {
         AutoCloseableClientWithUriTemplate client = RestClientBuilder.newBuilder().baseUri(URI.create("http://localhost"))
                 .build(AutoCloseableClientWithUriTemplate.class);
-        Assert.assertNotNull(client);
+        Assertions.assertNotNull(client);
     }
 
     /**
@@ -52,7 +52,7 @@ public class CloseableClientTest {
     public void buildCloseableClientWithUriTemplate() {
         CloseableClientWithUriTemplate client = RestClientBuilder.newBuilder().baseUri(URI.create("http://localhost"))
                 .build(CloseableClientWithUriTemplate.class);
-        Assert.assertNotNull(client);
+        Assertions.assertNotNull(client);
     }
 
     @Path("/{name}")

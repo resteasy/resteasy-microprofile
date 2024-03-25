@@ -22,7 +22,7 @@ package org.jboss.resteasy.microprofile.client;
 import java.net.URI;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RESTEASY_2335_Test {
     public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";

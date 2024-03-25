@@ -31,16 +31,16 @@ import jakarta.json.JsonStructure;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.JsonpMPService;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.JsonpMPServiceIntf;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile rest client
@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
  * @tpTestCaseDetails Show JSON-P is supported.
  * @tpSince RESTEasy 4.6.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class JsonpMPTest {
 
@@ -63,7 +63,7 @@ public class JsonpMPTest {
     @ArquillianResource
     private URL url;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         RestClientBuilder builder = RestClientBuilder.newBuilder();
         jsonpMPServiceIntf = builder
@@ -80,14 +80,14 @@ public class JsonpMPTest {
                 .build();
 
         JsonObject response = jsonpMPServiceIntf.object(obj);
-        Assert.assertTrue("JsonObject from the response doesn't contain field 'name'",
-                response.containsKey("name"));
-        Assert.assertEquals("JsonObject from the response doesn't contain correct value for the field 'name'",
-                response.getJsonString("name").getString(), "Bill");
-        Assert.assertTrue("JsonObject from the response doesn't contain field 'id'",
-                response.containsKey("id"));
-        Assert.assertEquals("JsonObject from the response doesn't contain correct value for the field 'id'",
-                response.getJsonNumber("id").longValue(), 10001);
+        Assertions.assertTrue(response.containsKey("name"),
+                "JsonObject from the response doesn't contain field 'name'");
+        Assertions.assertEquals(response.getJsonString("name").getString(), "Bill",
+                "JsonObject from the response doesn't contain correct value for the field 'name'");
+        Assertions.assertTrue(response.containsKey("id"),
+                "JsonObject from the response doesn't contain field 'id'");
+        Assertions.assertEquals(response.getJsonNumber("id").longValue(), 10001,
+                "JsonObject from the response doesn't contain correct value for the field 'id'");
     }
 
     @Test
@@ -95,18 +95,18 @@ public class JsonpMPTest {
         JsonStructure structure = (JsonStructure) Json.createObjectBuilder().add("name", "Bill").build();
         JsonStructure response = jsonpMPServiceIntf.object(structure);
         JsonObject obj = (JsonObject) response;
-        Assert.assertTrue("JsonObject from the response doesn't contain field 'name'",
-                obj.containsKey("name"));
-        Assert.assertEquals("JsonObject from the response doesn't contain correct value for the field 'name'",
-                obj.getJsonString("name").getString(), "Bill");
+        Assertions.assertTrue(obj.containsKey("name"),
+                "JsonObject from the response doesn't contain field 'name'");
+        Assertions.assertEquals(obj.getJsonString("name").getString(), "Bill",
+                "JsonObject from the response doesn't contain correct value for the field 'name'");
     }
 
     @Test
     public void testJsonNumber() {
         JsonNumber jsonNumber = Json.createValue(100);
         JsonNumber response = jsonpMPServiceIntf.testNumber(jsonNumber);
-        Assert.assertTrue("JsonNumber object with 200 value is expected",
-                response.intValue() == 200);
+        Assertions.assertTrue(response.intValue() == 200,
+                "JsonNumber object with 200 value is expected");
     }
 
     @Test
@@ -117,18 +117,18 @@ public class JsonpMPTest {
                 .build();
 
         JsonArray response = jsonpMPServiceIntf.array(array);
-        Assert.assertEquals("JsonArray from the response doesn't contain two elements as it should",
-                2, response.size());
+        Assertions.assertEquals(2, response.size(),
+                "JsonArray from the response doesn't contain two elements as it should");
         JsonObject obj = response.getJsonObject(0);
-        Assert.assertTrue("JsonObject[0] from the response doesn't contain field 'name'",
-                obj.containsKey("name"));
-        Assert.assertEquals("JsonObject[0] from the response doesn't contain correct value for the field 'name'",
-                obj.getJsonString("name").getString(), "Bill");
+        Assertions.assertTrue(obj.containsKey("name"),
+                "JsonObject[0] from the response doesn't contain field 'name'");
+        Assertions.assertEquals(obj.getJsonString("name").getString(), "Bill",
+                "JsonObject[0] from the response doesn't contain correct value for the field 'name'");
         obj = response.getJsonObject(1);
-        Assert.assertTrue("JsonObject[1] from the response doesn't contain field 'name'",
-                obj.containsKey("name"));
-        Assert.assertEquals("JsonObject[1] from the response doesn't contain correct value for the field 'name'",
-                obj.getJsonString("name").getString(), "Monica");
+        Assertions.assertTrue(obj.containsKey("name"),
+                "JsonObject[1] from the response doesn't contain field 'name'");
+        Assertions.assertEquals(obj.getJsonString("name").getString(), "Monica",
+                "JsonObject[1] from the response doesn't contain correct value for the field 'name'");
     }
 
     @Test
@@ -137,7 +137,7 @@ public class JsonpMPTest {
         JsonString jsonString = Json.createValue("Resteasy");
         JsonString response = jsonpMPServiceIntf.testString(jsonString);
 
-        Assert.assertTrue("JsonString object with Hello Resteasy value is expected",
-                response.getString().equals("Hello Resteasy"));
+        Assertions.assertTrue(response.getString().equals("Hello Resteasy"),
+                "JsonString object with Hello Resteasy value is expected");
     }
 }

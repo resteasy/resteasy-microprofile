@@ -19,7 +19,7 @@
 
 package org.jboss.resteasy.microprofile.test.client.exception;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URL;
 
@@ -29,7 +29,7 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ExceptionMapperRuntimeExceptionWithReasonMapper;
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ResponseExceptionMapperRuntimeExceptionMapper;
@@ -38,9 +38,9 @@ import org.jboss.resteasy.microprofile.test.client.exception.resource.ResponseEx
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter Resteasy-client
@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
  * @tpSince RESTEasy 3.6.0
  * @tpTestCaseDetails Regression test for RESTEASY-1847
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class ResponseExceptionMapperRuntimeExceptionTest {
 
@@ -82,7 +82,7 @@ public class ResponseExceptionMapperRuntimeExceptionTest {
             fail("Should not get here");
         } catch (RuntimeException e) {
             // assert test exception message
-            Assert.assertEquals(ExceptionMapperRuntimeExceptionWithReasonMapper.REASON, e.getMessage());
+            Assertions.assertEquals(ExceptionMapperRuntimeExceptionWithReasonMapper.REASON, e.getMessage());
         }
     }
 
@@ -97,7 +97,7 @@ public class ResponseExceptionMapperRuntimeExceptionTest {
             fail("Should not get here");
         } catch (WebApplicationException e) {
             String str = e.getResponse().readEntity(String.class);
-            Assert.assertEquals("Test error occurred", str);
+            Assertions.assertEquals("Test error occurred", str);
         }
     }
 

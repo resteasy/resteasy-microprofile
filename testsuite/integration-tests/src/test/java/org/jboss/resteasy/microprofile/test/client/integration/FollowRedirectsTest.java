@@ -27,17 +27,17 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.FollowRedirectsResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.FollowRedirectsService;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.FollowRedirectsServiceIntf;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile rest client
@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
  * @tpTestCaseDetails Show followsRedirects flag works.
  * @tpSince RESTEasy 4.6.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class FollowRedirectsTest {
     private static final String WAR_SERVICE = "followRedirects_service";
@@ -69,7 +69,7 @@ public class FollowRedirectsTest {
     @OperateOnDeployment(WAR_SERVICE)
     private URL url;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         RestClientBuilder builder = RestClientBuilder.newBuilder();
         followRedirectsServiceIntf = builder
@@ -91,7 +91,7 @@ public class FollowRedirectsTest {
                 .build(FollowRedirectsServiceIntf.class);
 
         Response response = result.tmpRedirect(THE_PATRON, WAR_CLIENT);
-        Assert.assertEquals(307, response.getStatus());
+        Assertions.assertEquals(307, response.getStatus());
         response.close();
     }
 
@@ -101,8 +101,8 @@ public class FollowRedirectsTest {
     @Test
     public void followTemporaryRedirect() {
         Response response = followRedirectsServiceIntf.tmpRedirect(THE_PATRON, WAR_CLIENT);
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("OK", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("OK", response.readEntity(String.class));
         response.close();
     }
 
@@ -112,8 +112,8 @@ public class FollowRedirectsTest {
     @Test
     public void postRedirect() {
         Response response = followRedirectsServiceIntf.postRedirect(WAR_CLIENT);
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("OK", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("OK", response.readEntity(String.class));
         response.close();
     }
 
@@ -123,8 +123,8 @@ public class FollowRedirectsTest {
     @Test
     public void movedPermanently() {
         Response response = followRedirectsServiceIntf.movedPermanently(THE_PATRON, WAR_CLIENT);
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("ok - direct response",
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("ok - direct response",
                 response.readEntity(String.class));
         response.close();
     }
@@ -135,8 +135,8 @@ public class FollowRedirectsTest {
     @Test
     public void found() {
         Response response = followRedirectsServiceIntf.found(THE_PATRON, WAR_CLIENT);
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("ok - direct response",
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("ok - direct response",
                 response.readEntity(String.class));
         response.close();
     }

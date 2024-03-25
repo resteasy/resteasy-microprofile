@@ -31,7 +31,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 @Path("/")
 public class HelloResource {
@@ -76,8 +76,8 @@ public class HelloResource {
     @Path("async-client-target")
     public CompletionStage<String> asyncClientTarget(@HeaderParam("X-Propagated") String propagatedHeader,
             @HeaderParam("X-Not-Propagated") String nonPropagatedHeader) {
-        Assert.assertNull(nonPropagatedHeader);
-        Assert.assertEquals("got-a-value", propagatedHeader);
+        Assertions.assertNull(nonPropagatedHeader);
+        Assertions.assertEquals("got-a-value", propagatedHeader);
         return CompletableFuture.completedFuture("OK");
     }
 
@@ -85,8 +85,8 @@ public class HelloResource {
     @Path("async-client")
     public CompletionStage<String> asyncClient(@HeaderParam("X-Propagated") String propagatedHeader,
             @HeaderParam("X-Not-Propagated") String nonPropagatedHeader) {
-        Assert.assertEquals("got-a-value", propagatedHeader);
-        Assert.assertEquals("got-a-value", nonPropagatedHeader);
+        Assertions.assertEquals("got-a-value", propagatedHeader);
+        Assertions.assertEquals("got-a-value", nonPropagatedHeader);
         return rest.asyncClientTarget();
     }
 
@@ -94,8 +94,8 @@ public class HelloResource {
     @Path("client-target")
     public String clientTarget(@HeaderParam("X-Propagated") String propagatedHeader,
             @HeaderParam("X-Not-Propagated") String nonPropagatedHeader) {
-        Assert.assertNull(nonPropagatedHeader);
-        Assert.assertEquals("got-a-value", propagatedHeader);
+        Assertions.assertNull(nonPropagatedHeader);
+        Assertions.assertEquals("got-a-value", propagatedHeader);
         return "OK";
     }
 
@@ -103,8 +103,8 @@ public class HelloResource {
     @Path("client")
     public String client(@HeaderParam("X-Propagated") String propagatedHeader,
             @HeaderParam("X-Not-Propagated") String nonPropagatedHeader) {
-        Assert.assertEquals("got-a-value", propagatedHeader);
-        Assert.assertEquals("got-a-value", nonPropagatedHeader);
+        Assertions.assertEquals("got-a-value", propagatedHeader);
+        Assertions.assertEquals("got-a-value", nonPropagatedHeader);
         return rest.clientTarget();
     }
 

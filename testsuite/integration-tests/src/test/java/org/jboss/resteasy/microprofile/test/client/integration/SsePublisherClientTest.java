@@ -19,9 +19,9 @@
 
 package org.jboss.resteasy.microprofile.test.client.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
 import java.util.HashSet;
@@ -32,23 +32,23 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.client.BuilderResolver;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.MPSseClient;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.MPSseResource;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class SsePublisherClientTest {
     @ArquillianResource
@@ -60,12 +60,12 @@ public class SsePublisherClientTest {
                 .addClasses(MPSseResource.class);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty("resteasy.microprofile.sseclient.buffersize", "5");
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         System.clearProperty("resteasy.microprofile.sseclient.buffersize");
     }
@@ -98,8 +98,8 @@ public class SsePublisherClientTest {
         //sent 12 items, expects these 10 values : msg0~msg4 and msg7~msg11
         assertEquals(10, eventStrings.size());
         //msg5 and msg6 are dropped
-        Assert.assertFalse("Expected [msg4, msg3, msg2, msg1, msg8, msg11, msg7, msg10, msg9, msg0], found " + eventStrings,
-                eventStrings.contains("msg5") || eventStrings.contains("msg6"));
+        Assertions.assertFalse(eventStrings.contains("msg5") || eventStrings.contains("msg6"),
+                "Expected [msg4, msg3, msg2, msg1, msg8, msg11, msg7, msg10, msg9, msg0], found " + eventStrings);
         assertNull(subscriber.throwable);
     }
 

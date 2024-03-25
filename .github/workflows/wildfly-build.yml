@@ -9,6 +9,10 @@ on:
   schedule:
     - cron: '0 0 * * *' # Every day at 00:00 UTC
 
+env:
+  GALLEON_VERSION: 7.0.0.Beta5
+  WILDFLY_MP_VERSION: 5.0.0.Beta3
+
 # Only run the latest job and cancel previous ones
 concurrency:
   group: 'wildfly-${{ github.ref || github.run_id }}'
@@ -46,7 +50,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build with Maven Java ${{ matrix.java }}
-        run: mvn  -B clean install '-Dversion.org.wildfly=${{ needs.wildfly-build.outputs.wildfly-version }}'
+        run: mvn  -B clean install '-Dversion.org.wildfly=${{ needs.wildfly-build.outputs.wildfly-version }}' '-Dversion.org.wildfly.galleon-plugins=${{ env.GALLEON_VERSION}}' '-Dversion.org.wildfly.plugins.wildfly-maven-plugin=${{ env.WILDFLY_MP_VERSION}}'
       - name: Upload surefire reports
         uses: actions/upload-artifact@v4
         if: failure()
@@ -84,7 +88,7 @@ jobs:
           cache: 'maven'
       - name: Build with Maven Java ${{ matrix.java }} on WildFly ${{ matrix.wildfly-version }} - ${{ matrix.os }}
         run:  |
-          mvn clean install -U -B -fae '-Dserver.version=${{ matrix.wildfly-version }}' '-Dgithub.actions'
+          mvn clean install -U -B -fae '-Dserver.version=${{ matrix.wildfly-version }}' '-Dgithub.actions' '-Dversion.org.wildfly.galleon-plugins=${{ env.GALLEON_VERSION}}' '-Dversion.org.wildfly.plugins.wildfly-maven-plugin=${{ env.WILDFLY_MP_VERSION}}'
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

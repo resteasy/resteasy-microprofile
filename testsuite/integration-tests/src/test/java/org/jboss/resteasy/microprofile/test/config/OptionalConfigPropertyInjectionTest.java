@@ -28,7 +28,7 @@ import jakarta.ws.rs.core.MediaType;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.resteasy.microprofile.test.config.resource.OptionalConfigPropertyInjectionResource;
@@ -36,11 +36,11 @@ import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.resteasy.setup.SystemPropertySetupTask;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile Config
@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
  * @tpTestCaseDetails Test for injection of optional MicroProfile Config properties.
  * @tpSince RESTEasy 4.6.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 @ServerSetup(OptionalConfigPropertyInjectionTest.PropertySetupTask.class)
 public class OptionalConfigPropertyInjectionTest {
@@ -72,12 +72,12 @@ public class OptionalConfigPropertyInjectionTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         client = ClientBuilder.newClient();
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanup() {
         client.close();
     }
@@ -96,14 +96,14 @@ public class OptionalConfigPropertyInjectionTest {
                         OptionalConfigPropertyInjectionResource.MISSING_OPTIONAL_PROPERTY_PATH))
                 .request(MediaType.TEXT_PLAIN_TYPE)
                 .get(String.class);
-        Assert.assertNull(missingOptionalPropertyValue);
+        Assertions.assertNull(missingOptionalPropertyValue);
 
         String presentOptionalPropertyValue = client.target(
                 TestEnvironment.generateUri(url, "test-app",
                         OptionalConfigPropertyInjectionResource.PRESENT_OPTIONAL_PROPERTY_PATH))
                 .request(MediaType.TEXT_PLAIN_TYPE)
                 .get(String.class);
-        Assert.assertEquals(OptionalConfigPropertyInjectionResource.OPTIONAL_PROPERTY_VALUE, presentOptionalPropertyValue);
+        Assertions.assertEquals(OptionalConfigPropertyInjectionResource.OPTIONAL_PROPERTY_VALUE, presentOptionalPropertyValue);
     }
 
 }

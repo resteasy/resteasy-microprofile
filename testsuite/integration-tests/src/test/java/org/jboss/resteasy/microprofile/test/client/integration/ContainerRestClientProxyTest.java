@@ -42,19 +42,19 @@ import jakarta.ws.rs.Path;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.resteasy.utils.PermissionUtil;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class ContainerRestClientProxyTest {
 
     @Deployment
@@ -84,17 +84,17 @@ public class ContainerRestClientProxyTest {
 
     @Test
     public void checkQualifiedClient() {
-        Assert.assertNotNull("Cliented injected with qualifier @RestClient should not be null", qualifiedClient);
+        Assertions.assertNotNull(qualifiedClient, "Cliented injected with qualifier @RestClient should not be null");
     }
 
     @Test
     public void intercepted() {
-        Assert.assertNotNull(client);
-        Assert.assertFalse(ClientInterceptor.invoked);
-        Assert.assertFalse(ClientMethodInterceptor.invoked);
-        Assert.assertEquals("test", client.get());
-        Assert.assertTrue(ClientInterceptor.invoked);
-        Assert.assertTrue(ClientMethodInterceptor.invoked);
+        Assertions.assertNotNull(client);
+        Assertions.assertFalse(ClientInterceptor.invoked);
+        Assertions.assertFalse(ClientMethodInterceptor.invoked);
+        Assertions.assertEquals("test", client.get());
+        Assertions.assertTrue(ClientInterceptor.invoked);
+        Assertions.assertTrue(ClientMethodInterceptor.invoked);
     }
 
     @RegisterRestClient
