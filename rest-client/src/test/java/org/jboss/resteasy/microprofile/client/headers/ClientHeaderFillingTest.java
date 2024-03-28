@@ -20,6 +20,7 @@
 package org.jboss.resteasy.microprofile.client.headers;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,15 +35,14 @@ import jakarta.ws.rs.core.Application;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.jboss.resteasy.annotations.jaxrs.HeaderParam;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ClientHeaderFillingTest {
     private static final String HEADER_NAME = "GENERATED_HEADER";
@@ -50,7 +50,7 @@ public class ClientHeaderFillingTest {
     private static UndertowJaxrsServer server;
     private static WeldContainer container;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         Weld weld = new Weld();
         weld.addBeanClass(HeaderPassingResource.class);
@@ -64,10 +64,10 @@ public class ClientHeaderFillingTest {
     @Test
     public void checkIfFillerFactoryWithHigherPrioritySelected() {
         List<String> result = container.select(ClientInvokingBean.class).get().getHeaders();
-        MatcherAssert.assertThat(result, CoreMatchers.hasItems("high", "prio"));
+        Assertions.assertTrue(hasItems(result, "high", "prio"));
     }
 
-    @AfterClass
+    @AfterAll
     public static void stop() {
         server.stop();
         container.shutdown();
@@ -114,5 +114,9 @@ public class ClientHeaderFillingTest {
             classes.add(HeaderPassingResource.class);
             return classes;
         }
+    }
+
+    private static boolean hasItems(Collection<String> items, String... controlList) {
+        return items.containsAll(List.of(controlList));
     }
 }

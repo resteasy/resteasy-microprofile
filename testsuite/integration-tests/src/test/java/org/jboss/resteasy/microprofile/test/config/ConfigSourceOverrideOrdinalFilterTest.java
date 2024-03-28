@@ -31,7 +31,7 @@ import jakarta.ws.rs.core.MediaType;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.resteasy.microprofile.config.FilterConfigSource;
@@ -43,18 +43,18 @@ import org.jboss.resteasy.microprofile.test.util.MicroProfileConfigSystemPropert
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile Config
  * @tpChapter Integration tests
  * @tpSince RESTEasy 4.6.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 @ServerSetup(MicroProfileConfigSystemPropertySetupTask.class)
 public class ConfigSourceOverrideOrdinalFilterTest {
@@ -72,12 +72,12 @@ public class ConfigSourceOverrideOrdinalFilterTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void before() throws Exception {
         client = ClientBuilder.newClient();
     }
 
-    @AfterClass
+    @AfterAll
     public static void after() throws Exception {
         client.close();
     }
@@ -119,9 +119,9 @@ public class ConfigSourceOverrideOrdinalFilterTest {
         Integer filterConfigSourceDefaultOrdinal = 20;
         Integer servletContextConfigSourceDefaultOrdinal = 10;
 
-        Assert.assertEquals(filterConfigSourceDefaultOrdinal,
+        Assertions.assertEquals(filterConfigSourceDefaultOrdinal,
                 builtInConfigSourcesOrdinal.get(FilterConfigSource.class.getName()));
-        Assert.assertEquals(servletContextConfigSourceDefaultOrdinal,
+        Assertions.assertEquals(servletContextConfigSourceDefaultOrdinal,
                 builtInConfigSourcesOrdinal.get(ServletContextConfigSource.class
                         .getName()));
     }

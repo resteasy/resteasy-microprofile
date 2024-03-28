@@ -19,11 +19,11 @@
 
 package org.jboss.resteasy.microprofile.test.client.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -47,7 +47,7 @@ import jakarta.ws.rs.ext.Provider;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.jaxrs.engines.vertx.VertxClientHttpEngine;
 import org.jboss.resteasy.microprofile.client.BuilderResolver;
@@ -55,22 +55,21 @@ import org.jboss.resteasy.microprofile.test.client.integration.resource.HeaderPr
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloClient;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.HelloResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.NgHTTP2;
-import org.jboss.resteasy.microprofile.test.util.IgnoreOnCi;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpVersion;
 
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
-@Category(IgnoreOnCi.class)
+@Tag("IgnoreOnCi.class")
 public class RestClientProxyTest {
 
     public static final String EMOJIS = "\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00\uD83D\uDE00";
@@ -155,7 +154,7 @@ public class RestClientProxyTest {
             return s;
         });
         boolean waitResult = latch.await(30, TimeUnit.SECONDS);
-        Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
+        Assertions.assertTrue(waitResult, "Waiting for event to be delivered has timed out.");
         assertEquals("foo", value.get());
     }
 
@@ -207,7 +206,7 @@ public class RestClientProxyTest {
             latch.countDown();
         });
         boolean waitResult = latch.await(30, TimeUnit.SECONDS);
-        Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
+        Assertions.assertTrue(waitResult, "Waiting for event to be delivered has timed out.");
         assertTrue(value.get() instanceof WebApplicationException);
         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), ((WebApplicationException) value.get()).getResponse()
                 .getStatus());
@@ -232,7 +231,7 @@ public class RestClientProxyTest {
             // via the message id.
             final String msg = e.getLocalizedMessage();
             final String msgId = "RESTEASY004690";
-            assertTrue(String.format("Expected message to start with %s: %s", msgId, msg), msg.startsWith(msgId));
+            assertTrue(msg.startsWith(msgId), String.format("Expected message to start with %s: %s", msgId, msg));
         }
     }
 
@@ -256,7 +255,7 @@ public class RestClientProxyTest {
             // via the message id.
             final String msg = e.getLocalizedMessage();
             final String msgId = "RESTEASY004690";
-            assertTrue(String.format("Expected message to start with %s: %s", msgId, msg), msg.startsWith(msgId));
+            assertTrue(msg.startsWith(msgId), String.format("Expected message to start with %s: %s", msgId, msg));
         }
     }
 

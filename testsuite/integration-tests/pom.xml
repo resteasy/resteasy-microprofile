@@ -48,6 +48,8 @@
         <feature.pack.artifactId>galleon-feature-pack</feature.pack.artifactId>
         <feature.pack.version>${project.version}</feature.pack.version>
 
+
+        <version.arquillian.junit5>1.7.2.Final</version.arquillian.junit5>
         <jboss.arguments/>
     </properties>
 
@@ -96,8 +98,15 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${version.org.junit}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -122,12 +131,6 @@
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-dmr</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
         </dependency>
 

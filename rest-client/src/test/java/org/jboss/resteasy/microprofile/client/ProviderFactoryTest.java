@@ -24,8 +24,8 @@ import org.jboss.resteasy.client.jaxrs.internal.LocalResteasyProviderFactory;
 import org.jboss.resteasy.plugins.providers.DefaultTextPlain;
 import org.jboss.resteasy.plugins.providers.IIOImageProvider;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ProviderFactoryTest {
 
@@ -33,11 +33,11 @@ public class ProviderFactoryTest {
     public void testDefaultProvider() {
         RestClientBuilderImpl builder = (RestClientBuilderImpl) RestClientBuilder.newBuilder();
 
-        Assert.assertTrue(builder.getBuilderDelegate()
+        Assertions.assertTrue(builder.getBuilderDelegate()
                 .getProviderFactory()
                 .getProviderClasses()
                 .contains(IIOImageProvider.class));
-        Assert.assertTrue(builder.getBuilderDelegate()
+        Assertions.assertTrue(builder.getBuilderDelegate()
                 .getProviderFactory()
                 .getProviderClasses()
                 .contains(DefaultTextPlain.class));
@@ -52,11 +52,11 @@ public class ProviderFactoryTest {
 
             RestClientBuilderImpl builder = (RestClientBuilderImpl) RestClientBuilder.newBuilder();
 
-            Assert.assertTrue(builder.getBuilderDelegate()
+            Assertions.assertTrue(builder.getBuilderDelegate()
                     .getProviderFactory()
                     .getProviderClasses()
                     .contains(IIOImageProvider.class));
-            Assert.assertFalse(builder.getBuilderDelegate()
+            Assertions.assertFalse(builder.getBuilderDelegate()
                     .getProviderFactory()
                     .getProviderClasses()
                     .contains(DefaultTextPlain.class));

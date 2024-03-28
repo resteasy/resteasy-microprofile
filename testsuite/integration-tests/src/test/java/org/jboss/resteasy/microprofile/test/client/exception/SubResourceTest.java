@@ -29,7 +29,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientRootResource;
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientSubResource;
@@ -38,16 +38,16 @@ import org.jboss.resteasy.microprofile.test.client.exception.resource.TestExcept
 import org.jboss.resteasy.microprofile.test.client.exception.resource.TestExceptionMapper;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests client sub-resources
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class SubResourceTest {
 
@@ -70,9 +70,9 @@ public class SubResourceTest {
     public void rootResourceExceptionMapper() throws Exception {
         try (ClientRootResource root = createClient(TestExceptionMapper.class)) {
             try (Response ignore = root.fromRoot()) {
-                Assert.fail("fromRoot() should have thrown an TestException");
+                Assertions.fail("fromRoot() should have thrown an TestException");
             } catch (TestException expected) {
-                Assert.assertEquals("RootResource failed on purpose", expected.getMessage());
+                Assertions.assertEquals("RootResource failed on purpose", expected.getMessage());
             } catch (Exception e) {
                 failWithException(e, "fromRoot");
             }
@@ -90,11 +90,11 @@ public class SubResourceTest {
     public void subResourceExceptionMapper() throws Exception {
         try (ClientRootResource root = createClient(TestExceptionMapper.class)) {
             final ClientSubResource subResource = root.subResource();
-            Assert.assertNotNull("The SubResource should not be null", subResource);
+            Assertions.assertNotNull(subResource, "The SubResource should not be null");
             try (Response ignore = subResource.fromSub()) {
-                Assert.fail("fromSub() should have thrown an TestException");
+                Assertions.fail("fromSub() should have thrown an TestException");
             } catch (TestException expected) {
-                Assert.assertEquals("SubResource failed on purpose", expected.getMessage());
+                Assertions.assertEquals("SubResource failed on purpose", expected.getMessage());
             } catch (Exception e) {
                 failWithException(e, "fromSub");
             }
@@ -111,11 +111,11 @@ public class SubResourceTest {
     public void subResourceWithHeader() throws Exception {
         try (ClientRootResource root = createClient()) {
             final ClientSubResource subResource = root.subResource();
-            Assert.assertNotNull("The SubResource should not be null", subResource);
+            Assertions.assertNotNull(subResource, "The SubResource should not be null");
             try (Response response = subResource.withHeader()) {
-                Assert.assertEquals(Response.Status.OK, response.getStatusInfo());
+                Assertions.assertEquals(Response.Status.OK, response.getStatusInfo());
                 final String value = response.readEntity(String.class);
-                Assert.assertEquals("SubResourceHeader", value);
+                Assertions.assertEquals("SubResourceHeader", value);
             }
         }
     }
@@ -130,11 +130,11 @@ public class SubResourceTest {
     public void subResourceWithGlobalHeader() throws Exception {
         try (ClientRootResource root = createClient()) {
             final ClientSubResource subResource = root.subResource();
-            Assert.assertNotNull("The SubResource should not be null", subResource);
+            Assertions.assertNotNull(subResource, "The SubResource should not be null");
             try (Response response = subResource.withGlobalHeader()) {
-                Assert.assertEquals(Response.Status.OK, response.getStatusInfo());
+                Assertions.assertEquals(Response.Status.OK, response.getStatusInfo());
                 final String value = response.readEntity(String.class);
-                Assert.assertEquals("GlobalSubResourceHeader", value);
+                Assertions.assertEquals("GlobalSubResourceHeader", value);
             }
         }
     }
@@ -158,6 +158,6 @@ public class SubResourceTest {
         writer.write("() should have thrown an TestException. Instead got: ");
         writer.write(System.lineSeparator());
         e.printStackTrace(new PrintWriter(writer));
-        Assert.fail(writer.toString());
+        Assertions.fail(writer.toString());
     }
 }

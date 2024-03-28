@@ -27,16 +27,16 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.QueryParamStyleService;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.QueryParamStyleServiceIntf;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile rest client
@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
  * @tpTestCaseDetails Show QueryParamStyle working.
  * @tpSince RESTEasy 4.6.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class QueryParamStyleTest {
 
@@ -60,7 +60,7 @@ public class QueryParamStyleTest {
     @ArquillianResource
     private URL url;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         builder = RestClientBuilder.newBuilder();
         builder.baseUri(TestEnvironment.generateUri(url, "test-app"));
@@ -81,8 +81,8 @@ public class QueryParamStyleTest {
                 .build(QueryParamStyleServiceIntf.class);
         List<String> l = serviceIntf.getList(argList);
 
-        Assert.assertEquals(4, l.size());
-        Assert.assertEquals("theService reached", l.get(3));
+        Assertions.assertEquals(4, l.size());
+        Assertions.assertEquals("theService reached", l.get(3));
     }
 
     /*
@@ -96,8 +96,8 @@ public class QueryParamStyleTest {
                 .build(QueryParamStyleServiceIntf.class);
 
         List<String> l = serviceIntf.getList(argList);
-        Assert.assertEquals(4, l.size());
-        Assert.assertEquals("theService reached", l.get(3));
+        Assertions.assertEquals(4, l.size());
+        Assertions.assertEquals("theService reached", l.get(3));
     }
 
     /*
@@ -111,8 +111,8 @@ public class QueryParamStyleTest {
                 .build(QueryParamStyleServiceIntf.class);
 
         List<String> l = serviceIntf.getList(argList);
-        Assert.assertEquals(2, l.size());
-        Assert.assertEquals("client call,hello,three", l.get(0));
+        Assertions.assertEquals(2, l.size());
+        Assertions.assertEquals("client call,hello,three", l.get(0));
     }
 
     /*
@@ -126,7 +126,7 @@ public class QueryParamStyleTest {
                 .build(QueryParamStyleServiceIntf.class);
 
         List<String> l = serviceIntf.getList(argList);
-        Assert.assertEquals(1, l.size());
-        Assert.assertEquals("theService reached", l.get(0));
+        Assertions.assertEquals(1, l.size());
+        Assertions.assertEquals("theService reached", l.get(0));
     }
 }

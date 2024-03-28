@@ -27,7 +27,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigUseGlobalApplication1;
 import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigUseGlobalApplication2;
@@ -35,11 +35,11 @@ import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigUs
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile Config: ServletConfig with useGlobal and multiple servlets
@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
  * @tpTestCaseDetails Regression tests for RESTEASY-2266
  * @tpSince RESTEasy 4.1.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class MicroProfileConfigUseGlobalTest {
 
@@ -65,12 +65,12 @@ public class MicroProfileConfigUseGlobalTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void before() throws Exception {
         client = ClientBuilder.newClient();
     }
 
-    @AfterClass
+    @AfterAll
     public static void after() throws Exception {
         client.close();
     }
@@ -82,10 +82,10 @@ public class MicroProfileConfigUseGlobalTest {
     @Test
     public void testMultipleAppsUseGlobal() throws Exception {
         Response response = client.target(TestEnvironment.generateUri(url, "/app1/prefix")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("/app1", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("/app1", response.readEntity(String.class));
         response = client.target(TestEnvironment.generateUri(url, "/app2/prefix")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("/app2", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("/app2", response.readEntity(String.class));
     }
 }

@@ -23,7 +23,7 @@ import java.lang.reflect.ReflectPermission;
 import java.util.PropertyPermission;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.resteasy.microprofile.config.ConfigConfiguration;
 import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigResource;
 import org.jboss.resteasy.microprofile.test.config.resource.TestConfigApplication;
@@ -32,9 +32,9 @@ import org.jboss.resteasy.spi.config.ConfigurationFactory;
 import org.jboss.resteasy.utils.PermissionUtil;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests that the {@link org.jboss.resteasy.microprofile.config.ConfigConfigurationFactory} is the one used inside
@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class ConfigConfigurationFactoryTest {
 
     @Deployment
@@ -60,7 +60,7 @@ public class ConfigConfigurationFactoryTest {
     @Test
     public void checkConfigurationFactory() {
         final ConfigurationFactory factory = ConfigurationFactory.getInstance();
-        Assert.assertTrue(String.format("Expected configuration %s to be an instance of ConfigConfiguration", factory),
-                factory.getConfiguration() instanceof ConfigConfiguration);
+        Assertions.assertTrue(factory.getConfiguration() instanceof ConfigConfiguration,
+                String.format("Expected configuration %s to be an instance of ConfigConfiguration", factory));
     }
 }
