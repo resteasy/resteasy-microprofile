@@ -7,19 +7,22 @@ on:
   push:
     branches:
       - 'main'
-    paths-ignore:
-      - '.gitignore'
-      - ".mvn"
-      - "CODEOWNERS"
-      - "CODE_OF_CONDUCT.md"
-      - "CONTRIBUTING.adoc"
-      - "dco.txt"
-      - "LICENSE"
-      - "mvnw"
-      - "mvnw.cmd"
-      - "README.adoc"
-      - "security.txt"
-      - "*/README.adoc"
+    paths:
+      - '.github/workflows/resteasy-build.yml'
+      - '**/pom.xml'
+      - 'config/**'
+      - 'context-propagation/**'
+      - 'galleon-pack/**'
+      - 'rest-client/**'
+      - 'rest-client-base/**'
+      - 'resteasy-microprofile-bom/**'
+      - 'resteasy-microprofile-test-bom/**'
+      - 'testsuite/**'
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - '.github/workflows/resteasy-build.yml'
   schedule:
     - cron: '0 0 * * *' # Every day at 00:00 UTC
 

@@ -7,38 +7,31 @@ on:
   push:
     branches-ignore:
       - 'dependabot/**'
-    paths-ignore:
-      - '.gitignore'
-      - ".mvn/**"
-      - "docbook/**"
-      - "distribution/**"
-      - "CODEOWNERS"
-      - "CODE_OF_CONDUCT.md"
-      - "CONTRIBUTING.adoc"
-      - "dco.txt"
-      - "LICENSE"
-      - "mvnw"
-      - "mvnw.cmd"
-      - "README.adoc"
-      - "SECURITY.md"
+    paths:
+      - '.github/workflows/build.yml'
+      - '**/pom.xml'
+      - 'config/**'
+      - 'context-propagation/**'
+      - 'galleon-pack/**'
+      - 'rest-client/**'
+      - 'rest-client-base/**'
+      - 'resteasy-microprofile-bom/**'
+      - 'resteasy-microprofile-test-bom/**'
+      - 'testsuite/**'
   pull_request:
     branches:
       - '**'
-    paths-ignore:
-      - '.gitignore'
-      - ".github/workflows/manual-*.yml"
-      - ".mvn/**"
-      - "docbook/**"
-      - "distribution/**"
-      - "CODEOWNERS"
-      - "CODE_OF_CONDUCT.md"
-      - "CONTRIBUTING.adoc"
-      - "dco.txt"
-      - "LICENSE"
-      - "mvnw"
-      - "mvnw.cmd"
-      - "README.adoc"
-      - "SECURITY.md"
+    paths:
+      - '.github/workflows/build.yml'
+      - '**/pom.xml'
+      - 'config/**'
+      - 'context-propagation/**'
+      - 'galleon-pack/**'
+      - 'rest-client/**'
+      - 'rest-client-base/**'
+      - 'resteasy-microprofile-bom/**'
+      - 'resteasy-microprofile-test-bom/**'
+      - 'testsuite/**'
 
 # Only run the latest job
 concurrency:
