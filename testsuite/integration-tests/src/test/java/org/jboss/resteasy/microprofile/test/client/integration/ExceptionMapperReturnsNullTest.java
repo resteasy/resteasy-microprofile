@@ -72,15 +72,11 @@ public class ExceptionMapperReturnsNullTest {
 
     @Test
     public void testDefaultExceptionMapper() throws Exception {
-        HealthService healthServiceClient = RestClientBuilder.newBuilder()
+        try (HealthService healthServiceClient = RestClientBuilder.newBuilder()
                 .baseUri(TestEnvironment.generateUri(url, "test-app"))
                 .register(new Ignore404ExceptionMapper())
-                .build(HealthService.class);
-
-        try {
-            healthServiceClient.getHealthData();
-        } catch (WebApplicationException e) {
-            // this is the expected result
+                .build(HealthService.class)) {
+            Assertions.assertThrows(WebApplicationException.class, healthServiceClient::getHealthData);
         }
     }
 }
