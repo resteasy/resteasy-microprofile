@@ -10,8 +10,8 @@ on:
     - cron: '0 0 * * *' # Every day at 00:00 UTC
 
 env:
-  GALLEON_VERSION: 7.0.0.Beta5
-  WILDFLY_MP_VERSION: 5.0.0.Beta3
+  GALLEON_VERSION: 7.0.0.Beta6
+  WILDFLY_MP_VERSION: 5.0.0.Beta4
 
 # Only run the latest job and cancel previous ones
 concurrency:
@@ -88,7 +88,7 @@ jobs:
           cache: 'maven'
       - name: Build with Maven Java ${{ matrix.java }} on WildFly ${{ matrix.wildfly-version }} - ${{ matrix.os }}
         run:  |
-          mvn clean install -U -B -fae '-Dserver.version=${{ matrix.wildfly-version }}' '-Dgithub.actions' '-Dversion.org.wildfly.galleon-plugins=${{ env.GALLEON_VERSION}}' '-Dversion.org.wildfly.plugins.wildfly-maven-plugin=${{ env.WILDFLY_MP_VERSION}}'
+          mvn clean install -U -B -fae '-Dserver.version=${{ matrix.wildfly-version }}' '-Dgithub.actions'
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
