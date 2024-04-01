@@ -41,10 +41,10 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ClientHeadersFactoryCDITest {
 
@@ -122,7 +122,7 @@ public class ClientHeadersFactoryCDITest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         Weld weld = new Weld();
         weld.addBeanClass(Worker.class);
@@ -134,7 +134,7 @@ public class ClientHeadersFactoryCDITest {
         server.deploy(MyApp.class);
     }
 
-    @AfterClass
+    @AfterAll
     public static void stop() {
         server.stop();
         container.shutdown();
@@ -142,9 +142,9 @@ public class ClientHeadersFactoryCDITest {
 
     @Test
     public void test() {
-        Assert.assertTrue(container.isRunning());
+        Assertions.assertTrue(container.isRunning());
         String result = container.select(Worker.class).get().work();
-        Assert.assertEquals("hello Stefano", result);
-        Assert.assertEquals(1, Counter.COUNT.get());
+        Assertions.assertEquals("hello Stefano", result);
+        Assertions.assertEquals(1, Counter.COUNT.get());
     }
 }

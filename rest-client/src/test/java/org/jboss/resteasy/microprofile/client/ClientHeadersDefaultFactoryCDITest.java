@@ -39,10 +39,10 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ClientHeadersDefaultFactoryCDITest {
 
@@ -104,7 +104,7 @@ public class ClientHeadersDefaultFactoryCDITest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         Weld weld = new Weld();
         weld.addBeanClass(Worker.class);
@@ -114,7 +114,7 @@ public class ClientHeadersDefaultFactoryCDITest {
         undertowJaxrsServer.deploy(MyApp.class);
     }
 
-    @After
+    @AfterEach
     public void stop() {
         if (undertowJaxrsServer != null) {
             undertowJaxrsServer.stop();
@@ -127,7 +127,7 @@ public class ClientHeadersDefaultFactoryCDITest {
     @Test
     public void test() {
         String result = weldContainer.select(Worker.class).get().work();
-        Assert.assertTrue(result.contains("IntfHeader: intfValue"));
-        Assert.assertTrue(result.contains("MthdHeader: hello"));
+        Assertions.assertTrue(result.contains("IntfHeader: intfValue"));
+        Assertions.assertTrue(result.contains("MthdHeader: hello"));
     }
 }

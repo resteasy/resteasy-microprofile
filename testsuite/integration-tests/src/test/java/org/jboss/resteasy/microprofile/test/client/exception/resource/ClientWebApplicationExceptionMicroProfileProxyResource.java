@@ -31,7 +31,7 @@ import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 import org.jboss.resteasy.client.exception.WebApplicationExceptionWrapper;
 import org.jboss.resteasy.microprofile.test.client.exception.ClientWebApplicationExceptionConstants;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 @Path("test")
 public class ClientWebApplicationExceptionMicroProfileProxyResource {
@@ -131,11 +131,11 @@ public class ClientWebApplicationExceptionMicroProfileProxyResource {
             throw new Exception("didn't expect ResteasyWebApplicationException", e);
         } catch (WebApplicationException e) {
             Response response = e.getResponse();
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                     .getStatus(), response.getStatus());
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                     .getHeaderString("foo"), response.getHeaderString("foo"));
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                     .getEntity(), response.readEntity(String.class));
             throw e;
         } catch (Exception e) {
@@ -163,11 +163,11 @@ public class ClientWebApplicationExceptionMicroProfileProxyResource {
             throw new Exception("didn't expect ResteasyWebApplicationException", e);
         } catch (WebApplicationException e) {
             Response response = e.getResponse();
-            Assert.assertNotNull(response);
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
+            Assertions.assertNotNull(response);
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
                     .getStatus(), response.getStatus());
-            Assert.assertNull(response.getHeaderString("foo"));
-            Assert.assertTrue(response.readEntity(String.class).length() == 0);
+            Assertions.assertNull(response.getHeaderString("foo"));
+            Assertions.assertTrue(response.readEntity(String.class).length() == 0);
             throw e;
         } catch (Exception e) {
             throw new Exception("expected WebApplicationException, not " + e.getClass());
@@ -196,19 +196,19 @@ public class ClientWebApplicationExceptionMicroProfileProxyResource {
             throw new Exception("didn't expect ResteasyWebApplicationException", e);
         } catch (WebApplicationException e) {
             Response sanitizedResponse = e.getResponse();
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                     .getStatus(), sanitizedResponse.getStatus());
-            Assert.assertNull(sanitizedResponse.getHeaderString("foo"));
-            Assert.assertFalse(sanitizedResponse.hasEntity());
+            Assertions.assertNull(sanitizedResponse.getHeaderString("foo"));
+            Assertions.assertFalse(sanitizedResponse.hasEntity());
             Response originalResponse = WebApplicationExceptionWrapper.unwrap(e).getResponse();
-            Assert.assertNotNull(originalResponse);
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+            Assertions.assertNotNull(originalResponse);
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                     .getStatus(), originalResponse.getStatus());
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                     .getHeaderString("foo"), originalResponse.getHeaderString("foo"));
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                     .getEntity(), originalResponse.readEntity(String.class));
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptionMap.get(originalResponse.getStatus()), e
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptionMap.get(originalResponse.getStatus()), e
                     .getClass());
             throw e;
         } catch (Exception e) {
@@ -238,18 +238,18 @@ public class ClientWebApplicationExceptionMicroProfileProxyResource {
             throw new Exception("didn't expect ResteasyWebApplicationException");
         } catch (WebApplicationException e) {
             Response sanitizedResponse = e.getResponse();
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
                     .getStatus(), sanitizedResponse.getStatus());
-            Assert.assertNull(sanitizedResponse.getHeaderString("foo"));
-            Assert.assertFalse(sanitizedResponse.hasEntity());
+            Assertions.assertNull(sanitizedResponse.getHeaderString("foo"));
+            Assertions.assertFalse(sanitizedResponse.hasEntity());
             Response originalResponse = WebApplicationExceptionWrapper.unwrap(e).getResponse();
-            Assert.assertNotNull(originalResponse);
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
+            Assertions.assertNotNull(originalResponse);
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
                     .getStatus(), originalResponse.getStatus());
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptions[i].getResponse()
                     .getHeaderString("foo"), originalResponse.getHeaderString("foo"));
-            Assert.assertTrue(originalResponse.readEntity(String.class).isEmpty());
-            Assert.assertEquals(ClientWebApplicationExceptionConstants.newExceptionMap.get(originalResponse.getStatus()), e
+            Assertions.assertTrue(originalResponse.readEntity(String.class).isEmpty());
+            Assertions.assertEquals(ClientWebApplicationExceptionConstants.newExceptionMap.get(originalResponse.getStatus()), e
                     .getClass());
             throw e;
         } catch (Exception e) {

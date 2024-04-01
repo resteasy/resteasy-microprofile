@@ -29,18 +29,18 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.RestClientProxyRedeployRemoteService;
 import org.jboss.resteasy.microprofile.test.client.integration.resource.RestClientProxyRedeployResource;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class RestClientProxyRedeployTest {
     @Deployment(name = "deployment1", order = 1)
@@ -69,9 +69,9 @@ public class RestClientProxyRedeployTest {
     public void testGet1() throws Exception {
         Client client = ClientBuilder.newClient();
         Response response = client.target(TestEnvironment.generateUri(url1, "/test-app/test/1")).request().get();
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
         String entity = response.readEntity(String.class);
-        Assert.assertEquals("OK", entity);
+        Assertions.assertEquals("OK", entity);
         client.close();
     }
 
@@ -79,9 +79,9 @@ public class RestClientProxyRedeployTest {
     public void testGet2() throws Exception {
         Client client = ClientBuilder.newClient();
         Response response = client.target(TestEnvironment.generateUri(url2, "/test-app/test/1")).request().get();
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
         String entity = response.readEntity(String.class);
-        Assert.assertEquals("OK", entity);
+        Assertions.assertEquals("OK", entity);
         client.close();
     }
 }

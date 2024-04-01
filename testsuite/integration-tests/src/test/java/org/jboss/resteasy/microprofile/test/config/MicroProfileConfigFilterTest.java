@@ -29,7 +29,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigFilter;
@@ -39,11 +39,11 @@ import org.jboss.resteasy.microprofile.test.util.MicroProfileConfigSystemPropert
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @tpSubChapter MicroProfile Config
@@ -51,7 +51,7 @@ import org.junit.runner.RunWith;
  * @tpTestCaseDetails Regression tests for RESTEASY-2131
  * @tpSince RESTEasy 4.0.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 @ServerSetup(MicroProfileConfigSystemPropertySetupTask.class)
 public class MicroProfileConfigFilterTest {
@@ -69,12 +69,12 @@ public class MicroProfileConfigFilterTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void before() throws Exception {
         client = ClientBuilder.newClient();
     }
 
-    @AfterClass
+    @AfterAll
     public static void after() throws Exception {
         client.close();
     }
@@ -90,8 +90,8 @@ public class MicroProfileConfigFilterTest {
     @Test
     public void testSystemProgrammatic() throws Exception {
         Response response = client.target(generateURL("/system/prog")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("system-system", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("system-system", response.readEntity(String.class));
     }
 
     /**
@@ -101,8 +101,8 @@ public class MicroProfileConfigFilterTest {
     @Test
     public void testSystemInject() throws Exception {
         Response response = client.target(generateURL("/system/inject")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("system-system", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("system-system", response.readEntity(String.class));
     }
 
     /**
@@ -113,8 +113,8 @@ public class MicroProfileConfigFilterTest {
     @Test
     public void testFilterProgrammatic() throws Exception {
         Response response = client.target(generateURL("/filter/prog")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("filter-filter", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("filter-filter", response.readEntity(String.class));
     }
 
     /**
@@ -125,8 +125,8 @@ public class MicroProfileConfigFilterTest {
     @Test
     public void testFilterInject() throws Exception {
         Response response = client.target(generateURL("/filter/inject")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("filter-filter", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("filter-filter", response.readEntity(String.class));
     }
 
     /**
@@ -136,8 +136,8 @@ public class MicroProfileConfigFilterTest {
     @Test
     public void testContextProgrammatic() throws Exception {
         Response response = client.target(generateURL("/context/prog")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("context-context", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("context-context", response.readEntity(String.class));
     }
 
     /**
@@ -147,8 +147,8 @@ public class MicroProfileConfigFilterTest {
     @Test
     public void testContextInject() throws Exception {
         Response response = client.target(generateURL("/context/inject")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("context-context", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("context-context", response.readEntity(String.class));
     }
 
     /**
@@ -158,7 +158,7 @@ public class MicroProfileConfigFilterTest {
     @Test
     public void testActualContextParameter() throws Exception {
         Response response = client.target(generateURL("/actual")).request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("text/plain", response.getHeaderString("Content-Type"));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("text/plain", response.getHeaderString("Content-Type"));
     }
 }
