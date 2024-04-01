@@ -66,7 +66,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build with Maven Java ${{ matrix.java }}
-        run: mvn  -B clean install '-Dversion.org.wildfly=${{ needs.wildfly-build.outputs.wildfly-version }}' '-Dversion.org.jboss.galleon=${{ env.GALLEON_VERSION}}' '-Dversion.org.wildfly.plugins.wildfly-maven-plugin=${{ env.WILDFLY_MP_VERSION}}'
+        run: mvn  -B clean install '-Dversion.org.wildfly=${{ needs.wildfly-build.outputs.wildfly-version }}' '-Dversion.org.wildfly.galleon-plugins=${{ env.GALLEON_VERSION}}' '-Dversion.org.wildfly.maven.plugin=${{ env.WILDFLY_MP_VERSION}}'
       - name: Upload surefire reports
         uses: actions/upload-artifact@v4
         if: failure()

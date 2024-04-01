@@ -81,7 +81,7 @@
         <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
 
         <!-- Plugin Versions -->
-        <version.org.jboss.galleon>5.2.2.Final</version.org.jboss.galleon>
+        <version.org.wildfly.maven.plugin>4.2.2.Final</version.org.wildfly.maven.plugin>
         <version.org.wildfly.galleon-plugins>6.5.4.Final</version.org.wildfly.galleon-plugins>
 
         <!-- Plugin Versions, please keep in alphabetical order -->
@@ -126,9 +126,9 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.jboss.galleon</groupId>
-                    <artifactId>galleon-maven-plugin</artifactId>
-                    <version>${version.org.jboss.galleon}</version>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${version.org.wildfly.maven.plugin}</version>
                     <configuration>
                         <skip>${galleon.skip}</skip>
                     </configuration>
