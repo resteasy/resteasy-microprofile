@@ -49,7 +49,6 @@
         <feature.pack.version>${project.version}</feature.pack.version>
 
 
-        <version.arquillian.junit5>1.7.2.Final</version.arquillian.junit5>
         <jboss.arguments/>
     </properties>
 
@@ -164,6 +163,11 @@
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-testing-tools</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
