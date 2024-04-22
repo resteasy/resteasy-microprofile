@@ -33,7 +33,7 @@
     <name>RESTEasy MicroProfile: Test Suite</name>
     <properties>
         <jvm.debug.args/>
-        <dep.arquillian-bom.version>1.7.2.Final</dep.arquillian-bom.version>
+        <dep.arquillian-bom.version>1.8.0.Final</dep.arquillian-bom.version>
     </properties>
     <modules>
         <module>integration-tests</module>
