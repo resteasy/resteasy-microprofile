@@ -29,12 +29,12 @@ import org.jboss.resteasy.microprofile.test.config.resource.MicroProfileConfigRe
 import org.jboss.resteasy.microprofile.test.config.resource.TestConfigApplication;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.resteasy.spi.config.ConfigurationFactory;
-import org.jboss.resteasy.utils.PermissionUtil;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.wildfly.testing.tools.deployments.DeploymentDescriptors;
 
 /**
  * Tests that the {@link org.jboss.resteasy.microprofile.config.ConfigConfigurationFactory} is the one used inside
@@ -50,7 +50,7 @@ public class ConfigConfigurationFactoryTest {
         return TestEnvironment.createWar(ConfigConfigurationFactoryTest.class)
                 .addClasses(TestConfigApplication.class, MicroProfileConfigResource.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsManifestResource(PermissionUtil.createPermissionsXmlAsset(
+                .addAsManifestResource(DeploymentDescriptors.createPermissionsXmlAsset(
                         new PropertyPermission("arquillian.*", "read"),
                         new ReflectPermission("suppressAccessChecks"),
                         new RuntimePermission("accessDeclaredMembers")),

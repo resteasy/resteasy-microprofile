@@ -36,7 +36,6 @@ import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebA
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebApplicationExceptionMicroProfileProxyResource;
 import org.jboss.resteasy.microprofile.test.client.exception.resource.ClientWebApplicationExceptionProxyResourceInterface;
 import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
-import org.jboss.resteasy.utils.PermissionUtil;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.jupiter.api.Assertions;
@@ -44,6 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.wildfly.testing.tools.deployments.DeploymentDescriptors;
 
 /**
  * @tpSubChapter Resteasy-client
@@ -81,7 +81,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                         +
                         "       version=\"3.0\" bean-discovery-mode=\"all\">\n" +
                         "</beans>"), "beans.xml")
-                .addAsManifestResource(PermissionUtil.createPermissionsXmlAsset(
+                .addAsManifestResource(DeploymentDescriptors.createPermissionsXmlAsset(
                         new PropertyPermission("resteasy.original.webapplicationexception.behavior", "write")),
                         "permissions.xml");
     }
