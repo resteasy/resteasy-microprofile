@@ -78,7 +78,6 @@ jobs:
         java: [ '11', '17', '21' ]
         profile:
           - "'-Dsecurity.manager'"
-          - "'-Dprovision.preview'"
 
     steps:
       - uses: actions/checkout@v4
@@ -88,14 +87,6 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'maven'
-      # This must be run after the previous setup to ensure the JAVA_HOME is always Java 11.
-      - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ matrix.java }}
-          distribution: 'temurin'
-          cache: 'maven'
-      # Since we need to pass the test.java.home we need different runs for Linux and Windows
       - name: Test with Java ${{ matrix.java }} - ${{ matrix.profile }}
         run: |
           mvn clean install -U -B -fae ${{ matrix.profile }}
@@ -103,6 +94,34 @@ jobs:
         if: failure()
         with:
           name: surefire-reports-${{ matrix.profile }}-${{ matrix.java }}
+          path: |
+            '**/surefire-reports/'
+            !galleon-pack/
+
+  provision-preview:
+    name: Test Provisioning with Preview - JDK ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ '17', '21' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Test with Java ${{ matrix.java }} - Provision Preview
+        run: |
+          mvn clean install -U -B -fae '-Dprovision.preview'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: surefire-reports-preview-${{ matrix.java }}
           path: |
             '**/surefire-reports/'
             !galleon-pack/
