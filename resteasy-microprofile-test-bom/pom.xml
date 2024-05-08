@@ -44,7 +44,7 @@
         <version.jakarta.servlet>4.0.4</version.jakarta.servlet>
 
         <version.org.eclipse.parsson>1.1.4</version.org.eclipse.parsson>
-        <version.org.eclipse.yasson>3.0.2</version.org.eclipse.yasson>
+        <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
 
         <version.org.jboss.arquillian>1.8.0.Final</version.org.jboss.arquillian>
         <version.org.jboss.arquillian.container.arquillian-weld-embedded>4.0.0.Final</version.org.jboss.arquillian.container.arquillian-weld-embedded>
