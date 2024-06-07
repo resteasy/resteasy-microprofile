@@ -5,14 +5,14 @@
 # An output setting of "resteasy-mp-version" is set with the version of the SNAPSHOT dependencies.
 #
 # Two input parameters can be set. The parameter resteasy-branch is used to control which branch you'd like a build of.
-# The default branch is "main". The parameter resteasy-repo allows you to override the repository used. The default for
+# The default branch is "2.1". The parameter resteasy-repo allows you to override the repository used. The default for
 # this parameter is "resteasy/resteasy-microprofile".
 #
 # Example Usage:
 #
 # jobs:
 #   resteasy-build:
-#     uses: resteasy/resteasy-microprofile/.github/workflows/shared-build.yml@main
+#     uses: resteasy/resteasy-microprofile/.github/workflows/shared-build.yml@2.1
 #     with:
 #       resteasy-branch: ${{ inputs.resteasy-branch }}
 #       resteasy-repo: ${{ inputs.resteasy-repo }}
@@ -39,7 +39,7 @@
 #      - name: Build on Linux with Java 17 using RESTEasy MicroProfile ${{ needs.resteasy-build.outputs.resteasy-mp-version }}
 #        run: mvn clean verify '-Dversion.dev.resteasy.microprofile=${{ needs.resteasy-build.outputs.resteasy-mp-version }}'
 
-name: Build RESTEasy MicroProfile Upstream
+name: Build RESTEasy MicroProfile Upstream - 2.1
 
 on:
   workflow_call:
@@ -51,7 +51,7 @@ on:
       resteasy-branch:
         description: "RESTEasy MicroProfile Branch"
         required: true
-        default: "main"
+        default: "2.1"
         type: string
       resteasy-repo:
         description: "RESTEasy MicroProfile Repository"

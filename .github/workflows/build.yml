@@ -1,12 +1,12 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: RESTEasy MicroProfile Build and Test
+name: RESTEasy MicroProfile Build and Test 2.1
 
 on:
   push:
-    branches-ignore:
-      - 'dependabot/**'
+    branches:
+      - '2.1'
     paths:
       - '.github/workflows/build.yml'
       - '**/pom.xml'
@@ -40,7 +40,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build and Test
+    name: Build and Test 2.1
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
@@ -69,7 +69,7 @@ jobs:
             !galleon-pack/
 
   additional-profiles:
-    name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }}
+    name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }} - 2.1
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -99,7 +99,7 @@ jobs:
             !galleon-pack/
 
   provision-preview:
-    name: Test Provisioning with Preview - JDK ${{ matrix.java }}
+    name: Test Provisioning with Preview - JDK ${{ matrix.java }} - 2.1
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -127,7 +127,7 @@ jobs:
             !galleon-pack/
 
   format-check:
-    name: Check Code Formatting
+    name: Check Code Formatting - 2.1
     runs-on: ubuntu-latest
     timeout-minutes: 30
 

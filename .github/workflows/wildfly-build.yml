@@ -1,11 +1,11 @@
 # This workflow is for a nightly run against WildFly upstream
 
-name: WildFly Test Build
+name: WildFly Test Build - 2.1
 
 on:
   push:
     branches:
-      - 'main'
+      - '2.1'
     paths:
       - '.github/workflows/wildfly-build.yml'
       - '**/pom.xml'
@@ -25,10 +25,6 @@ on:
   schedule:
     - cron: '0 0 * * *' # Every day at 00:00 UTC
 
-env:
-  GALLEON_VERSION: 7.0.0.Beta6
-  WILDFLY_MP_VERSION: 5.0.0.Beta4
-
 # Only run the latest job and cancel previous ones
 concurrency:
   group: 'wildfly-${{ github.ref || github.run_id }}'
@@ -42,6 +38,7 @@ jobs:
       wildfly-repo: "wildfly/wildfly"
 
   resteasy-build:
+    name: Build and Test on WildFly ${{ needs.wildfly-build.outputs.wildfly-version }} - 2.1
     runs-on: ${{ matrix.os }}
     needs: wildfly-build
     strategy:
@@ -66,7 +63,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build with Maven Java ${{ matrix.java }}
-        run: mvn  -B clean install '-Dversion.org.wildfly=${{ needs.wildfly-build.outputs.wildfly-version }}' '-Dversion.org.wildfly.galleon-plugins=${{ env.GALLEON_VERSION}}' '-Dversion.org.wildfly.maven.plugin=${{ env.WILDFLY_MP_VERSION}}'
+        run: mvn  -B clean install '-Dversion.org.wildfly=${{ needs.wildfly-build.outputs.wildfly-version }}'
       - name: Upload surefire reports
         uses: actions/upload-artifact@v4
         if: failure()
