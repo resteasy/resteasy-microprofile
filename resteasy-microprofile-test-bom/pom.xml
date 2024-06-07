@@ -34,7 +34,7 @@
 
     <properties>
         <!-- Test only dependencies -->
-        <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson>2.17.1</version.com.fasterxml.jackson>
         <version.com.fasterxml.jackson.databind>${version.com.fasterxml.jackson}</version.com.fasterxml.jackson.databind>
         <version.com.io7m.xom>1.2.10</version.com.io7m.xom>
 
