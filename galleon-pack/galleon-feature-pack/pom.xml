@@ -68,10 +68,6 @@
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-ee-galleon-pack</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
