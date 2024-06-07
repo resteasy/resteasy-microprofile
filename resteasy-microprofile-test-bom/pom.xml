@@ -33,8 +33,6 @@
     <name>RESTEasy MicroProfile: Test BOM</name>
 
     <properties>
-        <!-- Test only dependencies -->
-        <version.com.io7m.xom>1.2.10</version.com.io7m.xom>
 
         <version.jakarta.enterprise.concurrent>2.0.0</version.jakarta.enterprise.concurrent>
         <version.jakarta.json.json-api>2.1.3</version.jakarta.json.json-api>
@@ -111,18 +109,6 @@
                     <exclusion>
                         <groupId>org.eclipse.jetty</groupId>
                         <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <!-- Needed by PermissionUtil -->
-            <dependency>
-                <groupId>com.io7m.xom</groupId>
-                <artifactId>xom</artifactId>
-                <version>${version.com.io7m.xom}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
