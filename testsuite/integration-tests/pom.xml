@@ -54,11 +54,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.io7m.xom</groupId>
-            <artifactId>xom</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
             <scope>test</scope>
