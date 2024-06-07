@@ -33,10 +33,6 @@
     <name>RESTEasy MicroProfile: Test BOM</name>
 
     <properties>
-        <!-- Test only dependencies -->
-        <version.com.fasterxml.jackson>2.14.3</version.com.fasterxml.jackson>
-        <version.com.fasterxml.jackson.databind>${version.com.fasterxml.jackson}</version.com.fasterxml.jackson.databind>
-        <version.com.io7m.xom>1.2.10</version.com.io7m.xom>
 
         <version.jakarta.enterprise.concurrent>2.0.0</version.jakarta.enterprise.concurrent>
         <version.jakarta.json.json-api>2.1.1</version.jakarta.json.json-api>
@@ -95,26 +91,6 @@
                 </exclusions>
             </dependency>
 
-            <!-- Required by the MicroProfile TCK and Wiremock -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${version.com.fasterxml.jackson}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${version.com.fasterxml.jackson.databind}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${version.com.fasterxml.jackson}</version>
-                <scope>test</scope>
-            </dependency>
-
             <!-- Required by the MicroProfile REST TCK -->
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
@@ -133,18 +109,6 @@
                     <exclusion>
                         <groupId>org.eclipse.jetty</groupId>
                         <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <!-- Needed by PermissionUtil -->
-            <dependency>
-                <groupId>com.io7m.xom</groupId>
-                <artifactId>xom</artifactId>
-                <version>${version.com.io7m.xom}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
