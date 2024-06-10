@@ -34,8 +34,7 @@
 
     <properties>
         <skip.mp.tck>false</skip.mp.tck>
-        <jetty9.version>9.2.30.v20200428</jetty9.version>
-        <jetty.version>${jetty9.version}</jetty.version>
+        <jetty.version>11.0.21</jetty.version>
         <tck.timeout.offset>90000</tck.timeout.offset>
     </properties>
 
@@ -148,6 +147,12 @@
             <scope>test</scope>
             <version>${version.resteasy.testsuite}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+            <scope>test</scope>
+            <version>${version.resteasy.testsuite}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
@@ -241,16 +246,9 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Servlet 5.0 is required for the TCK and 4.0 (or javax namespace base) is required for Wiremock -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_4.0_spec</artifactId>
-            <version>2.0.0.Final</version>
             <scope>test</scope>
         </dependency>
 
