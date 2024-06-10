@@ -1,0 +1,71 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: RESTEasy MicroProfile Upstream Build and Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Runner OS'
+        required: true
+        default: 'ubuntu-latest'
+        type: string
+      javaVersion:
+        description: 'Java Version'
+        required: true
+        default: '11'
+        type: string
+      upstreamPr:
+        description: 'MP REST Client PR'
+        required: true
+        type: number
+
+
+
+# Cancel previously running jobs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    env:
+      GH_TOKEN: ${{ github.token }}
+    name: Test MP REST Client for PR ${{ inputs.upstreamPr }}
+    runs-on: ${{ inputs.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout MicroProfile REST Client
+        with:
+          repository: eclipse/microprofile-rest-client
+          path: microprofile-rest-client
+      - uses: actions/checkout@v4
+        name: Checkout RESTEasy
+        with:
+          path: resteasy-microprofile
+      - name: Set up JDK ${{ inputs.javaVersion }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ inputs.javaVersion }}
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Build the MP REST Client
+        id: mp-rest-client-build
+        run: |
+          cd microprofile-rest-client
+          gh pr checkout --force ${{ inputs.upstreamPr }}
+          mvn -B -ntp clean install -DskipTests
+          echo "mp-rest-client-version=$(mvn -B help:evaluate -Dexpression=project.version -DforceStdout -q)" >> $GITHUB_OUTPUT
+      - name: Build on ${{ inputs.os }} with Java ${{ inputs.javaVersion }}
+        run: |
+          cd resteasy-microprofile
+          mvn -B -ntp clean install '-Dversion.org.eclipse.microprofile.rest.client=${{ steps.mp-rest-client-build.outputs.mp-rest-client-version }}' '-Djetty.version=11.0.21' '-Dversion.com.github.tomakehurst.wiremock=3.0.1'
+      - name: Upload surefire reports
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: surefire-reports
+          path: '**/surefire-reports/*'
+
