@@ -24,7 +24,7 @@
     <container qualifier="jboss" default="true">
         <configuration>
             <property name="jbossHome">${jboss.home}</property>
-            <property name="javaVmArguments">${jvm.debug.args}</property>
+            <property name="javaVmArguments">-Djava.io.tmpdir=${project.build.directory} ${jvm.debug.args}</property>
             <property name="serverConfig">${jboss.server.config.file.name:standalone.xml}</property>
             <property name="jbossArguments">${jboss.arguments}</property>
             <!-- <property name="jbossArguments">${jboss.args}</property> -->
