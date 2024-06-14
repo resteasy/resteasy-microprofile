@@ -34,6 +34,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 import org.eclipse.microprofile.rest.client.ext.DefaultClientHeadersFactoryImpl;
+import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.microprofile.client.impl.MpClientInvocation;
 import org.jboss.resteasy.microprofile.client.utils.ClientRequestContextUtils;
 
@@ -48,6 +49,26 @@ import org.jboss.resteasy.microprofile.client.utils.ClientRequestContextUtils;
 public class ClientHeadersRequestFilter implements ClientRequestFilter {
 
     private static final MultivaluedMap<String, String> EMPTY_MAP = new MultivaluedHashMap<>();
+
+    private final MultivaluedMap<String, Object> defaultHeaders;
+
+    /**
+     * Creates a new filter.
+     */
+    public ClientHeadersRequestFilter() {
+        this.defaultHeaders = new Headers<>();
+    }
+
+    /**
+     * Creates a new filter which will add each default header by default to the request headers. Note the values of
+     * the {@code defaultHeaders} will be appended and header values are not replaced.
+     *
+     * @param defaultHeaders the default headers to add
+     */
+    public ClientHeadersRequestFilter(final MultivaluedMap<String, Object> defaultHeaders) {
+        this.defaultHeaders = new Headers<>();
+        this.defaultHeaders.putAll(defaultHeaders);
+    }
 
     @Override
     public void filter(ClientRequestContext requestContext) {
@@ -80,6 +101,8 @@ public class ClientHeadersRequestFilter implements ClientRequestFilter {
 
         factory.ifPresent(f -> f.update(incomingHeaders, headers)
                 .forEach((key, values) -> requestContext.getHeaders().put(key, castToListOfObjects(values))));
+
+        this.defaultHeaders.forEach((name, values) -> requestContext.getHeaders().addAll(name, values));
     }
 
     private static List<Object> castToListOfObjects(List<String> values) {

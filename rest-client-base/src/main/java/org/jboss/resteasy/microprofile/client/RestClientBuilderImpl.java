@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -66,6 +67,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.core.Configuration;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 
 import org.eclipse.microprofile.config.Config;
@@ -85,6 +87,7 @@ import org.jboss.resteasy.client.jaxrs.engines.URLConnectionClientEngineBuilder;
 import org.jboss.resteasy.client.jaxrs.internal.LocalResteasyProviderFactory;
 import org.jboss.resteasy.concurrent.ContextualExecutorService;
 import org.jboss.resteasy.concurrent.ContextualExecutors;
+import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.microprofile.client.async.AsyncInterceptorRxInvokerProvider;
 import org.jboss.resteasy.microprofile.client.async.AsyncInvocationInterceptorThreadContext;
 import org.jboss.resteasy.microprofile.client.header.ClientHeadersRequestFilter;
@@ -104,7 +107,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     private static final DefaultMediaTypeFilter DEFAULT_MEDIA_TYPE_FILTER = new DefaultMediaTypeFilter();
     private static final Collection<Method> IGNORED_METHODS = new ArrayList<>();
     public static final MethodInjectionFilter METHOD_INJECTION_FILTER = new MethodInjectionFilter();
-    public static final ClientHeadersRequestFilter HEADERS_REQUEST_FILTER = new ClientHeadersRequestFilter();
 
     static ResteasyProviderFactory PROVIDER_FACTORY;
 
@@ -116,6 +118,8 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     public static void setProviderFactory(ResteasyProviderFactory providerFactory) {
         PROVIDER_FACTORY = providerFactory;
     }
+
+    private final MultivaluedMap<String, Object> headers;
 
     public RestClientBuilderImpl() {
         builderDelegate = new MpClientBuilderImpl();
@@ -140,6 +144,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         } catch (Throwable e) {
 
         }
+        headers = new Headers<>();
     }
 
     public Configuration getConfigurationWrapper() {
@@ -159,6 +164,13 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     @Override
     public RestClientBuilder queryParamStyle(QueryParamStyle queryParamStyle) {
         this.queryParamStyle = queryParamStyle;
+        return this;
+    }
+
+    @Override
+    public RestClientBuilder header(final String name, final Object value) {
+        headers.add(Objects.requireNonNull(name, "A header name is required."),
+                Objects.requireNonNull(value, "Value for header is required."));
         return this;
     }
 
@@ -323,7 +335,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         }
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
-        resteasyClientBuilder.register(HEADERS_REQUEST_FILTER);
+        resteasyClientBuilder.register(new ClientHeadersRequestFilter(headers));
         register(new MpPublisherMessageBodyReader(executorService));
         resteasyClientBuilder.sslContext(sslContext);
         resteasyClientBuilder.trustStore(trustStore);
