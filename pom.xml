@@ -82,7 +82,7 @@
 
         <!-- Plugin Versions -->
         <version.org.wildfly.maven.plugin>5.0.0.Final</version.org.wildfly.maven.plugin>
-        <version.org.wildfly.galleon-plugins>7.0.0.Final</version.org.wildfly.galleon-plugins>
+        <version.org.wildfly.galleon-plugins>7.1.0.Final</version.org.wildfly.galleon-plugins>
 
         <!-- Plugin Versions, please keep in alphabetical order -->
         <!-- print logs to file by default -->
