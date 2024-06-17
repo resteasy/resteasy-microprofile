@@ -114,6 +114,12 @@
             <version>${version.resteasy.testsuite}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+            <version>${version.resteasy.testsuite}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -222,6 +228,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <jboss.home>${jboss.home}</jboss.home>
+                        <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
