@@ -36,18 +36,20 @@
         <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
 
         <!-- Feature Packs -->
+        <server.version/>
         <wildfly.feature.pack.groupId>org.wildfly</wildfly.feature.pack.groupId>
         <wildfly.feature.pack.artifactId>wildfly-galleon-pack</wildfly.feature.pack.artifactId>
-        <wildfly.feature.pack.version>${version.org.wildfly}</wildfly.feature.pack.version>
 
-        <resteasy.feature.pack.groupId>org.jboss.resteasy</resteasy.feature.pack.groupId>
-        <resteasy.feature.pack.artifactId>galleon-feature-pack</resteasy.feature.pack.artifactId>
-        <resteasy.feature.pack.version>${version.org.jboss.resteasy}</resteasy.feature.pack.version>
+        <wildfly.channel.manifest.groupId>org.wildfly.channels</wildfly.channel.manifest.groupId>
+        <wildfly.channel.manifest.artifactId>wildfly</wildfly.channel.manifest.artifactId>
 
-        <feature.pack.groupId>org.jboss.resteasy.microprofile</feature.pack.groupId>
-        <feature.pack.artifactId>galleon-feature-pack</feature.pack.artifactId>
-        <feature.pack.version>${project.version}</feature.pack.version>
+        <resteasy.channel.manifest.groupId>dev.resteasy.channels</resteasy.channel.manifest.groupId>
+        <resteasy.channel.manifest.artifactId>resteasy-6.2</resteasy.channel.manifest.artifactId>
+        <resteasy.channel.manifest.version>${version.org.jboss.resteasy}</resteasy.channel.manifest.version>
 
+        <resteasy.mp.channel.manifest.groupId>dev.resteasy.channels</resteasy.mp.channel.manifest.groupId>
+        <resteasy.mp.channel.manifest.artifactId>resteasy-microprofile-${channel.stream.version}</resteasy.mp.channel.manifest.artifactId>
+        <resteasy.mp.channel.manifest.version>${project.version}</resteasy.mp.channel.manifest.version>
 
         <jboss.arguments/>
     </properties>
@@ -242,7 +244,6 @@
                         <feature-pack>
                             <groupId>${wildfly.feature.pack.groupId}</groupId>
                             <artifactId>${wildfly.feature.pack.artifactId}</artifactId>
-                            <version>${wildfly.feature.pack.version}</version>
                             <inherit-configs>false</inherit-configs>
                             <included-configs>
                                 <config>
@@ -256,17 +257,33 @@
                                 <name>domain</name>
                             </excluded-packages>
                         </feature-pack>
-                        <feature-pack>
-                            <groupId>${resteasy.feature.pack.groupId}</groupId>
-                            <artifactId>${resteasy.feature.pack.artifactId}</artifactId>
-                            <version>${resteasy.feature.pack.version}</version>
-                        </feature-pack>
-                        <feature-pack>
-                            <groupId>${feature.pack.groupId}</groupId>
-                            <artifactId>${feature.pack.artifactId}</artifactId>
-                            <version>${feature.pack.version}</version>
-                        </feature-pack>
                     </feature-packs>
+                    <channels>
+                        <!-- If the server.version is blank the newest version of WildFly will be used. Otherwise, be
+                             explicit.
+                         -->
+                        <channel>
+                            <manifest>
+                                <groupId>${wildfly.channel.manifest.groupId}</groupId>
+                                <artifactId>${wildfly.channel.manifest.artifactId}</artifactId>
+                                <version>${server.version}</version>
+                            </manifest>
+                        </channel>
+                        <channel>
+                            <manifest>
+                                <groupId>${resteasy.channel.manifest.groupId}</groupId>
+                                <artifactId>${resteasy.channel.manifest.artifactId}</artifactId>
+                                <version>${resteasy.channel.manifest.version}</version>
+                            </manifest>
+                        </channel>
+                        <channel>
+                            <manifest>
+                                <groupId>${resteasy.mp.channel.manifest.groupId}</groupId>
+                                <artifactId>${resteasy.mp.channel.manifest.artifactId}</artifactId>
+                                <version>${resteasy.mp.channel.manifest.version}</version>
+                            </manifest>
+                        </channel>
+                    </channels>
                     <galleon-options>
                         <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
                         <jboss-maven-dist/>
@@ -335,8 +352,7 @@
             <properties>
                 <!-- Galleon -->
                 <wildfly.feature.pack.artifactId>wildfly-preview-feature-pack</wildfly.feature.pack.artifactId>
-                <resteasy.feature.pack.artifactId>galleon-preview-feature-pack</resteasy.feature.pack.artifactId>
-                <feature.pack.artifactId>galleon-preview-feature-pack</feature.pack.artifactId>
+                <wildfly.channel.manifest.artifactId>wildfly-preview</wildfly.channel.manifest.artifactId>
             </properties>
         </profile>
     </profiles>
