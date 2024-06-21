@@ -70,7 +70,6 @@
         <version.org.jboss.logging.jboss-logging-tools>2.2.1.Final</version.org.jboss.logging.jboss-logging-tools>
         <version.org.jboss.resteasy>6.2.9.Final</version.org.jboss.resteasy>
 
-        <version.org.wildfly>32.0.1.Final</version.org.wildfly>
         <!-- TODO (jrp) this can be removed when RESTEASY-2973 is resolved -->
         <version.org.wildfly.common>1.7.0.Final</version.org.wildfly.common>
 
@@ -83,6 +82,7 @@
         <!-- Plugin Versions -->
         <version.org.wildfly.maven.plugin>5.0.0.Final</version.org.wildfly.maven.plugin>
         <version.org.wildfly.galleon-plugins>7.1.0.Final</version.org.wildfly.galleon-plugins>
+        <version.org.wildfly.wildfly-channel-maven-plugin>1.0.13</version.org.wildfly.wildfly-channel-maven-plugin>
 
         <!-- Plugin Versions, please keep in alphabetical order -->
         <!-- print logs to file by default -->
@@ -98,7 +98,10 @@
         <skip.format>false</skip.format>
         <skip.compile>false</skip.compile>
 
-        <!-- Galleon -->
+        <!-- Provisioning settings -->
+        <!--suppress XmlUnresolvedReference these properties are created via the build-helper-maven-plugin -->
+        <channel.stream.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</channel.stream.version>
+
         <galleon.fork.embedded>true</galleon.fork.embedded>
         <galleon.log.time>true</galleon.log.time>
         <galleon.offline>false</galleon.offline>
@@ -111,7 +114,7 @@
         <module>rest-client-base</module>
         <module>rest-client</module>
         <module>context-propagation</module>
-        <module>galleon-pack</module>
+        <module>wildfly/resteasy-microprofile-channel</module>
         <module>testsuite</module>
     </modules>
 
@@ -204,6 +207,20 @@
                                 <dependencyConvergence/>
                             </rules>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Change the channel.stream.version property to match the current project version major.minor -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
