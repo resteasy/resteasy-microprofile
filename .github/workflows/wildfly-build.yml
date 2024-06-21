@@ -11,12 +11,12 @@ on:
       - '**/pom.xml'
       - 'config/**'
       - 'context-propagation/**'
-      - 'galleon-pack/**'
       - 'rest-client/**'
       - 'rest-client-base/**'
       - 'resteasy-microprofile-bom/**'
       - 'resteasy-microprofile-test-bom/**'
       - 'testsuite/**'
+      - 'wildfly/**'
   pull_request:
     branches:
       - '**'
@@ -70,7 +70,6 @@ jobs:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
           path: |
             '**/surefire-reports/'
-            !galleon-pack/
       - name: Upload server logs
         uses: actions/upload-artifact@v4
         if: failure()
@@ -78,4 +77,3 @@ jobs:
           name: server-logs-${{ matrix.os }}-${{ matrix.java }}
           path: |
             '**/*.log'
-            !galleon-pack/
