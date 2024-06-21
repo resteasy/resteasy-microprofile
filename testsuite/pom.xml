@@ -46,13 +46,6 @@
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>resteasy-microprofile-bom</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>resteasy-microprofile-test-bom</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>

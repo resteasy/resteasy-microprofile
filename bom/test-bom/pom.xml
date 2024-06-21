@@ -25,6 +25,7 @@
         <groupId>org.jboss.resteasy.microprofile</groupId>
         <artifactId>resteasy-microprofile-parent</artifactId>
         <version>3.0.0.Beta1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -57,7 +58,7 @@
             <!-- First import the production BOM -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>resteasy-microprofile-bom</artifactId>
+                <artifactId>project-bom</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>

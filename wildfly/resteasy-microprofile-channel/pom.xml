@@ -42,7 +42,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.jboss.resteasy.microprofile</groupId>
-                <artifactId>resteasy-microprofile-bom</artifactId>
+                <artifactId>project-bom</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>

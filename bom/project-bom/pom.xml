@@ -25,15 +25,23 @@
         <groupId>org.jboss.resteasy.microprofile</groupId>
         <artifactId>resteasy-microprofile-parent</artifactId>
         <version>3.0.0.Beta1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>resteasy-microprofile-bom</artifactId>
+    <artifactId>project-bom</artifactId>
     <packaging>pom</packaging>
-    <name>RESTEasy MicroProfile: Production BOM</name>
+    <name>RESTEasy MicroProfile: BOM for Project Dependencies</name>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jboss.resteasy.microprofile</groupId>
+                <artifactId>resteasy-microprofile-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>jakarta.enterprise</groupId>
                 <artifactId>jakarta.enterprise.cdi-api</artifactId>
@@ -58,28 +66,6 @@
                 <groupId>jakarta.ws.rs</groupId>
                 <artifactId>jakarta.ws.rs-api</artifactId>
                 <version>${version.jakarta.ws.rs}</version>
-            </dependency>
-
-            <!-- Project Dependencies -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>microprofile-config</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>microprofile-context-propagation</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>microprofile-rest-client</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>microprofile-rest-client-base</artifactId>
-                <version>${project.version}</version>
             </dependency>
 
             <!-- Other Dependencies -->

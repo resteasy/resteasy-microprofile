@@ -108,8 +108,9 @@
     </properties>
 
     <modules>
-        <module>resteasy-microprofile-bom</module>
-        <module>resteasy-microprofile-test-bom</module>
+        <module>bom/bom</module>
+        <module>bom/project-bom</module>
+        <module>bom/test-bom</module>
         <module>config</module>
         <module>rest-client-base</module>
         <module>rest-client</module>
