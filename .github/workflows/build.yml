@@ -12,12 +12,12 @@ on:
       - '**/pom.xml'
       - 'config/**'
       - 'context-propagation/**'
-      - 'galleon-pack/**'
       - 'rest-client/**'
       - 'rest-client-base/**'
       - 'resteasy-microprofile-bom/**'
       - 'resteasy-microprofile-test-bom/**'
       - 'testsuite/**'
+      - 'wildfly/**'
   pull_request:
     branches:
       - '**'
@@ -26,12 +26,12 @@ on:
       - '**/pom.xml'
       - 'config/**'
       - 'context-propagation/**'
-      - 'galleon-pack/**'
       - 'rest-client/**'
       - 'rest-client-base/**'
       - 'resteasy-microprofile-bom/**'
       - 'resteasy-microprofile-test-bom/**'
       - 'testsuite/**'
+      - 'wildfly/**'
 
 # Only run the latest job
 concurrency:
@@ -66,7 +66,6 @@ jobs:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
           path: |
             '**/surefire-reports/'
-            !galleon-pack/
 
   additional-profiles:
     name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }}
@@ -96,7 +95,6 @@ jobs:
           name: surefire-reports-${{ matrix.profile }}-${{ matrix.java }}
           path: |
             '**/surefire-reports/'
-            !galleon-pack/
 
   provision-preview:
     name: Test Provisioning with Preview - JDK ${{ matrix.java }}
@@ -124,7 +122,6 @@ jobs:
           name: surefire-reports-preview-${{ matrix.java }}
           path: |
             '**/surefire-reports/'
-            !galleon-pack/
 
   format-check:
     name: Check Code Formatting
