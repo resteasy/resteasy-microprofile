@@ -34,13 +34,11 @@
 
     <properties>
         <skip.mp.tck>false</skip.mp.tck>
-        <jetty.version>11.0.21</jetty.version>
         <tck.timeout.offset>90000</tck.timeout.offset>
+        <wiremock.module.path>${jboss.home}/modules/org/wiremock/main/</wiremock.module.path>
     </properties>
 
     <dependencies>
-        <!-- TODO (jrp) We need to figure out how to run in a container. It likely makes sense to use WildFly -->
-
         <!-- REST Client implementation-->
         <dependency>
             <groupId>org.jboss.resteasy.microprofile</groupId>
@@ -119,7 +117,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.tomakehurst</groupId>
+            <groupId>org.wiremock</groupId>
             <artifactId>wiremock</artifactId>
             <scope>test</scope>
         </dependency>
@@ -128,17 +126,6 @@
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-weld-embedded</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.el</groupId>
-                    <artifactId>jakarta.el-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -160,7 +147,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- required to align the Jetty Servlets version to the versions of other Jetty components -->
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
@@ -180,75 +166,14 @@
             <version>${version.resteasy.testsuite}</version>
         </dependency>
 
-        <!-- run with jetty  -->
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlets</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-io</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-security</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-plus</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>apache-jsp</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.glassfish</groupId>
-                    <artifactId>javax.el</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm-commons</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-util</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -275,11 +200,104 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>com.github.tomakehurst</groupId>
+                        <groupId>org.wiremock</groupId>
                         <artifactId>wiremock</artifactId>
-                        <version>${version.com.github.tomakehurst.wiremock}</version>
+                        <version>${version.org.wiremock}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <overwrite-provisioned-server>true</overwrite-provisioned-server>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>add-wiremock-module</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute-commands</goal>
+                        </goals>
+                        <configuration>
+                            <offline>true</offline>
+                            <jboss-home>${jboss.home}</jboss-home>
+                            <stdout>${jboss.home}/configuration/standalone/log/wildfly-wiremock.log</stdout>
+                            <system-properties>
+                                <beansxml.path>${basedir}${file.separator}config${file.separator}wildfly${file.separator}beans.xml</beansxml.path>
+                            </system-properties>
+                            <scripts>
+                                <script>${basedir}${file.separator}config${file.separator}wildfly${file.separator}wiremock.cli</script>
+                            </scripts>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>mp-server-provisioning</id>
+                        <goals>
+                            <goal>provision</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-module-xml</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${wiremock.module.path}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>config/wildfly/</directory>
+                                    <includes>
+                                        <include>module.xml</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-as-module-wiremock</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>org.wiremock,org.apache.httpcomponents.client5,org.apache.httpcomponents.core5,junit,org.eclipse.jetty</includeGroupIds>
+                            <stripVersion>true</stripVersion>
+                            <outputDirectory>${wiremock.module.path}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-wiremock</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.wiremock</groupId>
+                                    <artifactId>wiremock</artifactId>
+                                </artifactItem>
+                            </artifactItems>
+                            <stripVersion>true</stripVersion>
+                            <outputDirectory>${wiremock.module.path}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -289,6 +307,7 @@
                     <systemPropertyVariables>
                         <org.eclipse.microprofile.rest.client.tck.timeoutCushion>${tck.timeout.offset}
                         </org.eclipse.microprofile.rest.client.tck.timeoutCushion>
+                        <test.url>http://localhost:8080</test.url>
                     </systemPropertyVariables>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>

@@ -93,24 +93,10 @@
 
             <!-- Required by the MicroProfile REST TCK -->
             <dependency>
-                <groupId>com.github.tomakehurst</groupId>
+                <groupId>org.wiremock</groupId>
                 <artifactId>wiremock</artifactId>
-                <version>${version.com.github.tomakehurst.wiremock}</version>
+                <version>${version.org.wiremock}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-fileupload</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.jetty</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
