@@ -36,6 +36,25 @@
         <dep.arquillian-bom.version>1.7.2.Final</dep.arquillian-bom.version>
         <version.resteasy.testsuite>${version.org.jboss.resteasy}</version.resteasy.testsuite>
         <version.resteasy.microprofile.testsuite>${project.version}</version.resteasy.microprofile.testsuite>
+        <!-- Galleon -->
+        <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
+
+        <!-- Feature Packs -->
+        <server.version/>
+        <wildfly.feature.pack.groupId>org.wildfly</wildfly.feature.pack.groupId>
+        <wildfly.feature.pack.artifactId>wildfly-galleon-pack</wildfly.feature.pack.artifactId>
+
+        <wildfly.channel.manifest.groupId>org.wildfly.channels</wildfly.channel.manifest.groupId>
+        <wildfly.channel.manifest.artifactId>wildfly</wildfly.channel.manifest.artifactId>
+
+        <resteasy.channel.manifest.groupId>dev.resteasy.channels</resteasy.channel.manifest.groupId>
+        <resteasy.channel.manifest.artifactId>resteasy-6.2</resteasy.channel.manifest.artifactId>
+        <resteasy.channel.manifest.version>${version.org.jboss.resteasy}</resteasy.channel.manifest.version>
+
+        <resteasy.mp.channel.manifest.groupId>dev.resteasy.channels</resteasy.mp.channel.manifest.groupId>
+        <resteasy.mp.channel.manifest.artifactId>resteasy-microprofile-${channel.stream.version}</resteasy.mp.channel.manifest.artifactId>
+        <resteasy.mp.channel.manifest.version>${project.version}</resteasy.mp.channel.manifest.version>
+        <jboss.arguments/>
     </properties>
     <modules>
         <module>integration-tests</module>
@@ -55,6 +74,15 @@
     </dependencyManagement>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources/filtered</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
             <!-- Disable the dependency convergence for now in testing -->
             <plugin>
@@ -71,6 +99,62 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <provisioning-dir>${jboss.home}</provisioning-dir>
+                    <offline>${galleon.offline}</offline>
+                    <feature-packs>
+                        <feature-pack>
+                            <groupId>${wildfly.feature.pack.groupId}</groupId>
+                            <artifactId>${wildfly.feature.pack.artifactId}</artifactId>
+                            <inherit-configs>false</inherit-configs>
+                            <included-configs>
+                                <config>
+                                    <model>standalone</model>
+                                    <name>standalone.xml</name>
+                                </config>
+                            </included-configs>
+                            <excluded-packages>
+                                <name>docs.schema</name>
+                                <name>appclient</name>
+                                <name>domain</name>
+                            </excluded-packages>
+                        </feature-pack>
+                    </feature-packs>
+                    <channels>
+                        <!-- If the server.version is blank the newest version of WildFly will be used. Otherwise, be
+                             explicit.
+                         -->
+                        <channel>
+                            <manifest>
+                                <groupId>${wildfly.channel.manifest.groupId}</groupId>
+                                <artifactId>${wildfly.channel.manifest.artifactId}</artifactId>
+                                <version>${server.version}</version>
+                            </manifest>
+                        </channel>
+                        <channel>
+                            <manifest>
+                                <groupId>${resteasy.channel.manifest.groupId}</groupId>
+                                <artifactId>${resteasy.channel.manifest.artifactId}</artifactId>
+                                <version>${resteasy.channel.manifest.version}</version>
+                            </manifest>
+                        </channel>
+                        <channel>
+                            <manifest>
+                                <groupId>${resteasy.mp.channel.manifest.groupId}</groupId>
+                                <artifactId>${resteasy.mp.channel.manifest.artifactId}</artifactId>
+                                <version>${resteasy.mp.channel.manifest.version}</version>
+                            </manifest>
+                        </channel>
+                    </channels>
+                    <galleon-options>
+                        <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
+                        <jboss-maven-dist/>
+                    </galleon-options>
+                </configuration>
             </plugin>
         </plugins>
     </build>

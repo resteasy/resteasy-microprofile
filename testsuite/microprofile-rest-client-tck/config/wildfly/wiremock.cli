@@ -1,0 +1,6 @@
+embed-server --admin-only=true
+
+/subsystem=ee:list-add(name=global-modules,value={name=org.wiremock})
+deployment-overlay add --name=tckWarOverlay --content=/WEB-INF/beans.xml=${beansxml.path} --deployments=*.war --redeploy-affected
+
+stop-embedded-server
