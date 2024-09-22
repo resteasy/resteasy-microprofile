@@ -75,15 +75,15 @@ public class ClientWebApplicationExceptionConstants {
             // The other WebApplicationExceptions test the WebApplicationException subclasses that are
             // thrown according to the status used. The relationship between status and subclass is given
             // in oldExceptionMap.
-            new WebApplicationException(commonBuilder.status(400).build()),
-            new WebApplicationException(commonBuilder.status(401).build()),
-            new WebApplicationException(commonBuilder.status(403).build()),
-            new WebApplicationException(commonBuilder.status(404).build()),
-            new WebApplicationException(commonBuilder.status(405).build()),
-            new WebApplicationException(commonBuilder.status(406).build()),
-            new WebApplicationException(commonBuilder.status(415).build()),
-            new WebApplicationException(commonBuilder.status(500).build()),
-            new WebApplicationException(commonBuilder.status(503).build()),
+            new BadRequestException(commonBuilder.status(400).build()),
+            new NotAuthorizedException(commonBuilder.status(401).build()),
+            new ForbiddenException(commonBuilder.status(403).build()),
+            new NotFoundException(commonBuilder.status(404).build()),
+            new NotAllowedException(commonBuilder.status(405).build()),
+            new NotAcceptableException(commonBuilder.status(406).build()),
+            new NotSupportedException(commonBuilder.status(415).build()),
+            new InternalServerErrorException(commonBuilder.status(500).build()),
+            new ServiceUnavailableException(commonBuilder.status(503).build()),
             new WebApplicationException(commonBuilder.status(555).build()),
     };
 

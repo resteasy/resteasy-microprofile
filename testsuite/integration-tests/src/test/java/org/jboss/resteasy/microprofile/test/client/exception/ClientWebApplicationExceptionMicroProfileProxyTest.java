@@ -19,6 +19,8 @@
 
 package org.jboss.resteasy.microprofile.test.client.exception;
 
+import static org.jboss.resteasy.microprofile.test.client.exception.ClientWebApplicationExceptionConstants.oldExceptionMap;
+
 import java.net.URL;
 import java.util.PropertyPermission;
 
@@ -51,11 +53,6 @@ import org.wildfly.testing.tools.deployments.DeploymentDescriptors;
  * @tpSince RESTEasy 4.6.0.Final
  * @tpTestCaseDetails Test WebApplicationExceptions and WebApplicationExceptionWrappers in various circumstances,
  *                    calls made by MicroProfile REST Client proxies.
- *
- *                    NOTE. Unlike RESTEasy Clients and RESTEasy Client proxies, which throws the subtree of
- *                    WebApplicationExceptions
- *                    and WebApplicationExceptionWrappers, MicroProfile REST Client proxies throw only WebApplicationExceptions
- *                    and WebApplicationExceptionWrappers.
  */
 @ExtendWith(ArquillianExtension.class)
 @RunAsClient
@@ -115,7 +112,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                 Assertions.assertEquals(oldException.getResponse().getStatus(), response.getStatus());
                 Assertions.assertEquals(oldException.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
                 Assertions.assertEquals(oldException.getResponse().getEntity(), response.readEntity(String.class));
-                Assertions.assertEquals(WebApplicationException.class, wae.getClass());
+                Assertions.assertEquals(oldExceptionMap.get(response.getStatus()), wae.getClass());
             } catch (Exception e) {
                 Assertions.fail("expected WebApplicationException");
             }
@@ -163,7 +160,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                         .getStatus(), response.getStatus(), msg);
                 Assertions.assertNull(response.getHeaderString("foo"), msg);
                 Assertions.assertTrue(response.readEntity(String.class).isEmpty(), msg);
-                Assertions.assertEquals(WebApplicationException.class, e.getClass(), msg);
+                Assertions.assertEquals(oldExceptionMap.get(response.getStatus()), e.getClass(), msg);
             }
         }
         // DefaultResponseExceptionMapper on client side doesn't handle status s, 300 <= s < 400, and
@@ -221,7 +218,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                     Assertions.assertEquals(wae.getResponse().getStatus(), response.getStatus());
                     Assertions.assertEquals(wae.getResponse().getHeaderString("foo"), response.getHeaderString("foo"));
                     Assertions.assertEquals(wae.getResponse().getEntity(), response.readEntity(String.class));
-                    Assertions.assertEquals(WebApplicationException.class, e.getClass());
+                    Assertions.assertEquals(oldExceptionMap.get(response.getStatus()), e.getClass());
                 } catch (Exception e) {
                     Assertions.fail("expected WebApplicationException");
                 }
@@ -282,7 +279,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                             .getStatus(), response.getStatus());
                     Assertions.assertNull(response.getHeaderString("foo"));
                     Assertions.assertTrue(response.readEntity(String.class).isEmpty());
-                    Assertions.assertEquals(WebApplicationException.class, e.getClass());
+                    Assertions.assertEquals(oldExceptionMap.get(response.getStatus()), e.getClass());
                 } catch (Exception e) {
                     Assertions.fail("expected WebApplicationException");
                 }
@@ -337,7 +334,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                         .getStatus(), response.getStatus());
                 Assertions.assertNull(response.getHeaderString("foo"));
                 Assertions.assertTrue(response.readEntity(String.class).isEmpty());
-                Assertions.assertEquals(WebApplicationException.class, e.getClass());
+                Assertions.assertEquals(oldExceptionMap.get(response.getStatus()), e.getClass());
             } catch (Exception e) {
                 Assertions.fail("expected WebApplicationException");
             }
@@ -389,7 +386,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                         .getStatus(), response.getStatus());
                 Assertions.assertNull(response.getHeaderString("foo"));
                 Assertions.assertTrue(response.readEntity(String.class).isEmpty());
-                Assertions.assertEquals(WebApplicationException.class, e.getClass());
+                Assertions.assertEquals(oldExceptionMap.get(response.getStatus()), e.getClass());
             } catch (Exception e) {
                 Assertions.fail("expected WebApplicationException");
             }
@@ -451,7 +448,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                             .getHeaderString("foo"), response.getHeaderString("foo"));
                     Assertions.assertEquals(ClientWebApplicationExceptionConstants.oldExceptions[i].getResponse()
                             .getEntity(), response.readEntity(String.class));
-                    Assertions.assertEquals(WebApplicationException.class, e.getClass());
+                    Assertions.assertEquals(oldExceptionMap.get(response.getStatus()), e.getClass());
                 } catch (Exception e) {
                     Assertions.fail("expected WebApplicationException");
                 }
@@ -515,7 +512,7 @@ public class ClientWebApplicationExceptionMicroProfileProxyTest {
                             .getStatus(), response.getStatus());
                     Assertions.assertNull(response.getHeaderString("foo"));
                     Assertions.assertTrue(response.readEntity(String.class).length() == 0);
-                    Assertions.assertEquals(WebApplicationException.class, e.getClass());
+                    Assertions.assertEquals(oldExceptionMap.get(response.getStatus()), e.getClass());
                 } catch (Exception e) {
                     Assertions.fail("expected WebApplicationException");
                 }
