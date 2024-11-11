@@ -201,6 +201,31 @@
                         <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
                     </systemPropertyVariables>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <classpathDependencyExcludes>
+                                <exclude>org.jboss.resteasy:resteasy-client-vertx</exclude>
+                            </classpathDependencyExcludes>
+                            <excludedGroups>vertx</excludedGroups>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>vertx-tests</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <groups>vertx</groups>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
