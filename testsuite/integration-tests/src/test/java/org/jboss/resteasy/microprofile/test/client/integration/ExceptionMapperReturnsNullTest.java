@@ -19,6 +19,7 @@
 
 package org.jboss.resteasy.microprofile.test.client.integration;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import jakarta.ws.rs.WebApplicationException;
@@ -61,22 +62,48 @@ public class ExceptionMapperReturnsNullTest {
 
     @Test
     public void testNoApplicableExceptionMapper() throws Exception {
-        HealthCheckData data = RestClientBuilder.newBuilder()
+        try (HealthService healthServiceClient = getHealthServiceBuilder()
                 .property("microprofile.rest.client.disable.default.mapper", true)
-                .baseUri(TestEnvironment.generateUri(url, "test-app"))
-                .register(new Ignore404ExceptionMapper())
-                .build(HealthService.class)
-                .getHealthData();
-        Assertions.assertNull(data);
+                .build(HealthService.class)) {
+            Assertions.assertNull(healthServiceClient.getHealthData());
+        }
+    }
+
+    @Test
+    public void testGlobalNoApplicableExceptionMapper() throws Exception {
+        System.setProperty("microprofile.rest.client.disable.default.mapper", "true");
+        try (HealthService healthServiceClient = getHealthServiceBuilder()
+                .build(HealthService.class)) {
+            HealthCheckData data = healthServiceClient.getHealthData();
+            Assertions.assertNull(data);
+        } finally {
+            System.clearProperty("microprofile.rest.client.disable.default.mapper");
+        }
+    }
+
+    @Test
+    public void testAnnotationNoApplicableExceptionMapper() throws Exception {
+        System.setProperty("HealthService/mp-rest/disableDefaultMapper", "true");
+        try (HealthService healthServiceClient = getHealthServiceBuilder()
+                .build(HealthService.class)) {
+            HealthCheckData data = healthServiceClient.getHealthData();
+            Assertions.assertNull(data);
+        } finally {
+            System.clearProperty("HealthService/mp-rest/disableDefaultMapper");
+        }
     }
 
     @Test
     public void testDefaultExceptionMapper() throws Exception {
-        try (HealthService healthServiceClient = RestClientBuilder.newBuilder()
-                .baseUri(TestEnvironment.generateUri(url, "test-app"))
-                .register(new Ignore404ExceptionMapper())
+        try (HealthService healthServiceClient = getHealthServiceBuilder()
                 .build(HealthService.class)) {
             Assertions.assertThrows(WebApplicationException.class, healthServiceClient::getHealthData);
         }
+    }
+
+    private RestClientBuilder getHealthServiceBuilder() throws URISyntaxException {
+        return RestClientBuilder.newBuilder()
+                .baseUri(TestEnvironment.generateUri(url, "test-app"))
+                .register(new Ignore404ExceptionMapper());
     }
 }
