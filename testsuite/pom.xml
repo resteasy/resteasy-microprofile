@@ -172,6 +172,16 @@
                 <jvm.debug.args>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:${debug.port}</jvm.debug.args>
             </properties>
         </profile>
+
+        <profile>
+            <id>wildfly-java-11</id>
+            <activation>
+                <jdk>(,17)</jdk>
+            </activation>
+            <properties>
+                <server.version>34.0.1.Final</server.version>
+            </properties>
+        </profile>
     </profiles>
 
 </project>
