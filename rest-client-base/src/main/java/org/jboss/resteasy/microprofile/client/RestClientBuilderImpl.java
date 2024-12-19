@@ -158,7 +158,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     }
 
     public boolean isFollowRedirects() {
-        return this.followRedirect;
+        return followRedirect == Boolean.TRUE;
     }
 
     @Override
@@ -271,11 +271,14 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         }
 
         // Default exception mapper
-        if (!isMapperDisabled()) {
+        if (!isMapperDisabled(aClass)) {
             register(DefaultResponseExceptionMapper.class);
         }
 
-        builderDelegate.register(new ExceptionMapping(localProviderInstances), 1);
+        Optional<Boolean> prop = rcProperty(aClass, "microprofile.rest.client.disable.response.exceptions",
+                "disableResponseExceptions", Boolean.class);
+        boolean doNotThrowWhenResponseIsResult = prop.orElse(Boolean.FALSE);
+        builderDelegate.register(new ExceptionMapping(localProviderInstances, doNotThrowWhenResponseIsResult), 1);
 
         ClassLoader classLoader = getClassLoader(aClass);
 
@@ -345,7 +348,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         resteasyClientBuilder.setIsTrustSelfSignedCertificates(false);
         checkQueryParamStyleProperty(aClass);
         checkFollowRedirectProperty(aClass);
-        resteasyClientBuilder.setFollowRedirects(followRedirect);
+        resteasyClientBuilder.setFollowRedirects(isFollowRedirects());
 
         if (readTimeout != null) {
             resteasyClientBuilder.readTimeout(readTimeout, readTimeoutUnit);
@@ -443,92 +446,65 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 .findFirst();
     }
 
+    private <T> Optional<T> rcProperty(Class<?> intfc, String rcKey, String mpKey, Class<T> pCls) {
+        Optional<T> prop = mpProperty(intfc, mpKey, pCls);
+        if (prop.isEmpty()) {
+            // set through config api (client property has precedence over global config)
+            try {
+                T value = pCls.cast(builderDelegate.getConfiguration().getProperty(rcKey));
+                prop = Optional.ofNullable(value);
+            } catch (ClassCastException e) {
+                // ignore cast exception
+            }
+            if (prop.isEmpty() && config != null) {
+                prop = config.getOptionalValue(rcKey, pCls);
+            }
+        }
+        return prop;
+    }
+
+    private <T> Optional<T> mpProperty(Class<?> intfc, String key, Class<T> pCls) {
+        if (config == null) {
+            return Optional.empty();
+        }
+
+        // property using fully-qualified class name takes precedence
+        Optional<T> prop = config.getOptionalValue(intfc.getName() + "/mp-rest/" + key, pCls);
+        if (prop.isPresent()) {
+            return prop;
+        }
+        RegisterRestClient registerClient = intfc.getAnnotation(RegisterRestClient.class);
+        if (registerClient != null &&
+                registerClient.configKey() != null &&
+                !registerClient.configKey().isEmpty()) {
+            //property using configKey
+            prop = config.getOptionalValue(registerClient.configKey() + "/mp-rest/" + key, pCls);
+        }
+        return prop;
+    }
+
     private void checkQueryParamStyleProperty(Class<?> aClass) {
         // User's programmatic setting takes precedence over
         // microprofile-config.properties.
         if (queryParamStyle == null) {
-            if (config != null) {
-                // property using fully-qualified class name takes precedence
-                Optional<String> prop = config.getOptionalValue(
-                        aClass.getName() + "/mp-rest/queryParamStyle", String.class);
-                if (prop.isPresent()) {
-                    queryParamStyle(QueryParamStyle.valueOf(
-                            prop.get().trim().toUpperCase()));
-
-                } else {
-                    RegisterRestClient registerRestClient = (RegisterRestClient) aClass.getAnnotation(RegisterRestClient.class);
-                    if (registerRestClient != null &&
-                            registerRestClient.configKey() != null &&
-                            !registerRestClient.configKey().isEmpty()) {
-
-                        //property using configKey
-                        prop = config.getOptionalValue(registerRestClient.configKey()
-                                + "/mp-rest/queryParamStyle", String.class);
-                        if (prop.isPresent()) {
-                            queryParamStyle(QueryParamStyle.valueOf(
-                                    prop.get().trim().toUpperCase()));
-                        }
-                    }
-                }
-            }
-        }
-        if (queryParamStyle == null) {
-            queryParamStyle = QueryParamStyle.MULTI_PAIRS;
+            Optional<String> prop = mpProperty(aClass, "queryParamStyle", String.class);
+            queryParamStyle = prop.map(s -> QueryParamStyle.valueOf(s.trim().toUpperCase()))
+                    .orElse(QueryParamStyle.MULTI_PAIRS);
         }
     }
 
     private void checkFollowRedirectProperty(Class<?> aClass) {
         // User's programmatic setting takes precedence over
         // microprofile-config.properties.
-        if (!followRedirect) {
-            if (config != null) {
-                // property using fully-qualified class name takes precedence
-                Optional<Boolean> prop = config.getOptionalValue(
-                        aClass.getName() + "/mp-rest/followRedirects", Boolean.class);
-                if (prop.isPresent()) {
-                    if (prop.get() != followRedirect) {
-                        followRedirects(prop.get());
-                    }
-                } else {
-                    RegisterRestClient registerRestClient = aClass.getAnnotation(RegisterRestClient.class);
-                    if (registerRestClient != null &&
-                            registerRestClient.configKey() != null &&
-                            !registerRestClient.configKey().isEmpty()) {
-
-                        //property using configKey
-                        prop = config.getOptionalValue(
-                                registerRestClient.configKey() + "/mp-rest/followRedirects", Boolean.class);
-                        if (prop.isPresent()) {
-                            if (prop.get() != followRedirect) {
-                                followRedirects(prop.get());
-                            }
-                        }
-                    }
-                }
-            }
+        if (followRedirect == null) {
+            Optional<Boolean> prop = mpProperty(aClass, "followRedirects", Boolean.class);
+            followRedirect = prop.orElse(null);
         }
     }
 
-    private boolean isMapperDisabled() {
-        boolean disabled = false;
-        Optional<Boolean> defaultMapperProp = config == null ? Optional.empty()
-                : config.getOptionalValue(DEFAULT_MAPPER_PROP, Boolean.class);
-
-        // disabled through config api
-        if (defaultMapperProp.isPresent() && defaultMapperProp.get().equals(Boolean.TRUE)) {
-            disabled = true;
-        } else if (!defaultMapperProp.isPresent()) {
-
-            // disabled through jaxrs property
-            try {
-                Object property = builderDelegate.getConfiguration().getProperty(DEFAULT_MAPPER_PROP);
-                if (property != null) {
-                    disabled = (Boolean) property;
-                }
-            } catch (Throwable e) {
-                // ignore cast exception
-            }
-        }
+    private boolean isMapperDisabled(Class<?> intfc) {
+        Optional<Boolean> prop = rcProperty(intfc, DEFAULT_MAPPER_PROP, "disableDefaultMapper", Boolean.class);
+        boolean disabled = prop.orElse(Boolean.FALSE);
         if (disabled) {
             LOGGER.debug("The default ResponseExceptionMapper has been disabled");
         }
@@ -885,7 +861,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     private String keystorePassword;
     private HostnameVerifier hostnameVerifier;
     private Boolean useURLConnection;
-    private boolean followRedirect;
+    private Boolean followRedirect;
     private QueryParamStyle queryParamStyle = null;
 
     private final Set<Object> localProviderInstances = new HashSet<>();
