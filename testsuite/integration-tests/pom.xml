@@ -179,6 +179,13 @@
             <version>${version.resteasy.microprofile.testsuite}</version>
         </dependency>
 
+        <!-- Required until WFARQ-201 is resolved -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-container-managed</artifactId>
