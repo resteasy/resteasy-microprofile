@@ -1,7 +1,7 @@
 /*
  * JBoss, Home of Professional Open Source.
  *
- * Copyright 2023 Red Hat, Inc., and individual contributors
+ * Copyright 2025 Red Hat, Inc., and individual contributors
  * as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,21 +19,21 @@
 
 package org.jboss.resteasy.microprofile.client.logging;
 
-import org.jboss.logging.BasicLogger;
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
-import org.jboss.logging.annotations.LogMessage;
-import org.jboss.logging.annotations.Message;
-import org.jboss.logging.annotations.MessageLogger;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "RESTEASY-MPRC")
-public interface LogMessages extends BasicLogger {
+class Logging {
 
-    LogMessages LOGGER = Logging.findLogger();
-
-    @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 100, value = "Unable to obtain %s instance.")
-    void extensionLookupFailed(String className);
+    @SuppressWarnings("removal")
+    static LogMessages findLogger() {
+        try {
+            return Logger.getMessageLogger(MethodHandles.lookup(), LogMessages.class, "org.jboss.resteasy.microprofile.client");
+        } catch (Throwable ignore) {
+        }
+        return Logger.getMessageLogger(LogMessages.class, "org.jboss.resteasy.microprofile.client");
+    }
 }
