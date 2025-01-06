@@ -50,7 +50,7 @@
 
         <version.org.testng>7.10.2</version.org.testng>
 
-        <version.org.wildfly.arquillian>5.1.0.Beta6</version.org.wildfly.arquillian>
+        <version.org.wildfly.arquillian>5.1.0.Beta9</version.org.wildfly.arquillian>
     </properties>
 
     <dependencyManagement>
@@ -227,6 +227,14 @@
                         <artifactId>jakarta.inject-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <!-- Required until WFARQ-201 is resolved -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>2.0.16</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Required for the MicroProfile TCK -->
