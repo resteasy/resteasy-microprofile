@@ -18,8 +18,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>resteasy-microprofile-parent</artifactId>
@@ -180,6 +180,57 @@
             </activation>
             <properties>
                 <server.version>34.0.1.Final</server.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>provided.server</id>
+            <activation>
+                <property>
+                    <name>server.home</name>
+                </property>
+            </activation>
+            <properties>
+                <jboss.home>${server.home}</jboss.home>
+            </properties>
+        </profile>
+        <profile>
+            <id>provision.server</id>
+            <activation>
+                <property>
+                    <name>!server.home</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>mp-server-provisioning</id>
+                                <goals>
+                                    <goal>provision</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>provision.preview.server</id>
+            <activation>
+                <property>
+                    <name>provision.preview</name>
+                </property>
+            </activation>
+
+            <properties>
+                <!-- Galleon -->
+                <wildfly.feature.pack.artifactId>wildfly-preview-feature-pack</wildfly.feature.pack.artifactId>
+                <wildfly.channel.manifest.artifactId>wildfly-preview</wildfly.channel.manifest.artifactId>
             </properties>
         </profile>
     </profiles>

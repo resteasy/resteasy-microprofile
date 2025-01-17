@@ -231,13 +231,6 @@
                             </scripts>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>mp-server-provisioning</id>
-                        <goals>
-                            <goal>provision</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
