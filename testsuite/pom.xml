@@ -233,6 +233,17 @@
                 <wildfly.channel.manifest.artifactId>wildfly-preview</wildfly.channel.manifest.artifactId>
             </properties>
         </profile>
+        <profile>
+            <id>security.manager</id>
+            <activation>
+                <property>
+                    <name>security.manager</name>
+                </property>
+            </activation>
+            <properties>
+                <jboss.arguments>-secmgr</jboss.arguments>
+            </properties>
+        </profile>
     </profiles>
 
 </project>

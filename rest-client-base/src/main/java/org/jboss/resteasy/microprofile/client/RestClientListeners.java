@@ -43,7 +43,7 @@ public class RestClientListeners {
             .synchronizedMap(new WeakHashMap<>());
 
     public static Collection<RestClientListener> get() {
-        ClassLoader loader = getClassLoader();
+        ClassLoader loader = SecurityActions.getClassLoader(RestClientListeners.class);
         if (loader == null) {
             return Collections.emptyList();
         }
@@ -57,17 +57,6 @@ public class RestClientListeners {
                 return action.run();
             }
             return AccessController.doPrivileged(action);
-        });
-    }
-
-    private static ClassLoader getClassLoader() {
-        if (System.getSecurityManager() == null) {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            return cl == null ? RestClientListeners.class.getClassLoader() : cl;
-        }
-        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            return cl == null ? RestClientListeners.class.getClassLoader() : cl;
         });
     }
 }
