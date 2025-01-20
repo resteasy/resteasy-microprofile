@@ -179,7 +179,7 @@ public class RestClientDelegateBean<T> implements Bean<T>, PassivationCapable {
 
     private void registerHostnameVerifier(String verifier, RestClientBuilder builder) {
         try {
-            Class<?> verifierClass = Class.forName(verifier, true, Thread.currentThread().getContextClassLoader());
+            Class<?> verifierClass = Class.forName(verifier, true, SecurityActions.getContextClassLoader());
             builder.hostnameVerifier((HostnameVerifier) verifierClass.newInstance());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Could not find hostname verifier class" + verifier, e);
@@ -275,7 +275,7 @@ public class RestClientDelegateBean<T> implements Bean<T>, PassivationCapable {
 
     private Class<?> providerClassForName(String name) {
         try {
-            return Class.forName(name, true, Thread.currentThread().getContextClassLoader());
+            return Class.forName(name, true, SecurityActions.getContextClassLoader());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Could not find provider class: " + name);
         }

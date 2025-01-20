@@ -23,6 +23,8 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,7 +81,13 @@ public class HeaderUtils {
             methodName = methodSpecifier.substring(lastDot + 1);
 
             String className = methodSpecifier.substring(0, lastDot);
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            final ClassLoader loader;
+            if (System.getSecurityManager() == null) {
+                loader = Thread.currentThread().getContextClassLoader();
+            } else {
+                loader = AccessController
+                        .doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
+            }
             try {
                 clazz = Class.forName(className, true, loader);
             } catch (ClassNotFoundException e) {
