@@ -77,7 +77,7 @@
         <!-- Plugin Versions -->
         <version.org.wildfly.maven.plugin>5.1.1.Final</version.org.wildfly.maven.plugin>
         <version.org.wildfly.galleon-plugins>7.3.1.Final</version.org.wildfly.galleon-plugins>
-        <version.org.wildfly.wildfly-channel-maven-plugin>1.0.19</version.org.wildfly.wildfly-channel-maven-plugin>
+        <version.org.wildfly.wildfly-channel-maven-plugin>1.0.24</version.org.wildfly.wildfly-channel-maven-plugin>
 
         <!-- Plugin Versions, please keep in alphabetical order -->
         <!-- print logs to file by default -->
