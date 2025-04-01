@@ -17,22 +17,18 @@
  * limitations under the License.
  */
 
-package org.jboss.resteasy.microprofile.test.client.integration.resource;
-
-import java.io.Closeable;
+package org.jboss.resteasy.microprofile.test.client.exception.resource;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
 
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+@Path("/exception")
+public class ProxyExceptionResource {
 
-@RegisterRestClient(configKey = "HealthService")
-public interface HealthService extends Closeable {
     @GET
-    @Produces({ MediaType.APPLICATION_JSON })
-    @Path("/health")
-    HealthCheckData getHealthData() throws WebApplicationException;
+    public Response asResponse(@QueryParam("status") int status, @QueryParam("reason") String reason) {
+        return Response.status(status, reason).build();
+    }
 }

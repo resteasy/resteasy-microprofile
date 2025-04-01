@@ -32,12 +32,13 @@ import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.client.jaxrs.internal.ClientRequestContextImpl;
 import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.jboss.resteasy.client.jaxrs.internal.ClientResponseContextImpl;
 
 /**
  * This implementation is a bit of a hack and dependent on Resteasy internals.
- * We throw a ResponseProcessingExceptoin that hides the Response object
+ * We throw a ResponseProcessingException that hides the Response object
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ExceptionMapping implements ClientResponseFilter {
@@ -71,18 +72,24 @@ public class ExceptionMapping implements ClientResponseFilter {
             // falling through to here means no applicable exception mapper found
             // or applicable mapper returned null
             LOGGER.warnf("No default ResponseExceptionMapper found or user's ResponseExceptionMapper returned null."
-                    + "  Response status: %s  messge: %s", handled.getStatus(), handled.getReasonPhrase());
+                    + "  Response status: %s  message: %s", handled.getStatus(), handled.getReasonPhrase());
 
         }
     }
 
-    public ExceptionMapping(final Set<Object> instances) {
+    public ExceptionMapping(final Set<Object> instances, final boolean doNotThrowWhenResponseIsResult) {
         this.instances = instances;
+        this.doNotThrowWhenResponseIsResult = doNotThrowWhenResponseIsResult;
     }
 
     @Override
     public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) {
-
+        if (doNotThrowWhenResponseIsResult) {
+            Method method = ((ClientRequestContextImpl) requestContext).getInvocation().getClientInvoker().getMethod();
+            if (method.getReturnType().equals(Response.class)) {
+                return;
+            }
+        }
         Response response = new PartialResponse(responseContext);
 
         List<ResponseExceptionMapper> candidates = new LinkedList<>();
@@ -114,4 +121,5 @@ public class ExceptionMapping implements ClientResponseFilter {
     }
 
     private final Set<Object> instances;
+    private final boolean doNotThrowWhenResponseIsResult;
 }
