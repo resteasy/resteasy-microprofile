@@ -109,13 +109,14 @@ public class RestClientDelegateBean<T> implements Bean<T>, PassivationCapable {
 
     private final Optional<String> configKey;
 
-    RestClientDelegateBean(final Class<T> proxyType, final BeanManager beanManager, final Optional<String> baseUri,
+    RestClientDelegateBean(final Class<T> proxyType, final ClassLoader classLoader, final BeanManager beanManager,
+            final Optional<String> baseUri,
             final Optional<String> configKey) {
         this.proxyType = proxyType;
         this.beanManager = beanManager;
         this.baseUri = baseUri;
         this.configKey = configKey;
-        this.config = ConfigProvider.getConfig();
+        this.config = ConfigProvider.getConfig(classLoader);
         this.scope = this.resolveScope();
     }
 

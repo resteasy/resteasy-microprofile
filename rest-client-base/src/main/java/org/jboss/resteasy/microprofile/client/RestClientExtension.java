@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -38,14 +39,16 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
 import jakarta.enterprise.inject.spi.ProcessSessionBean;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 public class RestClientExtension implements Extension {
 
-    private final Set<RestClientData<?>> proxyTypes = new LinkedHashSet<>();
+    private final Map<Type, RestClientData<?>> proxyTypes = new LinkedHashMap<>();
 
     private final Set<Throwable> errors = new LinkedHashSet<>();
 
@@ -58,10 +61,21 @@ public class RestClientExtension implements Extension {
             Optional<String> maybeUri = extractBaseUri(annotation);
             Optional<String> maybeConfigKey = extractConfigKey(annotation);
 
-            proxyTypes.add(new RestClientData<>(javaClass, maybeUri, maybeConfigKey));
+            proxyTypes.put(javaClass, new RestClientData<>(javaClass, maybeUri, maybeConfigKey));
             // no need to veto() these types because interfaces cannot become beans anyway
         } else {
             errors.add(new IllegalArgumentException("Rest client needs to be an interface " + javaClass));
+        }
+    }
+
+    public void injectionPoint(@Observes final ProcessInjectionPoint<?, ?> injectionPoint) {
+        if (injectionPoint.getInjectionPoint().getAnnotated().isAnnotationPresent(RestClient.class)) {
+            final Type beanType = injectionPoint.getInjectionPoint().getType();
+            final RestClientData<?> data = proxyTypes.get(beanType);
+            if (data != null) {
+                // Use the class loader from the declaring type to be used to load the MicroProfile Config
+                data.classLoader = injectionPoint.getInjectionPoint().getMember().getDeclaringClass().getClassLoader();
+            }
         }
     }
 
@@ -76,10 +90,15 @@ public class RestClientExtension implements Extension {
     }
 
     public void createProxy(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        for (RestClientData<?> clientData : proxyTypes) {
+        for (RestClientData<?> clientData : proxyTypes.values()) {
             afterBeanDiscovery.addBean(
-                    new RestClientDelegateBean<>(clientData.javaClass, beanManager, clientData.baseUri, clientData.configKey));
+                    new RestClientDelegateBean<>(clientData.javaClass,
+                            // If the class loader is null, use the class loader from the client
+                            (clientData.classLoader == null ? clientData.javaClass.getClassLoader() : clientData.classLoader),
+                            beanManager, clientData.baseUri, clientData.configKey));
         }
+        // Clear the proxy types as we no longer need them
+        proxyTypes.clear();
     }
 
     public void reportErrors(@Observes AfterDeploymentValidation afterDeploymentValidation) {
@@ -149,6 +168,7 @@ public class RestClientExtension implements Extension {
         private final Class<T> javaClass;
         private final Optional<String> baseUri;
         private final Optional<String> configKey;
+        private volatile ClassLoader classLoader;
 
         private RestClientData(final Class<T> javaClass, final Optional<String> baseUri,
                 final Optional<String> configKey) {
