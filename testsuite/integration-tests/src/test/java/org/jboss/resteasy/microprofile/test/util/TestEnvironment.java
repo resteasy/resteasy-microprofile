@@ -43,6 +43,10 @@ public class TestEnvironment {
                 .addClass(TestApplication.class);
     }
 
+    public static WebArchive createWar(final String deploymentName, final Map<String, String> properties) throws IOException {
+        return addConfigProperties(createWar(deploymentName), properties);
+    }
+
     public static WebArchive createWar(final Class<?> test) {
         return createWar(test.getSimpleName());
     }
