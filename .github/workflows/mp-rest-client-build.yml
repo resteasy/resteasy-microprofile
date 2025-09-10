@@ -46,7 +46,7 @@ jobs:
         with:
           path: resteasy-microprofile
       - name: Set up JDK ${{ inputs.javaVersion }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: ${{ inputs.javaVersion }}
           distribution: 'temurin'
