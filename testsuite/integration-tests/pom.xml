@@ -64,9 +64,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client-vertx</artifactId>
-            <version>${version.org.jboss.resteasy}</version>
+            <groupId>dev.resteasy.vertx</groupId>
+            <artifactId>resteasy-vertx-client</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -217,7 +216,7 @@
                         <phase>test</phase>
                         <configuration>
                             <classpathDependencyExcludes>
-                                <exclude>org.jboss.resteasy:resteasy-client-vertx</exclude>
+                                <exclude>dev.resteasy.vertx:*</exclude>
                             </classpathDependencyExcludes>
                             <excludedGroups>vertx</excludedGroups>
                         </configuration>
