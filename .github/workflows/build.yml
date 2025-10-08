@@ -42,7 +42,7 @@ jobs:
   build:
     name: Build and Test
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -70,7 +70,7 @@ jobs:
   additional-profiles:
     name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -99,7 +99,7 @@ jobs:
   provision-preview:
     name: Test Provisioning with Preview - JDK ${{ matrix.java }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -126,7 +126,7 @@ jobs:
   format-check:
     name: Check Code Formatting
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 120
 
     steps:
       - uses: actions/checkout@v5

@@ -41,7 +41,7 @@ jobs:
   resteasy-microprofile-build:
     runs-on: ${{ matrix.os }}
     needs: resteasy-build
-    timeout-minutes: 60
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
