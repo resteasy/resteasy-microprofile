@@ -63,7 +63,7 @@ jobs:
           cd resteasy-microprofile
           mvn -B -ntp clean install '-Dversion.org.eclipse.microprofile.rest.client=${{ steps.mp-rest-client-build.outputs.mp-rest-client-version }}' '-Djetty.version=11.0.21' '-Dversion.com.github.tomakehurst.wiremock=3.0.1'
       - name: Upload surefire reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: surefire-reports
