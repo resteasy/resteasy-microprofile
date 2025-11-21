@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Checkout RESTEasy MicroProfile
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - uses: actions/download-artifact@v5
         with:
           name: resteasy-maven-repository
