@@ -121,13 +121,13 @@ https://docs.wildfly.org/galleon/[Galleon] tooling to do so.
             <!-- Not required, but will get you the latest version of RESTEasy -->
             <channel>
                 <manifest>
-                    <groupId>dev.resteasy.channels</groupId>
+                    <groupId>org.jboss.resteasy.channels</groupId>
                     <artifactId>resteasy-6.2</artifactId>
                 </manifest>
             </channel>
             <channel>
                 <manifest>
-                    <groupId>dev.resteasy.channels</groupId>
+                    <groupId>org.jboss.channels</groupId>
                     <artifactId>resteasy-microprofile-3.0</artifactId>
                 </manifest>
             </channel>

@@ -29,7 +29,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>dev.resteasy.channels</groupId>
+    <groupId>org.jboss.resteasy.channels</groupId>
     <artifactId>resteasy-microprofile-3.0</artifactId>
     <name>RESTEasy MicroProfile: Channel Manifest</name>
     <packaging>pom</packaging>
