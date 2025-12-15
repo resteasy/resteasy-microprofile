@@ -47,11 +47,11 @@
         <wildfly.channel.manifest.groupId>org.wildfly.channels</wildfly.channel.manifest.groupId>
         <wildfly.channel.manifest.artifactId>wildfly</wildfly.channel.manifest.artifactId>
 
-        <resteasy.channel.manifest.groupId>dev.resteasy.channels</resteasy.channel.manifest.groupId>
+        <resteasy.channel.manifest.groupId>org.jboss.resteasy.channels</resteasy.channel.manifest.groupId>
         <resteasy.channel.manifest.artifactId>resteasy-6.2</resteasy.channel.manifest.artifactId>
         <resteasy.channel.manifest.version>${version.org.jboss.resteasy}</resteasy.channel.manifest.version>
 
-        <resteasy.mp.channel.manifest.groupId>dev.resteasy.channels</resteasy.mp.channel.manifest.groupId>
+        <resteasy.mp.channel.manifest.groupId>org.jboss.resteasy.channels</resteasy.mp.channel.manifest.groupId>
         <resteasy.mp.channel.manifest.artifactId>resteasy-microprofile-${channel.stream.version}</resteasy.mp.channel.manifest.artifactId>
         <resteasy.mp.channel.manifest.version>${project.version}</resteasy.mp.channel.manifest.version>
         <jboss.arguments/>
