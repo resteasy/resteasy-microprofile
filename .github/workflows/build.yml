@@ -60,7 +60,7 @@ jobs:
       - name: Build with Maven Java ${{ matrix.java }}  - ${{ matrix.os }}
         run: |
           mvn clean install -U -B -fae
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
@@ -89,7 +89,7 @@ jobs:
       - name: Test with Java ${{ matrix.java }} - ${{ matrix.profile }}
         run: |
           mvn clean install -U -B -fae ${{ matrix.profile }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: surefire-reports-${{ matrix.profile }}-${{ matrix.java }}
@@ -116,7 +116,7 @@ jobs:
       - name: Test with Java ${{ matrix.java }} - Provision Preview
         run: |
           mvn clean install -U -B -fae '-Dprovision.preview'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: surefire-reports-preview-${{ matrix.java }}
