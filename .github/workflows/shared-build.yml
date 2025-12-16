@@ -85,7 +85,7 @@ jobs:
         run:  |
           cd ~
           find ./.m2/repository -type d -name "*SNAPSHOT" -print0 | xargs -0 tar -czf ~/resteasy-mp-maven-repository.tar.gz
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: resteasy-mp-maven-repository
           path: ~/resteasy-mp-maven-repository.tar.gz
