@@ -72,7 +72,7 @@
         <version.org.junit>5.13.4</version.org.junit>
 
         <!-- Test only dependencies -->
-        <version.org.wiremock>3.12.1</version.org.wiremock>
+        <version.org.wiremock>3.13.2</version.org.wiremock>
 
         <!-- Plugin Versions -->
         <version.org.wildfly.maven.plugin>5.1.5.Final</version.org.wildfly.maven.plugin>
