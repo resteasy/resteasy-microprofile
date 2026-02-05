@@ -76,7 +76,7 @@
 
         <!-- Plugin Versions -->
         <version.org.wildfly.maven.plugin>5.1.5.Final</version.org.wildfly.maven.plugin>
-        <version.org.wildfly.galleon-plugins>8.0.0.Final</version.org.wildfly.galleon-plugins>
+        <version.org.wildfly.galleon-plugins>8.1.0.Final</version.org.wildfly.galleon-plugins>
         <version.org.wildfly.wildfly-channel-maven-plugin>1.0.29</version.org.wildfly.wildfly-channel-maven-plugin>
 
         <!-- Plugin Versions, please keep in alphabetical order -->
