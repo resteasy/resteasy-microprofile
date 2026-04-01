@@ -35,7 +35,15 @@
     <version>3.0.2.Final-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <url>https://jboss.org/resteasy</url>
+
+    <name>RESTEasy MicroProfile</name>
+    <description>An Eclipse MicroProfile implementation of the MicroProfile Rest Client</description>
+    <url>https://resteasy.dev</url>
+
+    <organization>
+        <name>RESTEasy Community</name>
+        <url>https://resteasy.dev</url>
+    </organization>
 
     <licenses>
         <license>
@@ -44,6 +52,20 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <id>jamezp</id>
+            <name>James Perkins</name>
+            <email>jperkins@ibm.com</email>
+            <url>https://resteasy.dev</url>
+            <organization>IBM</organization>
+            <roles>
+                <role>project-lead</role>
+            </roles>
+            <timezone>-8</timezone>
+        </developer>
+    </developers>
 
     <scm>
         <connection>scm:git:git://github.com/resteasy/resteasy-microprofile.git</connection>
