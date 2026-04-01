@@ -126,14 +126,6 @@
                 <scope>provided</scope>
                 <optional>true</optional>
             </dependency>
-            <dependency>
-                <groupId>org.jboss.logging</groupId>
-                <artifactId>jboss-logging-processor</artifactId>
-                <version>${version.org.jboss.logging.jboss-logging-tools}</version>
-                <!-- This is only used at compile-time and not required at runtime -->
-                <scope>provided</scope>
-                <optional>true</optional>
-            </dependency>
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>

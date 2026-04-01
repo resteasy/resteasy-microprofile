@@ -122,6 +122,13 @@
                     <configuration>
                         <skip>${skip.compile}</skip>
                         <skipMain>${skip.compile}</skipMain>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.jboss.logging</groupId>
+                                <artifactId>jboss-logging-processor</artifactId>
+                                <version>${version.org.jboss.logging.jboss-logging-tools}</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -234,10 +241,6 @@
                         <goals>
                             <goal>sort</goal>
                         </goals>
-                        <configuration>
-                            <sourceDirectory>${project.basedir}/src/main/resources</sourceDirectory>
-                            <testSourceDirectory>${project.basedir}/src/test/resources</testSourceDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -323,10 +326,6 @@
                                 <goals>
                                     <goal>check</goal>
                                 </goals>
-                                <configuration>
-                                    <sourceDirectory>${project.basedir}/src/main/resources</sourceDirectory>
-                                    <testSourceDirectory>${project.basedir}/src/test/resources</testSourceDirectory>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
