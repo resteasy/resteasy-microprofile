@@ -59,6 +59,7 @@ import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,6 +96,7 @@ public class RestClientProxyTest {
     }
 
     @Test
+    @Disabled("We should not be accessing remote endpoints like this, see https://github.com/resteasy/resteasy-microprofile/issues/525")
     public void testHTTP2ByRegistration() {
         RestClientBuilder builder = RestClientBuilder.newBuilder().baseUri(URI.create("https://nghttp2.org/"));
 

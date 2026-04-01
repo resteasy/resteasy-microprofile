@@ -37,11 +37,13 @@ import org.jboss.resteasy.microprofile.test.util.TestEnvironment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(ArquillianExtension.class)
 @RunAsClient
+@Disabled("We should not be accessing remote endpoints like this, see https://github.com/resteasy/resteasy-microprofile/issues/525")
 public class RestClientProxyRedeployTest {
     @Deployment(name = "deployment1", order = 1)
     public static Archive<?> deploy1() throws IOException {
