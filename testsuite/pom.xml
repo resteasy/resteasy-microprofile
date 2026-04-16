@@ -34,7 +34,7 @@
     <properties>
         <jvm.debug.args/>
         <dep.arquillian-bom.version>1.7.2.Final</dep.arquillian-bom.version>
-        <version.resteasy.testsuite>${version.org.jboss.resteasy}</version.resteasy.testsuite>
+        <version.resteasy.testsuite>6.2.16.Final</version.resteasy.testsuite>
         <version.resteasy.microprofile.testsuite>${project.version}</version.resteasy.microprofile.testsuite>
         <!-- Galleon -->
         <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
