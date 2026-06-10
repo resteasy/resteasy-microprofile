@@ -40,7 +40,10 @@
         <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
 
         <!-- Feature Packs -->
-        <server.version/>
+        <!-- TODO (jrp) temporary workaround as WildFly 40 causes https://github.com/resteasy/resteasy-microprofile/issues/545.
+             Once resolved we should remove the version and leave the tag empty.
+         -->
+        <server.version>39.0.1.Final</server.version>
         <wildfly.feature.pack.groupId>org.wildfly</wildfly.feature.pack.groupId>
         <wildfly.feature.pack.artifactId>wildfly-galleon-pack</wildfly.feature.pack.artifactId>
 
