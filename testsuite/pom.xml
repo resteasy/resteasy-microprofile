@@ -58,6 +58,10 @@
         <resteasy.mp.channel.manifest.artifactId>resteasy-microprofile-${channel.stream.version}</resteasy.mp.channel.manifest.artifactId>
         <resteasy.mp.channel.manifest.version>${project.version}</resteasy.mp.channel.manifest.version>
         <jboss.arguments/>
+
+        <!-- Skip deploying -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <central.skipPublishing>false</central.skipPublishing>
     </properties>
     <modules>
         <module>integration-tests</module>

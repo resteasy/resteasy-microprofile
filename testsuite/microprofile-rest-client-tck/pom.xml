@@ -36,6 +36,10 @@
         <skip.mp.tck>false</skip.mp.tck>
         <tck.timeout.offset>90000</tck.timeout.offset>
         <wiremock.module.path>${jboss.home}/modules/org/wiremock/main/</wiremock.module.path>
+
+        <!-- Skip deploying -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <central.skipPublishing>false</central.skipPublishing>
     </properties>
 
     <dependencies>
