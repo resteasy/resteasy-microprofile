@@ -24,9 +24,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>dev.resteasy.tools</groupId>
-        <artifactId>resteasy-parent</artifactId>
-        <version>2.0.3.Final</version>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>53</version>
         <relativePath/>
     </parent>
 
@@ -74,6 +74,9 @@
     </scm>
 
     <properties>
+
+        <maven.compiler.release>11</maven.compiler.release>
+
         <!-- Dependency versions, please keep in alphabetical order -->
 
         <version.jakarta.enterprise>4.0.1</version.jakarta.enterprise>
@@ -97,6 +100,8 @@
         <version.org.wiremock>3.12.1</version.org.wiremock>
 
         <!-- Plugin Versions -->
+        <version.formatter.maven.plugin>2.23.0</version.formatter.maven.plugin>
+        <version.impsort.maven.plugin>1.9.0</version.impsort.maven.plugin>
         <version.org.wildfly.maven.plugin>5.1.5.Final</version.org.wildfly.maven.plugin>
         <version.org.wildfly.galleon-plugins>8.0.0.Final</version.org.wildfly.galleon-plugins>
         <version.org.wildfly.wildfly-channel-maven-plugin>1.0.31</version.org.wildfly.wildfly-channel-maven-plugin>
@@ -104,6 +109,13 @@
         <!-- Plugin Versions, please keep in alphabetical order -->
         <!-- print logs to file by default -->
         <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+        <test.java.home>${java.home}</test.java.home>
+        <!-- Used to allow overriding the directory where reports are written. For example in CI, passing -Dtest.report.dir=java25
+             to allow test reports to not overwrite each other.
+         -->
+        <test.report.dir/>
+        <surefire.reportsDirectory>${project.build.directory}/surefire-reports/${test.report.dir}</surefire.reportsDirectory>
+        <failsafe.reportsDirectory>${project.build.directory}/failsafe-reports/${test.report.dir}</failsafe.reportsDirectory>
         <!-- maven-enforcer-plugin -->
         <maven.min.version>3.6.0</maven.min.version>
         <!-- maven-surefire-plugin -->
@@ -169,7 +181,16 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
+                        <jvm>${test.java.home}${file.separator}bin${file.separator}java</jvm>
+                        <reportsDirectory>${surefire.reportsDirectory}</reportsDirectory>
                         <argLine>${surefire.system.args}</argLine>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <configuration>
+                        <jvm>${test.java.home}${file.separator}bin${file.separator}java</jvm>
+                        <reportsDirectory>${failsafe.reportsDirectory}</reportsDirectory>
                     </configuration>
                 </plugin>
             </plugins>
@@ -252,10 +273,45 @@
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
+                <version>${version.formatter.maven.plugin}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>dev.resteasy.tools</groupId>
+                        <artifactId>ide-config</artifactId>
+                        <version>3</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <!-- store outside of target to speed up formatting when mvn clean is used -->
+                    <cachedir>.cache</cachedir>
+                    <configFile>eclipse-code-formatter.xml</configFile>
+                    <configXmlFile>resteasy-xml.properties</configXmlFile>
+                    <includeResources>true</includeResources>
+                    <lineEnding>LF</lineEnding>
+                    <removeTrailingWhitespace>true</removeTrailingWhitespace>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>format</id>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>net.revelc.code</groupId>
                 <artifactId>impsort-maven-plugin</artifactId>
+                <version>${version.impsort.maven.plugin}</version>
+                <configuration>
+                    <!-- store outside of target to speed up formatting when mvn clean is used -->
+                    <cachedir>.cache</cachedir>
+                    <groups>java.,javax.,jakarta.,org.,com.</groups>
+                    <staticGroups>*</staticGroups>
+                    <skip>${skipFormatting}</skip>
+                    <removeUnused>true</removeUnused>
+                </configuration>
                 <executions>
                     <execution>
                         <id>sort-resource-imports</id>
@@ -271,36 +327,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>jdk.test</id>
-            <activation>
-                <property>
-                    <name>test.java.home</name>
-                </property>
-                <file>
-                    <exists>${test.java.home}</exists>
-                </file>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>default-test</id>
-                                <configuration>
-                                    <jvm>${test.java.home}/bin/java</jvm>
-                                    <environmentVariables>
-                                        <JAVA_HOME>${test.java.home}</JAVA_HOME>
-                                    </environmentVariables>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>Windows</id>
             <activation>
@@ -337,13 +363,6 @@
                         <executions>
                             <execution>
                                 <id>check-import-sort</id>
-                                <phase>validate</phase>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>check-import-sort-resources</id>
                                 <phase>validate</phase>
                                 <goals>
                                     <goal>check</goal>

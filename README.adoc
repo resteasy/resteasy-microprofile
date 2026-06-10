@@ -6,9 +6,9 @@ https://microprofile.io/[Eclipse MicroProfile].
 
 == Building
 
-Building requires https://maven.apache.org/download.cgi[Maven] and Java 11.
+Building requires https://maven.apache.org/download.cgi[Maven] and Java 25.
 ----
-mvn clean install
+./mvnw clean install
 ----
 
 == Usage
@@ -33,7 +33,7 @@ The simplest way to use these dependencies is to import the BOM.
 === RESTEasy MicroProfile Client
 
 This is an implementation of the
-https://download.eclipse.org/microprofile/microprofile-rest-client-4.0-RC1/microprofile-rest-client-spec-4.0-RC1.html[MicroProfile REST Client].
+https://download.eclipse.org/microprofile/microprofile-rest-client-4.0/microprofile-rest-client-spec-4.0.html[MicroProfile REST Client].
 
 [source,xml]
 ----

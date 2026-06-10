@@ -174,16 +174,6 @@
         </profile>
 
         <profile>
-            <id>wildfly-java-11</id>
-            <activation>
-                <jdk>(,17)</jdk>
-            </activation>
-            <properties>
-                <server.version>34.0.1.Final</server.version>
-            </properties>
-        </profile>
-
-        <profile>
             <id>provided.server</id>
             <activation>
                 <property>

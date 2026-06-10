@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class MultiPartResource {
         Files.createDirectories(path);
         for (EntityPart part : entityParts) {
             if (part.getFileName().isPresent()) {
-                Files.copy(part.getContent(), path.resolve(part.getFileName().get()));
+                Files.copy(part.getContent(), path.resolve(part.getFileName().get()), StandardCopyOption.REPLACE_EXISTING);
             } else {
                 throw new BadRequestException("No file name for entity part " + part);
             }

@@ -50,14 +50,17 @@ on:
     inputs:
       resteasy-branch:
         description: "RESTEasy MicroProfile Branch"
-        required: true
+        required: false
         default: "main"
         type: string
       resteasy-repo:
         description: "RESTEasy MicroProfile Repository"
-        required: true
+        required: false
         default: "resteasy/resteasy-microprofile"
         type: string
+
+env:
+  MVN_CMD: './mvnw -V -B -fae'
 
 jobs:
   resteasy-build:
@@ -70,14 +73,14 @@ jobs:
         with:
           repository: ${{ inputs.resteasy-repo }}
           ref: ${{ inputs.resteasy-branch }}
-      - name: Set up JDK 11
+      - name: Set up JDK 25
         uses: actions/setup-java@v5
         with:
-          java-version: 11
+          java-version: 25
           distribution: 'temurin'
           cache: 'maven'
       - name: Build RESTEasy MicroProfile
-        run: mvn clean install -DskipTests -Dcheckstyle.skip=true -Denforcer.skip=true -DskipFormatting=true
+        run: ${{ env.MVN_CMD }} clean install -DskipTests -Dcheckstyle.skip=true -Denforcer.skip=true -DskipFormatting=true
       - name: Get the RESTEasy MicroProfile Version
         id: version
         run: echo "resteasy-mp-version=$(mvn -B help:evaluate -Dexpression=project.version -DforceStdout -q)" >> $GITHUB_OUTPUT

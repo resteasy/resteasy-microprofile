@@ -38,6 +38,9 @@ concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 
+env:
+  MVN_CMD: './mvnw -V -B -fae'
+
 jobs:
   build:
     name: Build and Test
@@ -47,81 +50,74 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest ]
-        java: [ '11', '17' ]
 
     steps:
       - uses: actions/checkout@v6
-      - name: Set up JDK ${{ matrix.java }}
+      - name: Set up JDks
         uses: actions/setup-java@v5
         with:
-          java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'maven'
-      - name: Build with Maven Java ${{ matrix.java }}  - ${{ matrix.os }}
-        run: |
-          mvn clean install -U -B -fae
-      - uses: actions/upload-artifact@v7
+          # Please note the order here of having 25 last as that is the version we want to compile with
+          java-version: |
+            17
+            21
+            26
+            25
+      - name: Build and Test with Java 25 - ${{ matrix.os }}
+        run: ${{ env.MVN_CMD }} clean install
+      - name: Build and Test with Java 26 - ${{ matrix.os }}
+        run: ${{ env.MVN_CMD }} verify '-Dtest.java.home=${{env.JAVA_HOME_26_X64}}' '-Dtest.report.dir=java26'
+      - name: Build and Test with Java 21 - ${{ matrix.os }}
+        run: ${{ env.MVN_CMD }} verify '-Dtest.java.home=${{env.JAVA_HOME_21_X64}}' '-Dtest.report.dir=java21'
+      - name: Build and Test with Java 17 - ${{ matrix.os }}
+        run: ${{ env.MVN_CMD }} verify '-Dtest.java.home=${{env.JAVA_HOME_17_X64}}' '-Dtest.report.dir=java17'
+      - name: Upload test logs for failed run
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
+          name: failure-reports-${{ matrix.os }}
           path: |
-            '**/surefire-reports/'
+            **/surefire-reports/**
+            **/failsafe-reports/**
+            **/*.log
 
   additional-profiles:
-    name: Test with ${{ matrix.profile }} - JDK ${{ matrix.java }}
+    name: Test with ${{ matrix.profile }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
-        java: [ '11', '17', '21' ]
         profile:
           - "'-Dsecurity.manager'"
+          - "'-Dprovision.preview'"
 
     steps:
       - uses: actions/checkout@v6
-      - name: Set up JDK ${{ matrix.java }}
+      - name: Set up JDKs
         uses: actions/setup-java@v5
         with:
-          java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'maven'
-      - name: Test with Java ${{ matrix.java }} - ${{ matrix.profile }}
-        run: |
-          mvn clean install -U -B -fae ${{ matrix.profile }}
-      - uses: actions/upload-artifact@v7
+          # 25 needs to be the latest as it's required for compiling, however we will not test on Java 25
+          java-version: |
+            17
+            21
+            25
+      - name: Test with Java 17 - ${{ matrix.profile }}
+        run: ${{ env.MVN_CMD }} clean install ${{ matrix.profile }} '-Dtest.java.home=${{env.JAVA_HOME_17_X64}}' '-Dtest.report.dir=java17'
+      - name: Test with Java 21 - ${{ matrix.profile }}
+        run: ${{ env.MVN_CMD }} clean install ${{ matrix.profile }} '-Dtest.java.home=${{env.JAVA_HOME_21_X64}}' '-Dtest.report.dir=java21'
+      - name: Upload test logs for failed run
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: surefire-reports-${{ matrix.profile }}-${{ matrix.java }}
+          name: failure-reports
           path: |
-            '**/surefire-reports/'
-
-  provision-preview:
-    name: Test Provisioning with Preview - JDK ${{ matrix.java }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        java: [ '17', '21' ]
-
-    steps:
-      - uses: actions/checkout@v6
-      - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v5
-        with:
-          java-version: ${{ matrix.java }}
-          distribution: 'temurin'
-          cache: 'maven'
-      - name: Test with Java ${{ matrix.java }} - Provision Preview
-        run: |
-          mvn clean install -U -B -fae '-Dprovision.preview'
-      - uses: actions/upload-artifact@v7
-        if: failure()
-        with:
-          name: surefire-reports-preview-${{ matrix.java }}
-          path: |
-            '**/surefire-reports/'
+            **/surefire-reports/**
+            **/failsafe-reports/**
+            **/*.log
 
   format-check:
     name: Check Code Formatting
@@ -130,13 +126,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - name: Set up JDK 11
+      - name: Set up JDK 25
         uses: actions/setup-java@v5
         with:
-          java-version: 11
+          java-version: 25
           distribution: 'temurin'
           cache: 'maven'
       - name: Validate Formatting
         run: |
-          mvn -B validate -Pformat-check -Denforcer.skip=true
+          ${{ env.MVN_CMD }} validate -Pformat-check -Denforcer.skip=true
 
