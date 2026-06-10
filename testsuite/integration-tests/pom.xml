@@ -30,6 +30,11 @@
 
     <artifactId>integration-tests</artifactId>
     <name>RESTEasy MicroProfile: Integration Tests</name>
+    <properties>
+        <!-- Skip deploying -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <central.skipPublishing>false</central.skipPublishing>
+    </properties>
 
     <dependencies>
         <dependency>
