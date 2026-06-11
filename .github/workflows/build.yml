@@ -91,6 +91,7 @@ jobs:
       matrix:
         profile:
           - "'-Dsecurity.manager'"
+          - "'-Pee-10'"
           - "'-Dprovision.preview'"
 
     steps:

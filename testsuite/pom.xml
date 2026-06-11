@@ -40,12 +40,10 @@
         <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
 
         <!-- Feature Packs -->
-        <!-- TODO (jrp) temporary workaround as WildFly 40 causes https://github.com/resteasy/resteasy-microprofile/issues/545.
-             Once resolved we should remove the version and leave the tag empty.
-         -->
-        <server.version>39.0.1.Final</server.version>
+        <server.version/>
         <wildfly.feature.pack.groupId>org.wildfly</wildfly.feature.pack.groupId>
         <wildfly.feature.pack.artifactId>wildfly-galleon-pack</wildfly.feature.pack.artifactId>
+        <wildfly.ee.feature.pack.artifactId>wildfly-ee-galleon-pack</wildfly.ee.feature.pack.artifactId>
 
         <wildfly.channel.manifest.groupId>org.wildfly.channels</wildfly.channel.manifest.groupId>
         <wildfly.channel.manifest.artifactId>wildfly</wildfly.channel.manifest.artifactId>
@@ -114,6 +112,11 @@
                     <provisioning-dir>${jboss.home}</provisioning-dir>
                     <offline>${galleon.offline}</offline>
                     <feature-packs>
+                        <feature-pack>
+                            <groupId>${wildfly.feature.pack.groupId}</groupId>
+                            <artifactId>${wildfly.ee.feature.pack.artifactId}</artifactId>
+                            <transitive>true</transitive>
+                        </feature-pack>
                         <feature-pack>
                             <groupId>${wildfly.feature.pack.groupId}</groupId>
                             <artifactId>${wildfly.feature.pack.artifactId}</artifactId>
@@ -217,6 +220,13 @@
             </build>
         </profile>
         <profile>
+            <id>ee-10</id>
+            <properties>
+                <wildfly.channel.manifest.artifactId>wildfly-compat-ee-10</wildfly.channel.manifest.artifactId>
+                <wildfly.ee.feature.pack.artifactId>wildfly-ee-10-feature-pack</wildfly.ee.feature.pack.artifactId>
+            </properties>
+        </profile>
+        <profile>
             <id>provision.preview.server</id>
             <activation>
                 <property>
@@ -229,6 +239,28 @@
                 <wildfly.feature.pack.artifactId>wildfly-preview-feature-pack</wildfly.feature.pack.artifactId>
                 <wildfly.channel.manifest.artifactId>wildfly-preview</wildfly.channel.manifest.artifactId>
             </properties>
+
+            <build>
+                <plugins>
+                    <!-- We need to redefine the feature pack here as the wildfly-preview channel is a standalone
+                         manifest and does not require the ee manifest. It also does not define any streams on the
+                         wildfly-ee-galleon-pack, or it's other variants.
+                     -->
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <configuration>
+                            <feature-packs>
+                                <feature-pack>
+                                    <groupId>${wildfly.feature.pack.groupId}</groupId>
+                                    <artifactId>${wildfly.feature.pack.artifactId}</artifactId>
+                                    <transitive>false</transitive>
+                                </feature-pack>
+                            </feature-packs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>security.manager</id>
@@ -239,6 +271,9 @@
             </activation>
             <properties>
                 <jboss.arguments>-secmgr</jboss.arguments>
+                <!-- The security manager doesn't work with Jakarta EE 11 -->
+                <wildfly.channel.manifest.artifactId>wildfly-compat-ee-10</wildfly.channel.manifest.artifactId>
+                <wildfly.ee.feature.pack.artifactId>wildfly-ee-10-feature-pack</wildfly.ee.feature.pack.artifactId>
             </properties>
         </profile>
     </profiles>
