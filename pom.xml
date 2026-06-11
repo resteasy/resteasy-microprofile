@@ -101,7 +101,7 @@
 
         <!-- Plugin Versions -->
         <version.formatter.maven.plugin>2.23.0</version.formatter.maven.plugin>
-        <version.impsort.maven.plugin>1.9.0</version.impsort.maven.plugin>
+        <version.impsort.maven.plugin>1.13.0</version.impsort.maven.plugin>
         <version.org.wildfly.maven.plugin>5.1.5.Final</version.org.wildfly.maven.plugin>
         <version.org.wildfly.galleon-plugins>8.0.0.Final</version.org.wildfly.galleon-plugins>
         <version.org.wildfly.wildfly-channel-maven-plugin>1.0.32</version.org.wildfly.wildfly-channel-maven-plugin>
