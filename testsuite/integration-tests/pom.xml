@@ -210,6 +210,12 @@
                     <systemPropertyVariables>
                         <jboss.home>${jboss.home}</jboss.home>
                         <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+                        <!-- This is a workaround for UNDERTOW-2771. As of WildFly 40, the [] brackets in a query parameter
+                             throw an exception as being invalid. In #545 we introduce this new property which will encode
+                             the brackets. In the future this can be removed once WildFly aligns with a newer version of
+                             Undertow. However, that is not required.
+                         -->
+                        <dev.resteasy.mp.rest.client.encodeArrayBrackets>true</dev.resteasy.mp.rest.client.encodeArrayBrackets>
                     </systemPropertyVariables>
                 </configuration>
                 <executions>
