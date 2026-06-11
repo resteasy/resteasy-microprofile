@@ -23,17 +23,23 @@ import java.net.URI;
 
 import jakarta.ws.rs.core.UriBuilder;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
 import org.jboss.resteasy.specimpl.ResteasyUriBuilderImpl;
 import org.jboss.resteasy.util.Encode;
 
 public class MpUriBuilder extends ResteasyUriBuilderImpl {
+    private static final String ENCODE_ARRAY_BRACKETS = "dev.resteasy.mp.rest.client.encodeArrayBrackets";
 
+    private final boolean encodeArrayBrackets;
     private QueryParamStyle queryParamStyle = null;
 
     public MpUriBuilder() {
         super();
+        final Config config = ConfigProvider.getConfig();
+        encodeArrayBrackets = config.getOptionalValue(ENCODE_ARRAY_BRACKETS, Boolean.class).orElse(false);
     }
 
     /*
@@ -44,6 +50,8 @@ public class MpUriBuilder extends ResteasyUriBuilderImpl {
             final String userInfo, final String path, final String query,
             final String fragment, final String ssp, final String authority) {
         super(host, scheme, port, userInfo, path, query, fragment, ssp, authority);
+        final Config config = ConfigProvider.getConfig();
+        encodeArrayBrackets = config.getOptionalValue(ENCODE_ARRAY_BRACKETS, Boolean.class).orElse(false);
     }
 
     public void setQueryParamStyle(QueryParamStyle queryParamStyle) {
@@ -156,9 +164,13 @@ public class MpUriBuilder extends ResteasyUriBuilderImpl {
             }
             sb.append(prefix);
             prefix = "&";
-            sb.append(Encode.encodeQueryParamAsIs(name))
-                    .append("[]=")
-                    .append(Encode.encodeQueryParamAsIs(value.toString()));
+            sb.append(Encode.encodeQueryParamAsIs(name));
+            if (encodeArrayBrackets) {
+                sb.append("%5b%5d=");
+            } else {
+                sb.append("[]=");
+            }
+            sb.append(Encode.encodeQueryParamAsIs(value.toString()));
         }
 
         replaceQueryNoEncoding(sb.toString());
