@@ -606,9 +606,9 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             if (methodPathAnno != null) {
                 template = classPathAnno == null ? (ResteasyUriBuilder) new ResteasyUriBuilderImpl().uri(methodPathAnno.value())
                         : (ResteasyUriBuilder) new ResteasyUriBuilderImpl()
-                                .uri(classPathAnno.value() + "/" + methodPathAnno.value());
+                                .path(classPathAnno.value() + "/" + methodPathAnno.value());
             } else if (classPathAnno != null) {
-                template = (ResteasyUriBuilder) new ResteasyUriBuilderImpl().uri(classPathAnno.value());
+                template = (ResteasyUriBuilder) new ResteasyUriBuilderImpl().path(classPathAnno.value());
             } else {
                 template = null;
             }
