@@ -36,7 +36,7 @@ env:
 
 jobs:
   resteasy-build:
-    uses: resteasy/resteasy/.github/workflows/shared-resteasy-build.yml@6.2
+    uses: resteasy/resteasy/.github/workflows/shared-resteasy-build.yml@7.0
     with:
       resteasy-branch: "6.2"
       resteasy-repo: "resteasy/resteasy"
