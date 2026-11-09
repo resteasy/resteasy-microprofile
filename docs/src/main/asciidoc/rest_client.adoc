@@ -1,4 +1,5 @@
 [[rest-client]]
+
 == MicroProfile Rest Client
 
 As the microservices style of system architecture (see, for example, https://martinfowler.com/articles/microservices.html[Microservices] by Martin Fowler) gains increasing traction, new API standards are coming along to support it.
