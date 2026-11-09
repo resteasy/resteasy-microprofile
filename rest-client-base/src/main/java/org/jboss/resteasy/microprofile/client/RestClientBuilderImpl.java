@@ -700,36 +700,62 @@ public class RestClientBuilderImpl implements RestClientBuilder {
 
     @Override
     public RestClientBuilder register(Class<?> aClass) {
-        register(newInstanceOf(aClass));
-        return this;
+        return doRegister(aClass, newInstanceOf(aClass));
     }
 
     @Override
     public RestClientBuilder register(Class<?> aClass, int i) {
-
-        register(newInstanceOf(aClass), i);
-        return this;
+        return doRegister(aClass, newInstanceOf(aClass), i);
     }
 
     @Override
     public RestClientBuilder register(Class<?> aClass, Class<?>[] classes) {
-        register(newInstanceOf(aClass), classes);
-        return this;
+        return doRegister(aClass, newInstanceOf(aClass), classes);
     }
 
     @Override
     public RestClientBuilder register(Class<?> aClass, Map<Class<?>, Integer> map) {
-        register(newInstanceOf(aClass), map);
-        return this;
+        return doRegister(aClass, newInstanceOf(aClass), map);
     }
 
     @Override
     public RestClientBuilder register(Object o) {
+        return doRegister(o.getClass(), o);
+    }
+
+    @Override
+    public RestClientBuilder register(Object o, int i) {
+        return doRegister(o.getClass(), o, i);
+    }
+
+    @Override
+    public RestClientBuilder register(Object o, Class<?>[] classes) {
+        return doRegister(o.getClass(), o, classes);
+    }
+
+    @Override
+    public RestClientBuilder register(Object o, Map<Class<?>, Integer> map) {
+        return doRegister(o.getClass(), o, map);
+    }
+
+    public Set<Object> getLocalProviderInstances() {
+        return localProviderInstances;
+    }
+
+    public void registerLocalProviderInstance(Object provider, Map<Class<?>, Integer> contracts) {
+        registerLocalProviderInstance(provider.getClass(), provider, contracts);
+    }
+
+    ResteasyClientBuilder getBuilderDelegate() {
+        return builderDelegate;
+    }
+
+    private RestClientBuilder doRegister(Class<?> providerClass, Object o) {
         if (o instanceof ResponseExceptionMapper) {
             ResponseExceptionMapper mapper = (ResponseExceptionMapper) o;
-            register(mapper, mapper.getPriority());
+            doRegister(providerClass, mapper, mapper.getPriority());
         } else if (o instanceof ParamConverterProvider) {
-            register(o, Priorities.USER);
+            doRegister(providerClass, o, Priorities.USER);
         } else if (o instanceof AsyncInvocationInterceptorFactory) {
             invocationInterceptorFactories.add((AsyncInvocationInterceptorFactory) o);
         } else {
@@ -738,15 +764,14 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         return this;
     }
 
-    @Override
-    public RestClientBuilder register(Object o, int i) {
+    private RestClientBuilder doRegister(Class<?> providerClass, Object o, int i) {
         if (o instanceof ResponseExceptionMapper) {
 
             // local
             ResponseExceptionMapper mapper = (ResponseExceptionMapper) o;
             HashMap<Class<?>, Integer> contracts = new HashMap<>();
             contracts.put(ResponseExceptionMapper.class, i);
-            registerLocalProviderInstance(mapper, contracts);
+            registerLocalProviderInstance(providerClass, mapper, contracts);
 
             // delegate
             builderDelegate.register(mapper, i);
@@ -757,7 +782,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             ParamConverterProvider converter = (ParamConverterProvider) o;
             HashMap<Class<?>, Integer> contracts = new HashMap<>();
             contracts.put(ParamConverterProvider.class, i);
-            registerLocalProviderInstance(converter, contracts);
+            registerLocalProviderInstance(providerClass, converter, contracts);
 
             // delegate
             builderDelegate.register(converter, i);
@@ -770,60 +795,46 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         return this;
     }
 
-    @Override
-    public RestClientBuilder register(Object o, Class<?>[] classes) {
+    private RestClientBuilder doRegister(Class<?> providerClass, Object o, Class<?>[] classes) {
 
-        // local
-        for (Class<?> aClass : classes) {
-            if (aClass.isAssignableFrom(ResponseExceptionMapper.class)) {
-                register(o);
-            }
+        // local only, the delegate registration below is the single delegate registration
+        if (o instanceof ResponseExceptionMapper && Arrays.asList(classes).contains(ResponseExceptionMapper.class)) {
+            final ResponseExceptionMapper<?> mapper = (ResponseExceptionMapper<?>) o;
+            final HashMap<Class<?>, Integer> contracts = new HashMap<>();
+            contracts.put(ResponseExceptionMapper.class, mapper.getPriority());
+            registerLocalProviderInstance(providerClass, mapper, contracts);
         }
 
-        // other
+        // delegate
         builderDelegate.register(o, classes);
         return this;
     }
 
-    @Override
-    public RestClientBuilder register(Object o, Map<Class<?>, Integer> map) {
+    private RestClientBuilder doRegister(Class<?> providerClass, Object o, Map<Class<?>, Integer> map) {
 
-        if (o instanceof ResponseExceptionMapper) {
+        if (o instanceof ResponseExceptionMapper && map.containsKey(ResponseExceptionMapper.class)) {
 
             // local
             ResponseExceptionMapper mapper = (ResponseExceptionMapper) o;
             HashMap<Class<?>, Integer> contracts = new HashMap<>();
-            contracts.put(ResponseExceptionMapper.class, map.get(ResponseExceptionMapper.class));
-            registerLocalProviderInstance(mapper, contracts);
-
-            // other
-            builderDelegate.register(o, map);
-
-        } else {
-            builderDelegate.register(o, map);
+            Integer priority = map.get(ResponseExceptionMapper.class);
+            contracts.put(ResponseExceptionMapper.class, (priority == null ? mapper.getPriority() : priority));
+            registerLocalProviderInstance(providerClass, mapper, contracts);
         }
-
+        builderDelegate.register(o, map);
         return this;
     }
 
-    public Set<Object> getLocalProviderInstances() {
-        return localProviderInstances;
-    }
-
-    public void registerLocalProviderInstance(Object provider, Map<Class<?>, Integer> contracts) {
+    private void registerLocalProviderInstance(Class<?> providerClass, Object provider,
+            Map<Class<?>, Integer> contracts) {
         for (Object registered : getLocalProviderInstances()) {
             if (registered == provider) {
-                // System.out.println("Provider already registered " + provider.getClass().getName());
                 return;
             }
         }
 
         localProviderInstances.add(provider);
-        configurationWrapper.registerLocalContract(provider.getClass(), contracts);
-    }
-
-    ResteasyClientBuilder getBuilderDelegate() {
-        return builderDelegate;
+        configurationWrapper.registerLocalContract(providerClass, contracts);
     }
 
     private static BeanManager getBeanManager() {
