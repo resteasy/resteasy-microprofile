@@ -1,4 +1,5 @@
 [[config]]
+
 == MicroProfile Config Integration
 
 The RESTEasy MicroProfile Config module provides https://download.eclipse.org/microprofile/microprofile-config-3.1/apidocs/org/eclipse/microprofile/config/spi/ConfigSource.html[ConfigSource]

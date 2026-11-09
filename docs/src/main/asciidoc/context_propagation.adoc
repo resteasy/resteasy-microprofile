@@ -1,4 +1,5 @@
 [[context-propagation]]
+
 == MicroProfile Context Propagation
 
 The RESTEasy MicroProfile Context Propagation module provides integration with the
