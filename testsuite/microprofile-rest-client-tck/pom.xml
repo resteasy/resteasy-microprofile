@@ -70,25 +70,21 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>${version.resteasy.testsuite}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client-api</artifactId>
-            <version>${version.resteasy.testsuite}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-core-spi</artifactId>
-            <version>${version.resteasy.testsuite}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-core</artifactId>
-            <version>${version.resteasy.testsuite}</version>
             <scope>test</scope>
         </dependency>
 
@@ -147,13 +143,11 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-json-p-provider</artifactId>
             <scope>test</scope>
-            <version>${version.resteasy.testsuite}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
             <scope>test</scope>
-            <version>${version.resteasy.testsuite}</version>
         </dependency>
 
         <dependency>
@@ -178,7 +172,6 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-json-binding-provider</artifactId>
             <scope>test</scope>
-            <version>${version.resteasy.testsuite}</version>
         </dependency>
 
         <dependency>
