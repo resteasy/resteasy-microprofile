@@ -12,7 +12,6 @@ on:
       - 'config/**'
       - 'context-propagation/**'
       - 'rest-client/**'
-      - 'rest-client-base/**'
       - 'resteasy-microprofile-bom/**'
       - 'resteasy-microprofile-test-bom/**'
       - 'testsuite/**'

@@ -159,12 +159,6 @@
             <version>${version.resteasy.microprofile.testsuite}</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.resteasy.microprofile</groupId>
-            <artifactId>microprofile-rest-client-base</artifactId>
-            <scope>test</scope>
-            <version>${version.resteasy.microprofile.testsuite}</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-api</artifactId>
             <scope>test</scope>
