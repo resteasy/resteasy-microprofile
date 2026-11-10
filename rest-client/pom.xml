@@ -51,10 +51,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>microprofile-rest-client-base</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>io.smallrye.config</groupId>
@@ -79,6 +75,15 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
+        </dependency>
+
+        <!-- The logging processor and annotations are marked as provided and optional as they are only needed at
+             compile time -->
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
