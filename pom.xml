@@ -18,21 +18,19 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
         <version>55</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <groupId>org.jboss.resteasy.microprofile</groupId>
     <artifactId>resteasy-microprofile-parent</artifactId>
-    <version>3.0.2.Final-SNAPSHOT</version>
+    <version>3.0.2.Final</version>
     <packaging>pom</packaging>
 
 
@@ -71,7 +69,8 @@
         <connection>scm:git:git://github.com/resteasy/resteasy-microprofile.git</connection>
         <developerConnection>scm:git:git@github.com:resteasy/resteasy-microprofile.git</developerConnection>
         <url>https://github.com/resteasy/resteasy-microprofile/tree/main/</url>
-    </scm>
+      <tag>v3.0.2.Final</tag>
+  </scm>
 
     <properties>
 
@@ -111,7 +110,7 @@
         <!-- Used to allow overriding the directory where reports are written. For example in CI, passing -Dtest.report.dir=java25
              to allow test reports to not overwrite each other.
          -->
-        <test.report.dir/>
+        <test.report.dir />
         <surefire.reportsDirectory>${project.build.directory}/surefire-reports/${test.report.dir}</surefire.reportsDirectory>
         <failsafe.reportsDirectory>${project.build.directory}/failsafe-reports/${test.report.dir}</failsafe.reportsDirectory>
         <!-- maven-enforcer-plugin -->
@@ -262,7 +261,7 @@
                         </goals>
                         <configuration>
                             <rules>
-                                <dependencyConvergence/>
+                                <dependencyConvergence />
                             </rules>
                         </configuration>
                     </execution>

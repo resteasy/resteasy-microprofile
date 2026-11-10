@@ -18,13 +18,11 @@
   ~ limitations under the License.
   -->
 
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>resteasy-microprofile-parent</artifactId>
         <groupId>org.jboss.resteasy.microprofile</groupId>
-        <version>3.0.2.Final-SNAPSHOT</version>
+        <version>3.0.2.Final</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -32,14 +30,14 @@
     <packaging>pom</packaging>
     <name>RESTEasy MicroProfile: Test Suite</name>
     <properties>
-        <jvm.debug.args/>
+        <jvm.debug.args />
         <dep.arquillian-bom.version>1.7.2.Final</dep.arquillian-bom.version>
         <version.resteasy.microprofile.testsuite>${project.version}</version.resteasy.microprofile.testsuite>
         <!-- Galleon -->
         <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
 
         <!-- Feature Packs -->
-        <server.version/>
+        <server.version />
         <wildfly.feature.pack.groupId>org.wildfly</wildfly.feature.pack.groupId>
         <wildfly.feature.pack.artifactId>wildfly-galleon-pack</wildfly.feature.pack.artifactId>
 
@@ -48,12 +46,12 @@
 
         <resteasy.channel.manifest.groupId>org.jboss.resteasy.channels</resteasy.channel.manifest.groupId>
         <resteasy.channel.manifest.artifactId>resteasy-7.0</resteasy.channel.manifest.artifactId>
-        <resteasy.channel.manifest.version/>
+        <resteasy.channel.manifest.version />
 
         <resteasy.mp.channel.manifest.groupId>org.jboss.resteasy.channels</resteasy.mp.channel.manifest.groupId>
         <resteasy.mp.channel.manifest.artifactId>resteasy-microprofile-${channel.stream.version}</resteasy.mp.channel.manifest.artifactId>
         <resteasy.mp.channel.manifest.version>${project.version}</resteasy.mp.channel.manifest.version>
-        <jboss.arguments/>
+        <jboss.arguments />
 
         <!-- Skip deploying -->
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -155,7 +153,7 @@
                     </channels>
                     <galleon-options>
                         <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
-                        <jboss-maven-dist/>
+                        <jboss-maven-dist />
                     </galleon-options>
                 </configuration>
             </plugin>
