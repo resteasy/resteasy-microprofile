@@ -91,8 +91,7 @@ jobs:
       matrix:
         profile:
           - "'-Dsecurity.manager'"
-          - "'-Pee-10'"
-          - "'-Dprovision.preview'"
+          - "'-Dee10'"
 
     steps:
       - uses: actions/checkout@v7
@@ -110,6 +109,39 @@ jobs:
         run: ${{ env.MVN_CMD }} clean install ${{ matrix.profile }} '-Dtest.java.home=${{env.JAVA_HOME_17_X64}}' '-Dtest.report.dir=java17'
       - name: Test with Java 21 - ${{ matrix.profile }}
         run: ${{ env.MVN_CMD }} clean install ${{ matrix.profile }} '-Dtest.java.home=${{env.JAVA_HOME_21_X64}}' '-Dtest.report.dir=java21'
+      - name: Upload test logs for failed run
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: failure-reports
+          path: |
+            **/surefire-reports/**
+            **/failsafe-reports/**
+            **/*.log
+
+  preview-profile:
+    name: Test WildFly Preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up JDks
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          cache: 'maven'
+          # Please note the order here of having 25 last as that is the version we want to compile with
+          java-version: |
+            21
+            27
+            25
+      - name: Build and Test with Java 25
+        run: ${{ env.MVN_CMD }} clean install '-Dprovision.preview'
+      - name: Build and Test with Java 27
+        run: ${{ env.MVN_CMD }} verify '-Dtest.java.home=${{env.JAVA_HOME_27_X64}}' '-Dtest.report.dir=java27' '-Dprovision.preview'
+      - name: Build and Test with Java 21
+        run: ${{ env.MVN_CMD }} verify '-Dtest.java.home=${{env.JAVA_HOME_21_X64}}' '-Dtest.report.dir=java21' '-Dprovision.preview'
       - name: Upload test logs for failed run
         uses: actions/upload-artifact@v7
         if: failure()

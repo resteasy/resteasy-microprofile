@@ -36,9 +36,9 @@ env:
 
 jobs:
   resteasy-build:
-    uses: resteasy/resteasy/.github/workflows/shared-resteasy-build.yml@6.2
+    uses: resteasy/resteasy/.github/workflows/shared-resteasy-build.yml@7.0
     with:
-      resteasy-branch: "6.2"
+      resteasy-branch: "7.0"
       resteasy-repo: "resteasy/resteasy"
 
   resteasy-microprofile-build:
@@ -72,13 +72,13 @@ jobs:
             27
             25
       - name: Build and Test RESTEasy MicroProfile Java 25 - ${{ matrix.os }}
-        run: ${{ env.MVN_CMD }} clean install '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}'
+        run: ${{ env.MVN_CMD }} clean install '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dresteasy.channel.manifest.version=${{ needs.resteasy-build.outputs.resteasy-version }}'
       - name: Build and Test RESTEasy MicroProfile Java 27 - ${{ matrix.os }}
-        run: ${{ env.MVN_CMD }} verify '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dtest.java.home=${{env.JAVA_HOME_27_X64}}' '-Dtest.report.dir=java27'
+        run: ${{ env.MVN_CMD }} verify '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dresteasy.channel.manifest.version=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dtest.java.home=${{env.JAVA_HOME_27_X64}}' '-Dtest.report.dir=java27'
       - name: Build and Test RESTEasy MicroProfile Java 21 - ${{ matrix.os }}
-        run: ${{ env.MVN_CMD }} verify '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dtest.java.home=${{env.JAVA_HOME_21_X64}}' '-Dtest.report.dir=java21'
+        run: ${{ env.MVN_CMD }} verify '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dresteasy.channel.manifest.version=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dtest.java.home=${{env.JAVA_HOME_21_X64}}' '-Dtest.report.dir=java21'
       - name: Build and Test RESTEasy MicroProfile Java 17 - ${{ matrix.os }}
-        run: ${{ env.MVN_CMD }} verify '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dtest.java.home=${{env.JAVA_HOME_17_X64}}' '-Dtest.report.dir=java17'
+        run: ${{ env.MVN_CMD }} verify '-Dversion.org.jboss.resteasy=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dresteasy.channel.manifest.version=${{ needs.resteasy-build.outputs.resteasy-version }}' '-Dtest.java.home=${{env.JAVA_HOME_17_X64}}' '-Dtest.report.dir=java17'
       - name: Upload test logs for failed run
         uses: actions/upload-artifact@v7
         if: failure()
