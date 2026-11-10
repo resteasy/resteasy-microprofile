@@ -36,6 +36,7 @@
         <skip.mp.tck>false</skip.mp.tck>
         <tck.timeout.offset>90000</tck.timeout.offset>
         <wiremock.module.path>${jboss.home}/modules/org/wiremock/main/</wiremock.module.path>
+        <org.eclipse.microprofile.rest.client.tck.unusedURL>http://192.0.2.1:1234/null</org.eclipse.microprofile.rest.client.tck.unusedURL>
 
         <!-- Skip deploying -->
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -308,6 +309,7 @@
                     <systemPropertyVariables>
                         <org.eclipse.microprofile.rest.client.tck.timeoutCushion>${tck.timeout.offset}
                         </org.eclipse.microprofile.rest.client.tck.timeoutCushion>
+                        <org.eclipse.microprofile.rest.client.tck.unusedURL>${org.eclipse.microprofile.rest.client.tck.unusedURL}</org.eclipse.microprofile.rest.client.tck.unusedURL>
                         <test.url>http://localhost:8080</test.url>
                     </systemPropertyVariables>
                     <dependenciesToScan>
