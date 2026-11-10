@@ -30,7 +30,7 @@
 
     <groupId>org.jboss.resteasy.microprofile</groupId>
     <artifactId>resteasy-microprofile-parent</artifactId>
-    <version>3.0.2.Final</version>
+    <version>3.0.3.Final-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
@@ -69,7 +69,7 @@
         <connection>scm:git:git://github.com/resteasy/resteasy-microprofile.git</connection>
         <developerConnection>scm:git:git@github.com:resteasy/resteasy-microprofile.git</developerConnection>
         <url>https://github.com/resteasy/resteasy-microprofile/tree/main/</url>
-      <tag>v3.0.2.Final</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <properties>
