@@ -100,7 +100,7 @@
         <version.org.wiremock>3.12.1</version.org.wiremock>
 
         <!-- Plugin Versions -->
-        <version.spotless-maven-plugin>3.10.4</version.spotless-maven-plugin>
+        <version.spotless-maven-plugin>3.11.0</version.spotless-maven-plugin>
         <version.org.wildfly.maven.plugin>6.2.0.Final</version.org.wildfly.maven.plugin>
         <version.org.wildfly.wildfly-channel-maven-plugin>1.0.33</version.org.wildfly.wildfly-channel-maven-plugin>
 
